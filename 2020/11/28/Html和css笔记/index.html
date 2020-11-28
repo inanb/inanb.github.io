@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="Html和css的学习笔记：http:&#x2F;&#x2F;www.imooc.com&#x2F;learn&#x2F;9">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Html和css笔记">
+<meta property="og:url" content="http://example.com/2020/11/28/Html%E5%92%8Ccss%E7%AC%94%E8%AE%B0/index.html">
+<meta property="og:site_name" content="inanb">
+<meta property="og:description" content="Html和css的学习笔记：http:&#x2F;&#x2F;www.imooc.com&#x2F;learn&#x2F;9">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-11-28T05:39:43.000Z">
+<meta property="article:modified_time" content="2020-11-28T05:45:43.657Z">
+<meta property="article:author" content="inanb">
+<meta property="article:tag" content="Html和css">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://example.com/2020/11/28/Html%E5%92%8Ccss%E7%AC%94%E8%AE%B0/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Html和css笔记 | inanb</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">inanb</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">昨夜雨疏风骤 浓睡不消残酒</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2020/11/28/Html%E5%92%8Ccss%E7%AC%94%E8%AE%B0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/header.jpg">
+      <meta itemprop="name" content="inanb">
+      <meta itemprop="description" content="铁马冰河入梦来">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="inanb">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Html和css笔记
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2020-11-28 13:39:43 / 修改时间：13:45:43" itemprop="dateCreated datePublished" datetime="2020-11-28T13:39:43+08:00">2020-11-28</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%AC%94%E8%AE%B0/" itemprop="url" rel="index"><span itemprop="name">笔记</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>Html和css的学习笔记：<br><a target="_blank" rel="noopener" href="http://www.imooc.com/learn/9">http://www.imooc.com/learn/9</a></p>
+<a id="more"></a>
+
+<blockquote>
+<p>鉴于时间一长就忘得差不多了，做一些笔记以供参考，有些杂乱琐碎……</p>
+</blockquote>
+<p>1.<br>1、css是用来修饰html样式的</p>
+<p>2、html本身是有一些默认样式,如果我们想改变html标签的样式,就需要借助css</p>
+<p>3、html+css构成了我们网页的基本页面结构和样式</p>
+<p>2.</p>
+<ol>
+<li><!DOCTYPE html><p>:文档类型声明，表示该文件为 HTML5文件。&lt;!DOCTYPE&gt; 声明必须是 HTML 文档的第一行，位于 <html> 标签之前</p>
+</li>
+<li><html></html>标签对：<html>标签位于HTML文档的最前面，用来标识HTML文档的开始；</html>标签位于HTML文档的最后面，用来标识HTML 文档的结束；这两个标签对成对存在，中间的部分是文档的头部和主题。
+
+</li>
+</ol>
+<p>3.<head></head>标签对：标签包含有关HTML文档的信息，可以包含一些辅助性标签。如<title></title>，<link /><meta />，<style></style>，<script></script>等，但是浏览器除了会在标题栏显示<title>元素的内容外，不会向用户显示head元素内的其他任何内容。</p>
+<p>4.<body></body>标签对：它是HTML文档的主体部分，在此标签中可以包含<p><h1><br>等众多标签，<body>标签出现在</head>标签之后，且必须在闭标签</html>之前闭合。</p>
+<p>3.<br>1、head标签为双标签，有尾标签，<head></head>。</p>
+<p>2、head标签表示头部标签,通常用来嵌套meta、title、style等标签。</p>
+<p>3、<title>标签：在<title>和</title>标签之间的文字内容是网页的标题信息，它会出现在浏览器的标题栏中。网页的title标签用于告诉用户和搜索引擎这个网页的主要内容是什么，搜索引擎可以通过网页标题，迅速的判断出网页的主题。每个网页的内容都是不同的，每个网页都应该有一个独一无二的title。</p>
+<p>4、<meta charset="UTF-8">设置当前文件字符编码</p>
+<p>5、style标签：双标签中设置当前文件样式</p>
+<p>4.<br>在这一章节我们要开始把网页中常用到的标签一 一向大家介绍，学习这一章节的时候要记住学习html标签过程中，主要注意两个方面的学习：标签的用途、标签在浏览器中的默认样式。</p>
+<p>标签的用途：我们学习网页制作时，常常会听到一个词，语义化。那么什么叫做语义化呢，说的通俗点就是：明白每个标签的用途（在什么情况下使用此标签合理）比如，网页上的文章的标题就可以用标题标签，网页上的各个栏目的栏目名称也可以使用标题标签。文章中内容的段落就得放在段落标签中等等</p>
+<p>讲了这么多语义化，但是语义化可以给我们带来什么样的好处呢？</p>
+<ol>
+<li><p>更容易被搜索引擎收录。</p>
+</li>
+<li><p>更容易让屏幕阅读器读出网页内容。</p>
+</li>
+</ol>
+<p>5.<br><span>标签，这个标签是没有语义的，它的作用就是为了设置单独的样式用的。</p>
+<p>如果现在我们想把下面的第一段话“美国梦”三个字设置成blue（蓝色），所以这样情况下就可以用到<span>标签了。</p>
+<p>6.<br>文章的段落用<p>标签，那么文章的标题用什么标签呢？在本节我们将使用<hx>标签来制作文章的标题。<br>标题标签一共有6个，h1、h2、h3、h4、h5、h6分别为一级标题、二级标题、三级标题、四级标题、五级标题、六级标题。并且依据重要性递减。<h1>是最高的等级。<br>语法：<br><hx>标题文本</hx> (x为1-6)<br>文章的标题前面已经说过了，可以使用标题标签，另外网页上的各个栏目的标题也可使用它们。如下图为腾讯网站</p>
+<p>7.<br>在网页制作过程过中，可以把一些独立的逻辑部分划分出来，放在一个<div>标签中，这个<div>标签的作用就相当于一个容器。</p>
+<p>语法：</p>
+<div>…</div>
+
+<p>确定逻辑部分：</p>
+<p>什么是逻辑部分？它是页面上相互关联的一组元素。如网页中的独立的栏目版块，就是一个典型的逻辑部分。如下图所示：图中用红色边框标出的部分就是一个逻辑部分，就可以使用<div>标签作为容器。</p>
+<p>8.<br>各位慕课网的小伙伴，大家好，我们继续我们的快乐代码之旅。从这一章节开始,我们来学习html5新增的语义化标签,首先我们来学习header标签，用来定义头部区域。<footer>标签定义底部区域</p>
+<p>9.<section>定义区段</p>
+<p>10.</p>
+<aside>定义侧边栏区
+
+<p>11.<br>在需要加回车换行的地方加入<br />，<br />标签作用相当于word文档中的回车。<br>xhtml1.0写法：</p>
+<br />
+
+<p>html4.01写法：</p>
+<br>
+
+<p>大家注意，现在一般使用 xhtml1.0 的版本的写法（其它标签也是），这种版本比较规范。</p>
+<pre><code>  与以前我们学过的标签不一样，&lt;br /&gt;标签是一个空标签，没有HTML内容的标签就是空标签，空标签只需要写一个开始标签，这样的标签有&lt;br /&gt;、&lt;hr /&gt;和&lt;img /&gt;。
+
+  讲到这里，你是不是有个疑问，想折行还不好说嘛，就像在 word 文件档或记事本中，在想要折行的前面输入回车不就行了吗？很遗憾，在 html 中是忽略回车和空格的，你输入的再多回车和空格也是显示不出来的。如下边的代码。</code></pre>
+<p>总结：在 html 代码中输入回车、空格都是没有作用的。在html文本中想输入回车换行，就必须输入<br />。</p>
+<p>12.<br> 使用<hr>标签实现水平线标签<br>&nbsp;</p>
+<p>13.<br>这些列表就可以使用ul-li标签来完成。ul-li是没有前后顺序的信息列表。</p>
+<p>语法：</p>
+<ul>
+  <li>信息</li>
+  <li>信息</li>
+   ......
+</ul>
+举例：
+
+<ul>
+  <li>精彩少年</li>
+  <li>美丽突然出现</li>
+  <li>触动心灵的旋律</li>
+</ul>
+
+<p>14.<br>使用<ol>标签来制作有序列表来展示。<br>语法：</p>
+<ol>
+   <li>信息</li>
+   <li>信息</li>
+   ......
+</ol>
+举例：
+
+<p>下面是一个热点课程下载排行榜：</p>
+<ol>
+   <li>前端开发面试心法 </li>
+   <li>零基础学习html</li>
+   <li>JavaScript全攻略</li>
+</ol>
+<ol>在网页中显示的默认样式一般为：每项<li>前都自带一个序号，序号默认从1开始
+15.
+在网页的制作中为使网页炫丽美观，肯定是缺少不了图片，可以使用<img>标签来插入图片。
+
+<p>语法：</p>
+<p>&lt;img src=”图片地址” alt=”下载失败时的替换文本” title = “提示文本”&gt;</p>
+<p>举例：</p>
+<p>&lt;img src = “myimage.gif” alt = “My Image” title = “My Image” /&gt;</p>
+<p>讲解：</p>
+<p>1、src：标识图像的位置；</p>
+<p>2、alt：指定图像的描述性文本，当图像不可见时（下载不成功时），可看到该属性指定的文本；</p>
+<p>3、title：提供在图像可见时对图像的描述(鼠标滑过图片时显示的文本)；</p>
+<p>4、图像可以是GIF，PNG，JPEG格式的图像文件。</p>
+<p>16.<br>使用<a>标签可实现超链接，它在网页制作中可以说是无处不在，只要有链接的地方，就会有这个标签。</p>
+<p>语法：</p>
+<p>&lt;a  href=”目标网址”  title=”鼠标滑过显示的文本”&gt;链接显示的文本</a><br>例如：</p>
+<p>&lt;a  href=”<a target="_blank" rel="noopener" href="http://www.imooc.com&quot;/">http://www.imooc.com&quot;</a>  title=”点击进入慕课网”&gt;click here!</a><br>上面例子作用是单击click here!文字，网页链接到<a target="_blank" rel="noopener" href="http://www.imooc.com这个网页./">http://www.imooc.com这个网页。</a></p>
+<p>title属性的作用，鼠标滑过链接文字时会显示这个属性的文本内容。这个属性在实际网页开发中作用很大，主要方便搜索引擎了解链接地址的内容（语义化更友好），如右侧案例代码（11-13行）。</p>
+<p>注意：还有一个有趣的现象不知道小伙伴们发现了没有，只要为文本加入a标签后，文字的颜色就会自动变为蓝色（被点击过的文本颜色为紫色），颜色很难看吧，不过没有关系后面我们学习了css样子就可以设置过来（a{color:#000}),后面会详细讲解。</p>
+<p>17.<br>创建表格的四个元素：table、tr、th、td</p>
+<p>1、<table>…</table>：整个表格以<table>标记开始、</table>标记结束。</p>
+<p>2、<tr>…</tr>：表格的一行，所以有几对tr 表格就有几行。</p>
+<p>3、<td>…</td>：表格的一个单元格，一行中包含几对<td>…</td>，说明一行中就有几列。</p>
+<p>4、<th>…</th>：表格的头部的一个单元格，表格表头。</p>
+<p>5、表格中列的个数，取决于一行中数据单元格的个数。</p>
+<p>6、border属性可以为表格添加边框，属性值为数字。</p>
+<p>注意：</p>
+<p>1、table标签用来定义整个表格，为双标签，必须有结束标签。</p>
+<p>2、table标签里面可以放caption标签和tr标签。</p>
+<p>3、caption标签用来定义表格的标题。</p>
+<p>4、tr标签用来设置表格的行，tr里面只能放th或者td标签，一组tr标签代表一行。</p>
+<p>5、th用来设置表格的标题，会加粗居中显示。也就是th标签中的文本默认为粗体并且居中显示。</p>
+<p>6、td同来设置表格的列，一组td标签代表一列。</p>
+<p>7、table表格在没有添加border属性之前, 在浏览器中显示是没有表格线的。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Html%E5%92%8Ccss/" rel="tag"># Html和css</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/11/28/11-29%E6%97%A5%E5%AD%A6%E4%B9%A0%E6%8A%A5%E5%91%8A/" rel="prev" title="11.29日学习报告">
+      <i class="fa fa-chevron-left"></i> 11.29日学习报告
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">1.</span> <span class="nav-text">
+等众多标签，标签出现在标签之后，且必须在闭标签之前闭合。
+3.
+1、head标签为双标签，有尾标签，。
+2、head标签表示头部标签,通常用来嵌套meta、title、style等标签。
+3、标签：在和标签之间的文字内容是网页的标题信息，它会出现在浏览器的标题栏中。网页的title标签用于告诉用户和搜索引擎这个网页的主要内容是什么，搜索引擎可以通过网页标题，迅速的判断出网页的主题。每个网页的内容都是不同的，每个网页都应该有一个独一无二的title。
+4、设置当前文件字符编码
+5、style标签：双标签中设置当前文件样式
+4.
+在这一章节我们要开始把网页中常用到的标签一 一向大家介绍，学习这一章节的时候要记住学习html标签过程中，主要注意两个方面的学习：标签的用途、标签在浏览器中的默认样式。
+标签的用途：我们学习网页制作时，常常会听到一个词，语义化。那么什么叫做语义化呢，说的通俗点就是：明白每个标签的用途（在什么情况下使用此标签合理）比如，网页上的文章的标题就可以用标题标签，网页上的各个栏目的栏目名称也可以使用标题标签。文章中内容的段落就得放在段落标签中等等
+讲了这么多语义化，但是语义化可以给我们带来什么样的好处呢？
+
+更容易被搜索引擎收录。
+
+更容易让屏幕阅读器读出网页内容。
+
+
+5.
+标签，这个标签是没有语义的，它的作用就是为了设置单独的样式用的。
+如果现在我们想把下面的第一段话“美国梦”三个字设置成blue（蓝色），所以这样情况下就可以用到标签了。
+6.
+文章的段落用标签，那么文章的标题用什么标签呢？在本节我们将使用标签来制作文章的标题。
+标题标签一共有6个，h1、h2、h3、h4、h5、h6分别为一级标题、二级标题、三级标题、四级标题、五级标题、六级标题。并且依据重要性递减。是最高的等级。
+语法：
+标题文本 (x为1-6)
+文章的标题前面已经说过了，可以使用标题标签，另外网页上的各个栏目的标题也可使用它们。如下图为腾讯网站
+7.
+在网页制作过程过中，可以把一些独立的逻辑部分划分出来，放在一个标签中，这个标签的作用就相当于一个容器。
+语法：
+…
+
+确定逻辑部分：
+什么是逻辑部分？它是页面上相互关联的一组元素。如网页中的独立的栏目版块，就是一个典型的逻辑部分。如下图所示：图中用红色边框标出的部分就是一个逻辑部分，就可以使用标签作为容器。
+8.
+各位慕课网的小伙伴，大家好，我们继续我们的快乐代码之旅。从这一章节开始,我们来学习html5新增的语义化标签,首先我们来学习header标签，用来定义头部区域。标签定义底部区域
+9.定义区段
+10.
+定义侧边栏区
+
+11.
+在需要加回车换行的地方加入
+，
+标签作用相当于word文档中的回车。
+xhtml1.0写法：
+
+
+
+html4.01写法：
+
+
+
+大家注意，现在一般使用 xhtml1.0 的版本的写法（其它标签也是），这种版本比较规范。
+  与以前我们学过的标签不一样，&lt;br &#x2F;&gt;标签是一个空标签，没有HTML内容的标签就是空标签，空标签只需要写一个开始标签，这样的标签有&lt;br &#x2F;&gt;、&lt;hr &#x2F;&gt;和&lt;img &#x2F;&gt;。
+
+  讲到这里，你是不是有个疑问，想折行还不好说嘛，就像在 word 文件档或记事本中，在想要折行的前面输入回车不就行了吗？很遗憾，在 html 中是忽略回车和空格的，你输入的再多回车和空格也是显示不出来的。如下边的代码。
+总结：在 html 代码中输入回车、空格都是没有作用的。在html文本中想输入回车换行，就必须输入
+。
+12.
+ 使用标签实现水平线标签
+&amp;nbsp;
+13.
+这些列表就可以使用ul-li标签来完成。ul-li是没有前后顺序的信息列表。
+语法：
+
+  信息
+  信息
+   ......
+
+举例：
+
+
+  精彩少年
+  美丽突然出现
+  触动心灵的旋律
+
+
+14.
+使用标签来制作有序列表来展示。
+语法：
+
+   信息
+   信息
+   ......
+
+举例：
+
+下面是一个热点课程下载排行榜：
+
+   前端开发面试心法 
+   零基础学习html
+   JavaScript全攻略
+
+在网页中显示的默认样式一般为：每项前都自带一个序号，序号默认从1开始
+15.
+在网页的制作中为使网页炫丽美观，肯定是缺少不了图片，可以使用标签来插入图片。
+
+语法：
+&lt;img src&#x3D;”图片地址” alt&#x3D;”下载失败时的替换文本” title &#x3D; “提示文本”&gt;
+举例：
+&lt;img src &#x3D; “myimage.gif” alt &#x3D; “My Image” title &#x3D; “My Image” &#x2F;&gt;
+讲解：
+1、src：标识图像的位置；
+2、alt：指定图像的描述性文本，当图像不可见时（下载不成功时），可看到该属性指定的文本；
+3、title：提供在图像可见时对图像的描述(鼠标滑过图片时显示的文本)；
+4、图像可以是GIF，PNG，JPEG格式的图像文件。
+16.
+使用标签可实现超链接，它在网页制作中可以说是无处不在，只要有链接的地方，就会有这个标签。
+语法：
+&lt;a  href&#x3D;”目标网址”  title&#x3D;”鼠标滑过显示的文本”&gt;链接显示的文本
+例如：
+&lt;a  href&#x3D;”http:&#x2F;&#x2F;www.imooc.com&quot;  title&#x3D;”点击进入慕课网”&gt;click here!
+上面例子作用是单击click here!文字，网页链接到http:&#x2F;&#x2F;www.imooc.com这个网页。
+title属性的作用，鼠标滑过链接文字时会显示这个属性的文本内容。这个属性在实际网页开发中作用很大，主要方便搜索引擎了解链接地址的内容（语义化更友好），如右侧案例代码（11-13行）。
+注意：还有一个有趣的现象不知道小伙伴们发现了没有，只要为文本加入a标签后，文字的颜色就会自动变为蓝色（被点击过的文本颜色为紫色），颜色很难看吧，不过没有关系后面我们学习了css样子就可以设置过来（a{color:#000}),后面会详细讲解。
+17.
+创建表格的四个元素：table、tr、th、td
+1、…：整个表格以标记开始、标记结束。
+2、…：表格的一行，所以有几对tr 表格就有几行。
+3、…：表格的一个单元格，一行中包含几对…，说明一行中就有几列。
+4、…：表格的头部的一个单元格，表格表头。
+5、表格中列的个数，取决于一行中数据单元格的个数。
+6、border属性可以为表格添加边框，属性值为数字。
+注意：
+1、table标签用来定义整个表格，为双标签，必须有结束标签。
+2、table标签里面可以放caption标签和tr标签。
+3、caption标签用来定义表格的标题。
+4、tr标签用来设置表格的行，tr里面只能放th或者td标签，一组tr标签代表一行。
+5、th用来设置表格的标题，会加粗居中显示。也就是th标签中的文本默认为粗体并且居中显示。
+6、td同来设置表格的列，一组td标签代表一列。
+7、table表格在没有添加border属性之前, 在浏览器中显示是没有表格线的。
+</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">2.</span> <span class="nav-text">是最高的等级。
+语法：
+标题文本 (x为1-6)
+文章的标题前面已经说过了，可以使用标题标签，另外网页上的各个栏目的标题也可使用它们。如下图为腾讯网站</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="inanb"
+      src="/images/header.jpg">
+  <p class="site-author-name" itemprop="name">inanb</p>
+  <div class="site-description" itemprop="description">铁马冰河入梦来</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">11</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">inanb</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+<script type="text/javascript" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+
+</body>
+</html>
