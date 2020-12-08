@@ -20,20 +20,26 @@
     var CONFIG = {"hostname":"example.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="BuuCTF-WEB部分基础题（1） 感觉这些题单独写有点少……所以写一块。  [ACTF2020 新生赛]Include1.题目链接：https:&#x2F;&#x2F;buuoj.cn&#x2F;challenges#[ACTF2020%20%E6%96%B0%E7%94%9F%E8%B5%9B]Include2.过程：题目说明’include’为文件包含漏洞。打开后有一个tips，点开后URL出现了file&#x3D;flag.p">
+  <meta name="description" content="[SUCTF 2019]EasySQL1.题目链接：[https:&#x2F;&#x2F;buuoj.cn&#x2F;challenges#[SUCTF%202019\]EasySQL](https:&#x2F;&#x2F;buuoj.cn&#x2F;challenges#[SUCTF 2019]EasySQL)">
 <meta property="og:type" content="article">
-<meta property="og:title" content="BuuCTF-WEB部分基础题-1">
-<meta property="og:url" content="http://example.com/2020/12/06/BuuCTF-WEB%E9%83%A8%E5%88%86%E5%9F%BA%E7%A1%80%E9%A2%98-1/index.html">
+<meta property="og:title" content="SUCTF-2019EasySQL">
+<meta property="og:url" content="http://example.com/2020/12/08/SUCTF-2019EasySQL/index.html">
 <meta property="og:site_name" content="inanb">
-<meta property="og:description" content="BuuCTF-WEB部分基础题（1） 感觉这些题单独写有点少……所以写一块。  [ACTF2020 新生赛]Include1.题目链接：https:&#x2F;&#x2F;buuoj.cn&#x2F;challenges#[ACTF2020%20%E6%96%B0%E7%94%9F%E8%B5%9B]Include2.过程：题目说明’include’为文件包含漏洞。打开后有一个tips，点开后URL出现了file&#x3D;flag.p">
+<meta property="og:description" content="[SUCTF 2019]EasySQL1.题目链接：[https:&#x2F;&#x2F;buuoj.cn&#x2F;challenges#[SUCTF%202019\]EasySQL](https:&#x2F;&#x2F;buuoj.cn&#x2F;challenges#[SUCTF 2019]EasySQL)">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2020-12-06T01:42:04.000Z">
-<meta property="article:modified_time" content="2020-12-06T01:43:31.690Z">
+<meta property="og:image" content="http://example.com/images/SUCTF-2019EasySQL/image-20201208133531283.png">
+<meta property="og:image" content="http://example.com/images/SUCTF-2019EasySQL/image-20201208133625007.png">
+<meta property="og:image" content="http://example.com/images/SUCTF-2019EasySQL/image-20201208134436688.png">
+<meta property="og:image" content="http://example.com/images/SUCTF-2019EasySQL/image-20201208134318984.png">
+<meta property="og:image" content="http://example.com/images/SUCTF-2019EasySQL/image-20201208140708795.png">
+<meta property="article:published_time" content="2020-12-08T05:31:56.000Z">
+<meta property="article:modified_time" content="2020-12-08T06:25:05.049Z">
 <meta property="article:author" content="inanb">
-<meta property="article:tag" content="Buuctf">
+<meta property="article:tag" content="Buuctf SQL">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/images/SUCTF-2019EasySQL/image-20201208133531283.png">
 
-<link rel="canonical" href="http://example.com/2020/12/06/BuuCTF-WEB%E9%83%A8%E5%88%86%E5%9F%BA%E7%A1%80%E9%A2%98-1/">
+<link rel="canonical" href="http://example.com/2020/12/08/SUCTF-2019EasySQL/">
 
 
 <script id="page-configurations">
@@ -46,7 +52,7 @@
   };
 </script>
 
-  <title>BuuCTF-WEB部分基础题-1 | inanb</title>
+  <title>SUCTF-2019EasySQL | inanb</title>
   
 
 
@@ -162,7 +168,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2020/12/06/BuuCTF-WEB%E9%83%A8%E5%88%86%E5%9F%BA%E7%A1%80%E9%A2%98-1/">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2020/12/08/SUCTF-2019EasySQL/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/header.jpg">
@@ -175,7 +181,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          BuuCTF-WEB部分基础题-1
+          SUCTF-2019EasySQL
         </h1>
 
         <div class="post-meta">
@@ -186,7 +192,7 @@
               <span class="post-meta-item-text">发表于</span>
               
 
-              <time title="创建时间：2020-12-06 09:42:04 / 修改时间：09:43:31" itemprop="dateCreated datePublished" datetime="2020-12-06T09:42:04+08:00">2020-12-06</time>
+              <time title="创建时间：2020-12-08 13:31:56 / 修改时间：14:25:05" itemprop="dateCreated datePublished" datetime="2020-12-08T13:31:56+08:00">2020-12-08</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -209,35 +215,51 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h3 id="BuuCTF-WEB部分基础题（1）"><a href="#BuuCTF-WEB部分基础题（1）" class="headerlink" title="BuuCTF-WEB部分基础题（1）"></a>BuuCTF-WEB部分基础题（1）</h3><blockquote>
-<p>感觉这些题单独写有点少……所以写一块。</p>
-</blockquote>
-<h4 id="ACTF2020-新生赛-Include"><a href="#ACTF2020-新生赛-Include" class="headerlink" title="[ACTF2020 新生赛]Include"></a>[ACTF2020 新生赛]Include</h4><h6 id="1-题目链接：https-buuoj-cn-challenges-ACTF2020-20-E6-96-B0-E7-94-9F-E8-B5-9B-Include"><a href="#1-题目链接：https-buuoj-cn-challenges-ACTF2020-20-E6-96-B0-E7-94-9F-E8-B5-9B-Include" class="headerlink" title="1.题目链接：https://buuoj.cn/challenges#[ACTF2020%20%E6%96%B0%E7%94%9F%E8%B5%9B]Include"></a>1.题目链接：<a target="_blank" rel="noopener" href="https://buuoj.cn/challenges#[ACTF2020%20%E6%96%B0%E7%94%9F%E8%B5%9B]Include">https://buuoj.cn/challenges#[ACTF2020%20%E6%96%B0%E7%94%9F%E8%B5%9B]Include</a></h6><h6 id="2-过程："><a href="#2-过程：" class="headerlink" title="2.过程："></a>2.过程：</h6><p>题目说明’include’为文件包含漏洞。打开后有一个tips，点开后URL出现了file=flag.php.的调用。</p>
-<p>flag应该在flag.php中，但是以php语句解释并运行，导致flag无法正常显示……</p>
-<p>所以可以在中间对其进行base64编码，使其无法运行……</p>
-<p>payload：?file=php://filter/read=convert.base64-encode/resource=flag.php</p>
-<p>base64解码后：</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="keyword">echo</span> <span class="string">&quot;Can you find out the flag?&quot;</span>;</span><br><span class="line"><span class="comment">//flag&#123;d962dde8-63dd-4b9d-bed6-ca2d1234e05a&#125;</span></span><br></pre></td></tr></table></figure>
+        <h2 id="SUCTF-2019-EasySQL"><a href="#SUCTF-2019-EasySQL" class="headerlink" title="[SUCTF 2019]EasySQL"></a>[SUCTF 2019]EasySQL</h2><h6 id="1-题目链接：-https-buuoj-cn-challenges-SUCTF-202019-EasySQL-https-buuoj-cn-challenges-SUCTF-2019-EasySQL"><a href="#1-题目链接：-https-buuoj-cn-challenges-SUCTF-202019-EasySQL-https-buuoj-cn-challenges-SUCTF-2019-EasySQL" class="headerlink" title="1.题目链接：[https://buuoj.cn/challenges#[SUCTF%202019\]EasySQL](https://buuoj.cn/challenges#[SUCTF 2019]EasySQL)"></a>1.题目链接：[<a target="_blank" rel="noopener" href="https://buuoj.cn/challenges#[SUCTF%202019\]EasySQL]">https://buuoj.cn/challenges#[SUCTF%202019\]EasySQL]</a>(<a target="_blank" rel="noopener" href="https://buuoj.cn/challenges#[SUCTF">https://buuoj.cn/challenges#[SUCTF</a> 2019]EasySQL)</h6><a id="more"></a>
+
+<h6 id="2-过程："><a href="#2-过程：" class="headerlink" title="2.过程："></a>2.过程：</h6><p><img src="/images/SUCTF-2019EasySQL/image-20201208133531283.png" alt="image-20201208133531283"></p>
+<p>一个提交框……</p>
+<p><img src="/images/SUCTF-2019EasySQL/image-20201208133625007.png" alt="image-20201208133625007"></p>
+<p>查看原码可以看到传了一个“query”……</p>
+<p>输入数字有一种回显，字母无回显，过滤了flag，from，union等等，；可以用，可能是堆叠注入。</p>
+<p>*1;show databases;*有回显</p>
+<p><img src="/images/SUCTF-2019EasySQL/image-20201208134436688.png" alt="image-20201208134436688"></p>
+<p>*1;show tables;select 1,2,3;*有回显</p>
+<p><img src="/images/SUCTF-2019EasySQL/image-20201208134318984.png" alt="image-20201208134318984"></p>
+<p>*1;show tables;select 1,2,(select schema_name form information_schema.shemate);*提示过滤</p>
+<p>好像是information被过滤了……猜不到入口语句是啥啊，看一波wp……</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">源码：<span class="keyword">select</span> $_GET[<span class="string">&#x27;query&#x27;</span>] || flag <span class="keyword">from</span> Flag</span><br></pre></td></tr></table></figure>
 
 <blockquote>
-<p>em，原来是注释掉了……</p>
+<p>就算知道了，我也……</p>
 </blockquote>
-<h2 id="极客大挑战-2019-EasySQL"><a href="#极客大挑战-2019-EasySQL" class="headerlink" title="[极客大挑战 2019]EasySQL"></a>[极客大挑战 2019]EasySQL</h2><h6 id="1-题目链接：https-buuoj-cn-challenges-E6-9E-81-E5-AE-A2-E5-A4-A7-E6-8C-91-E6-88-98-202019-EasySQL"><a href="#1-题目链接：https-buuoj-cn-challenges-E6-9E-81-E5-AE-A2-E5-A4-A7-E6-8C-91-E6-88-98-202019-EasySQL" class="headerlink" title="1.题目链接：https://buuoj.cn/challenges#[%E6%9E%81%E5%AE%A2%E5%A4%A7%E6%8C%91%E6%88%98%202019]EasySQL"></a>1.题目链接：<a target="_blank" rel="noopener" href="https://buuoj.cn/challenges#[%E6%9E%81%E5%AE%A2%E5%A4%A7%E6%8C%91%E6%88%98%202019]EasySQL">https://buuoj.cn/challenges#[%E6%9E%81%E5%AE%A2%E5%A4%A7%E6%8C%91%E6%88%98%202019]EasySQL</a></h6><h6 id="2-过程：-1"><a href="#2-过程：-1" class="headerlink" title="2.过程："></a>2.过程：</h6><blockquote>
-<p>我是cl4y，是一个WEB开发程序员，最近我做了一个网站，快来看看它有多精湛叭！</p>
-<p>SQL也是刚学，找个简单的练练手……</p>
+<h5 id="解一："><a href="#解一：" class="headerlink" title="解一："></a>解一：</h5><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">*,1</span><br></pre></td></tr></table></figure>
+
+<p>👌，继续查</p>
+<ul>
+<li><p>查询指定列：select 列名1，列名2，列名3 from 表名</p>
+</li>
+<li><p>select * from 表名，查找全部列</p>
+</li>
+<li><p>select max(列名) from 表名，计算后的列</p>
+</li>
+<li><p>select 1 from 表名：增加一个临时列，它的列名是1，然后那一列的值都为1，如：                                                             <img src="/images/SUCTF-2019EasySQL/image-20201208140708795.png" alt="image-20201208140708795">                                                                                        <a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_43678005/article/details/108101904">1</a> <a target="_blank" rel="noopener" href="https://blog.csdn.net/hyz301/article/details/84465338?utm_medium=distribute.pc_relevant.none-task-blog-BlogCommendFromMachineLearnPai2-4.channel_param&depth_1-utm_source=distribute.pc_relevant.none-task-blog-BlogCommendFromMachineLearnPai2-4.channel_param">2</a> <a target="_blank" rel="noopener" href="https://blog.csdn.net/u013385925/article/details/78040294?utm_medium=distribute.pc_relevant.none-task-blog-BlogCommendFromMachineLearnPai2-2.channel_param&depth_1-utm_source=distribute.pc_relevant.none-task-blog-BlogCommendFromMachineLearnPai2-2.channel_param">3</a> ——详细，还不是很懂，以后上手操作可以多试试。</p>
+</li>
+<li><blockquote>
+<p>|| 具体语法规则为：<br>当两个操作数都为非 NULL 值时，如果有任意一个操作数为非零值，则返回值为 1，否则结果为 0；<br>当有一个操作数为NULL 时，如果另一个操作数为非零值，则返回值为 1，否则结果为NULL；<br>假如两个操作数均为 NULL 时，则返回值为 NULL。</p>
 </blockquote>
-<p>打开之后是一个用户登录界面。</p>
-<p>随便一输，回显“NO,Wrong username password！！！”</p>
-<p>试试我新学的<em>万能密码</em></p>
-<p>1&#39; or 1=1#</p>
-<blockquote>
-<p>&#39;闭合掉上一个语句，or 1=1 恒true，#注释掉后面的语句</p>
+</li>
+</ul>
+<p>所以说，输入任何数字，经过||都为1，查询结果不变……</p>
+<p>键入 “*,1” *查询所有列，“1||flag”=&gt;1，于是变为</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">select *,1 from Flag</span><br></pre></td></tr></table></figure>
+
+<p>读出所有内容拿到flag</p>
+<h5 id="解二："><a href="#解二：" class="headerlink" title="解二："></a>解二：</h5><blockquote>
+<p>sql_mode 定义了 MySQL 应支持的 SQL 语法，以及应该在数据上执行何种确认检查，其中的 PIPES_AS_CONCAT 将 || 视为字符串的连接操作符而非 “或” 运算符，未配置 sql_mode 之前，|| 是作为 或 运算符。在oracle 缺省支持 通过 ‘ || ’ 来实现字符串拼接。但在mysql 缺省不支持。需要调整mysql 的sql_mode，需要设置。</p>
 </blockquote>
-<p>结果直接把flag打出来了……</p>
-<p><strong><em>flag{44c19f5a-76e2-4d2a-b95f-50755985dc5a}</em></strong></p>
-<blockquote>
-<p>……</p>
-</blockquote>
+<p><strong><em>payload:<code>1;set sql_mode=PIPES_AS_CONCAT;select 1</code></em></strong></p>
+<p>嗯，很强……</p>
 
     </div>
 
@@ -247,7 +269,7 @@
 
       <footer class="post-footer">
           <div class="post-tags">
-              <a href="/tags/Buuctf/" rel="tag"># Buuctf</a>
+              <a href="/tags/Buuctf-SQL/" rel="tag"># Buuctf SQL</a>
           </div>
 
         
@@ -256,13 +278,10 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2020/12/06/%E6%9E%81%E5%AE%A2%E5%A4%A7%E6%8C%91%E6%88%98-2019-SecretFile/" rel="prev" title="极客大挑战-2019-SecretFile">
-      <i class="fa fa-chevron-left"></i> 极客大挑战-2019-SecretFile
+    <a href="/2020/12/06/SSRF1/" rel="prev" title="SSRF1">
+      <i class="fa fa-chevron-left"></i> SSRF1
     </a></div>
-      <div class="post-nav-item">
-    <a href="/2020/12/06/GXYCTF2019-PingPingPing/" rel="next" title="GXYCTF2019-PingPingPing">
-      GXYCTF2019-PingPingPing <i class="fa fa-chevron-right"></i>
-    </a></div>
+      <div class="post-nav-item"></div>
     </div>
       </footer>
     
@@ -321,7 +340,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#BuuCTF-WEB%E9%83%A8%E5%88%86%E5%9F%BA%E7%A1%80%E9%A2%98%EF%BC%881%EF%BC%89"><span class="nav-number">1.</span> <span class="nav-text">BuuCTF-WEB部分基础题（1）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#ACTF2020-%E6%96%B0%E7%94%9F%E8%B5%9B-Include"><span class="nav-number">1.1.</span> <span class="nav-text">[ACTF2020 新生赛]Include</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#1-%E9%A2%98%E7%9B%AE%E9%93%BE%E6%8E%A5%EF%BC%9Ahttps-buuoj-cn-challenges-ACTF2020-20-E6-96-B0-E7-94-9F-E8-B5-9B-Include"><span class="nav-number">1.1.0.1.</span> <span class="nav-text">1.题目链接：https:&#x2F;&#x2F;buuoj.cn&#x2F;challenges#[ACTF2020%20%E6%96%B0%E7%94%9F%E8%B5%9B]Include</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#2-%E8%BF%87%E7%A8%8B%EF%BC%9A"><span class="nav-number">1.1.0.2.</span> <span class="nav-text">2.过程：</span></a></li></ol></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9E%81%E5%AE%A2%E5%A4%A7%E6%8C%91%E6%88%98-2019-EasySQL"><span class="nav-number"></span> <span class="nav-text">[极客大挑战 2019]EasySQL</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#1-%E9%A2%98%E7%9B%AE%E9%93%BE%E6%8E%A5%EF%BC%9Ahttps-buuoj-cn-challenges-E6-9E-81-E5-AE-A2-E5-A4-A7-E6-8C-91-E6-88-98-202019-EasySQL"><span class="nav-number">0.0.0.1.</span> <span class="nav-text">1.题目链接：https:&#x2F;&#x2F;buuoj.cn&#x2F;challenges#[%E6%9E%81%E5%AE%A2%E5%A4%A7%E6%8C%91%E6%88%98%202019]EasySQL</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#2-%E8%BF%87%E7%A8%8B%EF%BC%9A-1"><span class="nav-number">0.0.0.2.</span> <span class="nav-text">2.过程：</span></a></li></ol></li></ol></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#SUCTF-2019-EasySQL"><span class="nav-number">1.</span> <span class="nav-text">[SUCTF 2019]EasySQL</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#1-%E9%A2%98%E7%9B%AE%E9%93%BE%E6%8E%A5%EF%BC%9A-https-buuoj-cn-challenges-SUCTF-202019-EasySQL-https-buuoj-cn-challenges-SUCTF-2019-EasySQL"><span class="nav-number">1.0.0.0.1.</span> <span class="nav-text">1.题目链接：[https:&#x2F;&#x2F;buuoj.cn&#x2F;challenges#[SUCTF%202019\]EasySQL](https:&#x2F;&#x2F;buuoj.cn&#x2F;challenges#[SUCTF 2019]EasySQL)</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#2-%E8%BF%87%E7%A8%8B%EF%BC%9A"><span class="nav-number">1.0.0.0.2.</span> <span class="nav-text">2.过程：</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E8%A7%A3%E4%B8%80%EF%BC%9A"><span class="nav-number">1.0.0.1.</span> <span class="nav-text">解一：</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E8%A7%A3%E4%BA%8C%EF%BC%9A"><span class="nav-number">1.0.0.2.</span> <span class="nav-text">解二：</span></a></li></ol></li></ol></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
