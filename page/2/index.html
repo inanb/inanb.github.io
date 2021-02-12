@@ -158,6 +158,89 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/01/27/GXYCTF2019-BabySQli/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/header.jpg">
+      <meta itemprop="name" content="inanb">
+      <meta itemprop="description" content="铁马冰河入梦来">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="inanb">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/01/27/GXYCTF2019-BabySQli/" class="post-title-link" itemprop="url">GXYCTF2019-BabySQli</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-01-27 11:42:17 / 修改时间：15:12:43" itemprop="dateCreated datePublished" datetime="2021-01-27T11:42:17+08:00">2021-01-27</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/WEB/" itemprop="url" rel="index"><span itemprop="name">WEB</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="GXYCTF2019-BabySQli"><a href="#GXYCTF2019-BabySQli" class="headerlink" title="[GXYCTF2019]BabySQli"></a>[GXYCTF2019]BabySQli</h2><h6 id="1-题目：刚学完sqli，我才知道万能口令这么危险，还好我进行了防护，还用md5哈希了密码！"><a href="#1-题目：刚学完sqli，我才知道万能口令这么危险，还好我进行了防护，还用md5哈希了密码！" class="headerlink" title="1.题目：刚学完sqli，我才知道万能口令这么危险，还好我进行了防护，还用md5哈希了密码！"></a>1.题目：刚学完sqli，我才知道万能口令这么危险，还好我进行了防护，还用md5哈希了密码！</h6><h6 id="2-过程："><a href="#2-过程：" class="headerlink" title="2.过程："></a>2.过程：</h6><p>可以猜到username是admin，只会提示wrong pass……那就只能在username注入</p>
+<p><img src="/images/GXYCTF2019-BabySQli/image-20210127114903957.png" alt="image-20210127114903957"></p>
+<p>POST……用burpsuit</p>
+<p><img src="/images/GXYCTF2019-BabySQli/image-20210127115020460.png" alt="image-20210127115020460"></p>
+<p>发现有一段密文：MMZFM422K5HDASKDN5TVU3SKOZRFGQRRMMZFM6KJJBSG6WSYJJWESSCWPJNFQSTVLFLTC3CJIQYGOSTZKJ2VSVZRNRFHOPJ5</p>
+<p>试试解密：先base32，再base64：<strong>select * from user where username = ‘$name’</strong></p>
+<p>不清楚有什么用欸……查一下sql里的MD5加密语句：</p>
+<p><img src="/images/GXYCTF2019-BabySQli/image-20210127115316636.png" alt="image-20210127115316636"></p>
+<p>这个应该很接近题目了。网上很多猜测源码的……GitHub上有源码：</p>
+<p><img src="/images/GXYCTF2019-BabySQli/image-20210127150627305.png" alt="image-20210127150627305"></p>
+<p>只查了一行，所以用union的特性，构造：</p>
+<p>name=3’ union select 1,’admin’,’202cb962ac59075b964b07152d234b70’–+&amp;pw=123</p>
+<p>此时获取的是union的虚表，select ‘admin’,0,’202cb962ac59075b964b07152d234b70’ 是不行的</p>
+<p>第二列应该是username，第三列是password；即arr[1]和arr[2]。</p>
+<p>202cb962ac59075b964b07152d234b70即123的MD5编码……得flag</p>
+<p><img src="/images/GXYCTF2019-BabySQli/image-20210127151238520.png" alt="image-20210127151238520"></p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://example.com/2021/01/25/Sqli-labs/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -973,102 +1056,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2020/12/06/BuuCTF-WEB%E9%83%A8%E5%88%86%E5%9F%BA%E7%A1%80%E9%A2%98-1/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/header.jpg">
-      <meta itemprop="name" content="inanb">
-      <meta itemprop="description" content="铁马冰河入梦来">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="inanb">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/12/06/BuuCTF-WEB%E9%83%A8%E5%88%86%E5%9F%BA%E7%A1%80%E9%A2%98-1/" class="post-title-link" itemprop="url">BuuCTF-WEB部分基础题-1</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2020-12-06 09:42:04 / 修改时间：09:43:31" itemprop="dateCreated datePublished" datetime="2020-12-06T09:42:04+08:00">2020-12-06</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/WEB/" itemprop="url" rel="index"><span itemprop="name">WEB</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h3 id="BuuCTF-WEB部分基础题（1）"><a href="#BuuCTF-WEB部分基础题（1）" class="headerlink" title="BuuCTF-WEB部分基础题（1）"></a>BuuCTF-WEB部分基础题（1）</h3><blockquote>
-<p>感觉这些题单独写有点少……所以写一块。</p>
-</blockquote>
-<h4 id="ACTF2020-新生赛-Include"><a href="#ACTF2020-新生赛-Include" class="headerlink" title="[ACTF2020 新生赛]Include"></a>[ACTF2020 新生赛]Include</h4><h6 id="1-题目链接：https-buuoj-cn-challenges-ACTF2020-20-E6-96-B0-E7-94-9F-E8-B5-9B-Include"><a href="#1-题目链接：https-buuoj-cn-challenges-ACTF2020-20-E6-96-B0-E7-94-9F-E8-B5-9B-Include" class="headerlink" title="1.题目链接：https://buuoj.cn/challenges#[ACTF2020%20%E6%96%B0%E7%94%9F%E8%B5%9B]Include"></a>1.题目链接：<a target="_blank" rel="noopener" href="https://buuoj.cn/challenges#[ACTF2020%20%E6%96%B0%E7%94%9F%E8%B5%9B]Include">https://buuoj.cn/challenges#[ACTF2020%20%E6%96%B0%E7%94%9F%E8%B5%9B]Include</a></h6><h6 id="2-过程："><a href="#2-过程：" class="headerlink" title="2.过程："></a>2.过程：</h6><p>题目说明’include’为文件包含漏洞。打开后有一个tips，点开后URL出现了file=flag.php.的调用。</p>
-<p>flag应该在flag.php中，但是以php语句解释并运行，导致flag无法正常显示……</p>
-<p>所以可以在中间对其进行base64编码，使其无法运行……</p>
-<p>payload：?file=php://filter/read=convert.base64-encode/resource=flag.php</p>
-<p>base64解码后：</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="keyword">echo</span> <span class="string">&quot;Can you find out the flag?&quot;</span>;</span><br><span class="line"><span class="comment">//flag&#123;d962dde8-63dd-4b9d-bed6-ca2d1234e05a&#125;</span></span><br></pre></td></tr></table></figure>
-
-<blockquote>
-<p>em，原来是注释掉了……</p>
-</blockquote>
-<h2 id="极客大挑战-2019-EasySQL"><a href="#极客大挑战-2019-EasySQL" class="headerlink" title="[极客大挑战 2019]EasySQL"></a>[极客大挑战 2019]EasySQL</h2><h6 id="1-题目链接：https-buuoj-cn-challenges-E6-9E-81-E5-AE-A2-E5-A4-A7-E6-8C-91-E6-88-98-202019-EasySQL"><a href="#1-题目链接：https-buuoj-cn-challenges-E6-9E-81-E5-AE-A2-E5-A4-A7-E6-8C-91-E6-88-98-202019-EasySQL" class="headerlink" title="1.题目链接：https://buuoj.cn/challenges#[%E6%9E%81%E5%AE%A2%E5%A4%A7%E6%8C%91%E6%88%98%202019]EasySQL"></a>1.题目链接：<a target="_blank" rel="noopener" href="https://buuoj.cn/challenges#[%E6%9E%81%E5%AE%A2%E5%A4%A7%E6%8C%91%E6%88%98%202019]EasySQL">https://buuoj.cn/challenges#[%E6%9E%81%E5%AE%A2%E5%A4%A7%E6%8C%91%E6%88%98%202019]EasySQL</a></h6><h6 id="2-过程：-1"><a href="#2-过程：-1" class="headerlink" title="2.过程："></a>2.过程：</h6><blockquote>
-<p>我是cl4y，是一个WEB开发程序员，最近我做了一个网站，快来看看它有多精湛叭！</p>
-<p>SQL也是刚学，找个简单的练练手……</p>
-</blockquote>
-<p>打开之后是一个用户登录界面。</p>
-<p>随便一输，回显“NO,Wrong username password！！！”</p>
-<p>试试我新学的<em>万能密码</em></p>
-<p>1&#39; or 1=1#</p>
-<blockquote>
-<p>&#39;闭合掉上一个语句，or 1=1 恒true，#注释掉后面的语句</p>
-</blockquote>
-<p>结果直接把flag打出来了……</p>
-<p><strong><em>flag{44c19f5a-76e2-4d2a-b95f-50755985dc5a}</em></strong></p>
-<blockquote>
-<p>……</p>
-</blockquote>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -1140,7 +1127,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">34</span>
+          <span class="site-state-item-count">35</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
