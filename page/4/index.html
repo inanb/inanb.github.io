@@ -158,6 +158,119 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/02/06/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/header.jpg">
+      <meta itemprop="name" content="inanb">
+      <meta itemprop="description" content="铁马冰河入梦来">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="inanb">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/02/06/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" class="post-title-link" itemprop="url">计算机网络</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-02-06 13:34:06" itemprop="dateCreated datePublished" datetime="2021-02-06T13:34:06+08:00">2021-02-06</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-03-03 10:22:26" itemprop="dateModified" datetime="2021-03-03T10:22:26+08:00">2021-03-03</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h4 id="计算机网络"><a href="#计算机网络" class="headerlink" title="计算机网络"></a>计算机网络</h4><h5 id="1-球鞋网络（Sneakernet）"><a href="#1-球鞋网络（Sneakernet）" class="headerlink" title="1.球鞋网络（Sneakernet）"></a>1.球鞋网络（Sneakernet）</h5><p>​    可用于任何使用物理媒体在计算机之间传输数据的情况,而不是使用电子网络。早期通过纸卡或磁带传递计算机信息。现在用于大型资料的传输，如超大型的望远镜数据信息。</p>
+<blockquote>
+<p>Never underestimate the bandwidth of a <a href="https://link.zhihu.com/?target=https://en.wikipedia.org/wiki/Station_wagon">station wagon</a> full of tapes hurtling down the highway.<br>—<a href="https://link.zhihu.com/?target=https://en.wikipedia.org/wiki/Andrew_S._Tanenbaum">Tanenbaum, Andrew S.</a> (1989).</p>
+<p><em>永远不要低估一台<strong>正在高速公路上飞驰又</strong>满载磁带的卡车的带宽</em></p>
+</blockquote>
+<h5 id="2-局域网"><a href="#2-局域网" class="headerlink" title="2.局域网"></a>2.局域网</h5><p>​    计算机近距离构成的小型网络称为局域网，LAN。</p>
+<h6 id="—以太网（Ethernet）："><a href="#—以太网（Ethernet）：" class="headerlink" title="—以太网（Ethernet）："></a>—以太网（Ethernet）：</h6><p>1.最简单形式：一条以太网电线连接数台计算机，数据以电信号的形式进行传递。以太网需要每台计算机有唯一的媒体访问控制地址，简称MAC地址。此地址放在头部，作为数据的前缀发送到网络中。如此，计算机只需要监听以太网电缆，只有识别出MAC地址，才会处理数据。</p>
+<p>2.多台电脑共享一个传输媒介，这种方法叫“载波侦听多路访问”，简称“CSMA”。多态电脑进行监听载体，数据传输的速度称为“带宽”。      </p>
+<p>3.当位于同一网络的两台以上的计算机想要同时传输信息时会产生冲突，此时计算机检测到冲突并停止一定时间来避免冲突。一种方案是停止1s+随机时间，另一种是停止1s、2s、4s、8s……，这被称为“指数退避”。</p>
+<p>4.冲突域：为了<strong>减少冲突</strong>和<strong>提高效率</strong>，需要减少同一载体中设备的数量。载体和其中的设备总称为“冲突域”。</p>
+<p>5.交换机（switch）：使用交换机将一个冲突域拆分为两个冲突域，减少冲突域的范围。</p>
+<p><img src="/images/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/image-20210206143850712.png" alt="image-20210206143850712"></p>
+<p><img src="/images/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/image-20210206144159422.png" alt="image-20210206144159422"></p>
+<p><img src="/images/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/image-20210206144527243.png" alt="image-20210206144527243"></p>
+<p>交换机位于两个更小的网络之间，必要时才会在两个网络间传输数据。交换机会记录一个列表，列表上写着哪个MAC地址在哪边网络。这样，a—&gt;c 和 d—&gt;f的传输可以同时发生。但是，若f—&gt;a，则数据会通过交换机且两个网络都会被占用。</p>
+<p>6.路由（routing）：大型网络中，从一个节点到另一个节点通常有许多路线。如果两个计算机或网路相隔遥远，那么传输会通过更多的关口也就是冲突域，导致冲突机会增加，产生高延迟。因此，最简单的方法是分配一条专用的通信线路，就像早期的电话。将线路转接到正确线路的方式为<strong>“电路交换”</strong>。</p>
+<p>7.<strong>“报文交换”</strong>：报文交换是以报文为数据交换的单位，报文携带有目标地址、源地址等信息，在交换结点采用存储转发的传输方式。报文交换可以使用不同的路由(routes)，使通信跟具有容错性（不会因为某条线路受损而导致无法通信）。<strong>跳数</strong>：信息沿着路由跳转的次数叫“跳数”（记录跳数可以分辨出路由问题）。<strong>“跳数限制”</strong>：如果看到某条信息的跳数很高，就知道路由肯定出问题了。<strong>报文交换的缺点：</strong>报文比较大时会堵塞网络，英文只有把整个报文从一战转到下一站后，才能继续传递其他报文。解决方法是将大报文分成许多小块，称为：<strong>“数据包”</strong>。每个数据包都有目标地址，这样路由器知道应该发到哪里。报文的具体格式有<strong>“互联网协议”</strong>定义，简称<strong>IP</strong>，互联网协议标准创建于1970年代。</p>
+<p>8.<strong>IP-互联网协议</strong>：</p>
+<p>​    <strong>数据包</strong>想在互联网上传输，需要符合“互联网协议”的标准。数据包头部储存的关于数据的数据也叫<strong>“元数据”</strong>。如果只包含地址，数据到达之后，计算机不知道把数据包给哪个程序使用。因此需要在IP之上开发更高级的协议。其中，最简单、最常见的叫<strong>“用户数据报协议”</strong>，简称为“UDP”。UDP包含不同的端口号，当一个数据包到达后，接收方会读取UDP头部中的端口号，并将数据交给拥有对应端口号的程序。</p>
+<p><img src="/images/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/image-20210206154734927.png" alt="image-20210206154734927"></p>
+<blockquote>
+<p>IP：负责把数据包送到正确的计算机；</p>
+<p>UDP：负责把数据包交给正确的程序。</p>
+</blockquote>
+<p>UDP中还有一个“CHECKSUM”(校验和)，电脑会把所有数据加在一起算出“校验和”，UDP中，校验和以16位二进制储存。若超出，则舍去高位，保留低位。当接收者接受到数据包后，会重复这个步骤。若和头部校验和一致，代表一切正常。反之，代表数据出现了问题。</p>
+<p><img src="/images/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/image-20210206155501494.png" alt="image-20210206155501494"></p>
+<p>传输时的功率波动或线路故障都会导致数据的损失。UDP不提供数据修复或数据重发的机制，且发送方无法通过UDP得知数据包是否到达目的地。如果要求<strong>所有数据必须到达</strong>，就要用<strong>传输控制协议-TCP</strong>。</p>
+<p>9.TCP</p>
+<p>​    TCP头部也有“端口号”和”校验和”及一些特性：</p>
+<ol>
+<li>TCP数据包有序号：接收方可以根据序号把数据包排列成正确的顺序，即使到达的时间不同。</li>
+<li>TCP要求接收方的电脑收到数据包，并且校验无误后，给发送方发一个确认码，简称“ACK”，代表收到了。</li>
+<li>TCP会根据ACK发送的速度确认网络的拥挤状况，根据网络状况自动调整传输率。</li>
+<li>UDP和TCP的应用场景不同：<a target="_blank" rel="noopener" href="https://www.bilibili.com/video/av372575289">王者荣耀如何使用UDP做到低延迟</a>（我就一搜还真有……不过是个噱头……</li>
+</ol>
+<p>10.DNS-域名系统</p>
+<p>​    浏览器访问DNS服务器，询问地址的IP地址为多少。得到IP后服务器会给在这个地址发TCP请求。<strong>顶级域名（TLD）</strong>在域名的最顶部，如：.com和.gov。</p>
+<p><img src="/images/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/image-20210206181052596.png" alt="image-20210206181052596"></p>
+<p>然后是<strong>二级域名</strong>：</p>
+<p><img src="/images/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/image-20210206181219707.png" alt="image-20210206181219707"></p>
+<p>再下一层是<strong>子域名</strong>：</p>
+<p><img src="/images/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/image-20210206181257066.png" alt="image-20210206181257066"></p>
+<h5 id="3-万维网"><a href="#3-万维网" class="headerlink" title="3.万维网"></a>3.万维网</h5><p>1.各种超链接组成的巨大互联网络被称为万维网。为了能使网页相互连接，每个网页需要一个唯一的地址，这个地址被称为<strong>“统一资源定位器-URL”</strong>。当访问地址下服务器的指定资源时，会用到<strong>“超文本传输协议-HTTP”</strong>。如：我们想要访问“courses”，就会向服务器发送指令“GET /courses”。该指令以“ASCII编码”发送到服务器。服务器返回对应的网页资源，浏览器渲染后在屏幕上显示。HTTP中网页回应的报文中的状态码代表了访问结果：</p>
+<blockquote>
+<p>状态码200：找到网页成功返回</p>
+<p>400~499：客户端出错</p>
+</blockquote>
+<p>“超文本”的储存和发送都基于普通文本的形式，纯文本无法标记出链接。为此，出现了HTML，超文本标记语言。        </p>
+<h5 id="4-网络中立性"><a href="#4-网络中立性" class="headerlink" title="4.网络中立性"></a>4.网络中立性</h5><p>简单来说，网络中立性是指应该平等对待所有的数据包。数据包的速度与优先级应该使一样的。</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://example.com/2021/02/05/BJDCTF2020-The-mystery-of-ip/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -974,63 +1087,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/01/17/%E6%9E%81%E5%AE%A2%E5%A4%A7%E6%8C%91%E6%88%98-2019-LoveSQL/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/header.jpg">
-      <meta itemprop="name" content="inanb">
-      <meta itemprop="description" content="铁马冰河入梦来">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="inanb">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2021/01/17/%E6%9E%81%E5%AE%A2%E5%A4%A7%E6%8C%91%E6%88%98-2019-LoveSQL/" class="post-title-link" itemprop="url">极客大挑战-2019-LoveSQL</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2021-01-17 09:07:45" itemprop="dateCreated datePublished" datetime="2021-01-17T09:07:45+08:00">2021-01-17</time>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -1102,7 +1158,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">61</span>
+          <span class="site-state-item-count">62</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>

