@@ -30,9 +30,10 @@
 <meta property="og:image" content="http://example.com/images/MRCTF2020-Ezpop-Revenge/image-20210404165801705.png">
 <meta property="og:image" content="http://example.com/images/MRCTF2020-Ezpop-Revenge/image-20210404172608327.png">
 <meta property="og:image" content="http://example.com/images/MRCTF2020-Ezpop-Revenge/image-20210404173005718.png">
+<meta property="og:image" content="http://example.com/images/MRCTF2020-Ezpop-Revenge/image-20210404182121878.png">
 <meta property="og:image" content="http://example.com/images/MRCTF2020-Ezpop-Revenge/image-20210404183523393.png">
 <meta property="article:published_time" content="2021-04-04T08:54:24.000Z">
-<meta property="article:modified_time" content="2021-04-04T10:39:49.189Z">
+<meta property="article:modified_time" content="2021-04-04T12:01:03.049Z">
 <meta property="article:author" content="inanb">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="http://example.com/images/MRCTF2020-Ezpop-Revenge/image-20210404165801705.png">
@@ -190,7 +191,7 @@
               <span class="post-meta-item-text">发表于</span>
               
 
-              <time title="创建时间：2021-04-04 16:54:24 / 修改时间：18:39:49" itemprop="dateCreated datePublished" datetime="2021-04-04T16:54:24+08:00">2021-04-04</time>
+              <time title="创建时间：2021-04-04 16:54:24 / 修改时间：20:01:03" itemprop="dateCreated datePublished" datetime="2021-04-04T16:54:24+08:00">2021-04-04</time>
             </span>
 
           
@@ -259,7 +260,8 @@
 
 <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//Helper.php</span></span><br><span class="line">     * 增加路由</span><br><span class="line">     * @access <span class="keyword">public</span></span><br><span class="line">     * @param <span class="keyword">string</span> $name 路由名称</span><br><span class="line">     * @param <span class="keyword">string</span> $url 路由路径</span><br><span class="line">     * @param <span class="keyword">string</span> $widget 组件名称</span><br><span class="line">     * @param <span class="keyword">string</span> $action 组件动作</span><br><span class="line">     * @param <span class="keyword">string</span> $after 在某个路由后面</span><br><span class="line">     * @<span class="keyword">return</span> <span class="keyword">integer</span> */</span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">static</span> <span class="function"><span class="keyword">function</span> <span class="title">addRoute</span>(<span class="params">$name, $url, $widget, $action = <span class="literal">NULL</span>, $after = <span class="literal">NULL</span></span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        $routingTable = <span class="built_in">self</span>::options()-&gt;routingTable;</span><br><span class="line">        <span class="keyword">if</span> (<span class="keyword">isset</span>($routingTable[<span class="number">0</span>])) &#123;</span><br><span class="line">            <span class="keyword">unset</span>($routingTable[<span class="number">0</span>]);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        $pos = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">foreach</span> ($routingTable <span class="keyword">as</span> $key =&gt; $val) &#123;</span><br><span class="line">            $pos ++;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> ($key == $after) &#123;</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        $pre = array_slice($routingTable, <span class="number">0</span>, $pos);</span><br><span class="line">        $next = array_slice($routingTable, $pos);</span><br><span class="line"></span><br><span class="line">        $routingTable = array_merge($pre, <span class="keyword">array</span>($name =&gt; <span class="keyword">array</span>(</span><br><span class="line">            <span class="string">&#x27;url&#x27;</span>       =&gt;  $url,</span><br><span class="line">            <span class="string">&#x27;widget&#x27;</span>    =&gt;  $widget,</span><br><span class="line">            <span class="string">&#x27;action&#x27;</span>    =&gt;  $action</span><br><span class="line">        )), $next);</span><br><span class="line">        <span class="built_in">self</span>::options()-&gt;routingTable = $routingTable;</span><br><span class="line"></span><br><span class="line">        $db = Typecho_Db::get();</span><br><span class="line">        <span class="keyword">return</span> Typecho_Widget::widget(<span class="string">&#x27;Widget_Abstract_Options&#x27;</span>)-&gt;update(<span class="keyword">array</span>(<span class="string">&#x27;value&#x27;</span> =&gt; serialize($routingTable))</span><br><span class="line">        , $db-&gt;sql()-&gt;where(<span class="string">&#x27;name = ?&#x27;</span>, <span class="string">&#x27;routingTable&#x27;</span>));</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
 
-<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/a3320315/article/details/105215741/%E6%A0%B9%E6%8D%AE%E8%BF%99%E7%AF%87%E6%96%87%E7%AB%A0%E7%9A%84%E8%AF%B4%E6%B3%95%EF%BC%8C%E7%BD%91%E9%A1%B5%E4%B8%8A%E7%9A%84%E6%8F%92%E4%BB%B6(Widget)%E4%B8%80%E8%88%AC%E7%94%B1%E8%B7%AF%E7%94%B1%E5%88%86%E5%8F%91%E6%9D%A5%E8%87%AA%E5%8A%A8%E5%8A%A0%E8%BD%BD%EF%BC%8C%E5%BA%8F%E5%88%97%E5%8C%96%E7%82%B9%EF%BC%9A![image-20210404182121878](/images/MRCTF2020-Ezpop-Revenge/image-20210404182121878.png)">https://blog.csdn.net/a3320315/article/details/105215741/根据这篇文章的说法，网页上的插件(Widget)一般由路由分发来自动加载，序列化点：![image-20210404182121878](/images/MRCTF2020-Ezpop-Revenge/image-20210404182121878.png)</a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/a3320315/article/details/105215741">https://blog.csdn.net/a3320315/article/details/105215741</a> </p>
+<p>根据这篇文章的说法，网页上的插件(Widget)一般由路由分发来自动加载，序列化点：<img src="/images/MRCTF2020-Ezpop-Revenge/image-20210404182121878.png" alt="image-20210404182121878"></p>
 <p>由此，对应的<code> * @param string $widget 组件名称</code>也就是<code>HelloWorld_Plugin</code>，查找相关的插件名一般就可以找到路由……（这个一般，大概是我胡说的……因为我根本不懂……😭zhendecai</p>
 <blockquote>
 <p>*这句代码的意思大概就是访问<code>/page_admin</code>的时候，会自动加载<code>HelloWorld_Plugin</code>类，而且会自动调用<code>action</code>函数，所以我们利用点的路由为<code>/page_admin</code>*。</p>
@@ -294,7 +296,10 @@
     <a href="/2021/04/03/MRCTF2020-Ezpop/" rel="prev" title="MRCTF2020-Ezpop">
       <i class="fa fa-chevron-left"></i> MRCTF2020-Ezpop
     </a></div>
-      <div class="post-nav-item"></div>
+      <div class="post-nav-item">
+    <a href="/2021/04/11/%E6%9E%AF%E7%87%A5%E7%9A%84%E6%8A%BD%E5%A5%96/" rel="next" title="枯燥的抽奖">
+      枯燥的抽奖 <i class="fa fa-chevron-right"></i>
+    </a></div>
     </div>
       </footer>
     
@@ -369,7 +374,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">67</span>
+          <span class="site-state-item-count">72</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
