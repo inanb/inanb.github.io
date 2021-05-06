@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="[HCTF 2018]admin1.题目：2.过程：又是学习dalao操作的一天： 一、flask session 伪造 应该是要获取admin的账号……网页通过session识别用户的身份：  session是浏览器与服务器交互的会话，这个session可以来验证访问者的身份，大多数的session都是保存在服务器的，但是也有少部分是客户端session，如flask框架。 传统PHP中sess">
+<meta property="og:type" content="article">
+<meta property="og:title" content="HCTF-2018-admin">
+<meta property="og:url" content="http://example.com/2021/02/23/HCTF-2018-admin/index.html">
+<meta property="og:site_name" content="inanb">
+<meta property="og:description" content="[HCTF 2018]admin1.题目：2.过程：又是学习dalao操作的一天： 一、flask session 伪造 应该是要获取admin的账号……网页通过session识别用户的身份：  session是浏览器与服务器交互的会话，这个session可以来验证访问者的身份，大多数的session都是保存在服务器的，但是也有少部分是客户端session，如flask框架。 传统PHP中sess">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/images/HCTF-2018-admin/image-20210223155455900.png">
+<meta property="og:image" content="http://example.com/images/HCTF-2018-admin/image-20210223162658801.png">
+<meta property="og:image" content="http://example.com/images/HCTF-2018-admin/image-20210223163102049.png">
+<meta property="og:image" content="http://example.com/images/HCTF-2018-admin/image-20210223163300325.png">
+<meta property="og:image" content="http://example.com/images/HCTF-2018-admin/image-20210223163402723.png">
+<meta property="og:image" content="http://example.com/images/HCTF-2018-admin/image-20210223171235841.png">
+<meta property="og:image" content="http://example.com/images/HCTF-2018-admin/image-20210223173046053.png">
+<meta property="og:image" content="http://example.com/images/HCTF-2018-admin/image-20210223175220075.png">
+<meta property="og:image" content="http://example.com/images/HCTF-2018-admin/image-20210223180727395.png">
+<meta property="og:image" content="http://example.com/images/HCTF-2018-admin/image-20210223210605583.png">
+<meta property="article:published_time" content="2021-02-23T07:53:35.000Z">
+<meta property="article:modified_time" content="2021-02-23T13:21:06.788Z">
+<meta property="article:author" content="inanb">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/images/HCTF-2018-admin/image-20210223155455900.png">
+
+<link rel="canonical" href="http://example.com/2021/02/23/HCTF-2018-admin/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>HCTF-2018-admin | inanb</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="inanb" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">inanb</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">昨夜雨疏风骤 浓睡不消残酒</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/02/23/HCTF-2018-admin/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/header.jpg">
+      <meta itemprop="name" content="inanb">
+      <meta itemprop="description" content="铁马冰河入梦来">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="inanb">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          HCTF-2018-admin
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-02-23 15:53:35 / 修改时间：21:21:06" itemprop="dateCreated datePublished" datetime="2021-02-23T15:53:35+08:00">2021-02-23</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h4 id="HCTF-2018-admin"><a href="#HCTF-2018-admin" class="headerlink" title="[HCTF 2018]admin"></a>[HCTF 2018]admin</h4><h5 id="1-题目："><a href="#1-题目：" class="headerlink" title="1.题目："></a>1.题目：</h5><h5 id="2-过程："><a href="#2-过程：" class="headerlink" title="2.过程："></a>2.过程：</h5><p>又是学习dalao操作的一天：</p>
+<h6 id="一、flask-session-伪造"><a href="#一、flask-session-伪造" class="headerlink" title="一、flask session 伪造"></a>一、flask session 伪造</h6><p><img src="/images/HCTF-2018-admin/image-20210223155455900.png" alt="image-20210223155455900"></p>
+<p>应该是要获取admin的账号……网页通过session识别用户的身份：</p>
+<blockquote>
+<p>session是浏览器与服务器交互的会话，这个session可以来验证访问者的身份，大多数的session都是保存在服务器的，但是也有少部分是客户端session，如flask框架。</p>
+<p>传统PHP中session都是被放在服务器中的，用户只是看到一串随机字符串，真正的session内容在服务器中，flask是一个python轻量级web框架，他的session存储在客户端的cookie字段中，为了防止session篡改，flask进行了一定的处理，代码存放在flask模块中sessions.py文件中。</p>
+</blockquote>
+<p>flask session 的加解密需要一个secret-key：</p>
+<p><img src="/images/HCTF-2018-admin/image-20210223162658801.png" alt="image-20210223162658801"></p>
+<p>源码中的config文件中可以被找到</p>
+<p>用 flask-session-cookie-manager 对cookie进行解密：</p>
+<blockquote>
+<p>解密：</p>
+<p>python flask_session_cookie_manager3.py decode -s SECRET_KEY -c “session”</p>
+<p>加密：</p>
+<p>python flask_session_cookie_manager3.py encode -s SECRET_KEY -t “未加密session”</p>
+</blockquote>
+<p><img src="/images/HCTF-2018-admin/image-20210223163102049.png" alt="image-20210223163102049"></p>
+<p>在index中：</p>
+<p><img src="/images/HCTF-2018-admin/image-20210223163300325.png" alt="image-20210223163300325"></p>
+<p>只验证了session中的’name’即可：</p>
+<p><img src="/images/HCTF-2018-admin/image-20210223163402723.png" alt="image-20210223163402723"></p>
+<p>修改cookie即可以admin身份登录获取flag……</p>
+<h6 id="二、Unicode欺骗"><a href="#二、Unicode欺骗" class="headerlink" title="二、Unicode欺骗"></a>二、Unicode欺骗</h6><p><img src="/images/HCTF-2018-admin/image-20210223171235841.png" alt="image-20210223171235841"></p>
+<p>在change页面可以清楚的看到，对获取到的name进行了小写处理。python中含有小写函数：lower()</p>
+<p>这里用的是strlower：</p>
+<p><img src="/images/HCTF-2018-admin/image-20210223173046053.png" alt="image-20210223173046053"></p>
+<p>用到了nodeprepare.prepare，这个方法从Twisted库中导出：</p>
+<p><img src="/images/HCTF-2018-admin/image-20210223175220075.png" alt="image-20210223175220075"></p>
+<p>这里的Twisted版本很低，dalao怀疑这里有漏洞……搜索了一下相关内容：</p>
+<p><a target="_blank" rel="noopener" href="https://engineering.atspotify.com/2013/06/18/creative-usernames/%E4%B8%AD%E8%AE%B0%E5%BD%95%E4%BA%86%E5%9B%A0%E4%B8%BA%E4%BD%BF%E7%94%A8nodeprepare.prepare%E5%AF%BC%E8%87%B4%E7%9A%84%E4%B8%80%E8%B5%B7%E6%BC%8F%E6%B4%9E%E3%80%82%E6%B3%A8%E5%86%8C%E6%97%B6%EF%BC%8C">https://engineering.atspotify.com/2013/06/18/creative-usernames/中记录了因为使用nodeprepare.prepare导致的一起漏洞。注册时，</a> ‘ᴮᴵᴳᴮᴵᴿᴰ’经处理得到‘BIGBIRD’，就成功注册了‘BIGBIRD’账户，但在修改密码时，再次对name使用了nodeprepare.prepare。那么修改的账户就变成‘bigbird’，原来的bigbird账户的密码就被控制了。官方的原话为：</p>
+<blockquote>
+<p><em>”We were relying on nodeprep.prepare being idempotent, and it wasn’t.“</em></p>
+</blockquote>
+<p>转化为小写的函数原本应当是幂等的，但在这个特殊情况下，两次的结果是不同的。</p>
+<p>在<a target="_blank" rel="noopener" href="https://news.ycombinator.com/item?id=5902506%E7%9A%84%E8%AE%A8%E8%AE%BA%E4%B8%AD%EF%BC%9A">https://news.ycombinator.com/item?id=5902506的讨论中：</a></p>
+<p><img src="/images/HCTF-2018-admin/image-20210223180727395.png" alt="image-20210223180727395"></p>
+<p>似乎是python的工作方式的改变破坏了Twisted库。</p>
+<p>或许是因为某些原因导致不支持ᴮᴵᴳᴮᴵᴿᴰ字符，进行了强制的转换？到这里我仍不是很明白。<a target="_blank" rel="noopener" href="https://paper.seebug.org/77/">Unicode同形字引起的安全问题</a>中介绍了关于Unicode转ASCII的GitHub的漏洞，但不是ᴬᴰᴹᴵᴺ到ADMIN的转换。</p>
+<p>我找到了Unicode的标准化处理：</p>
+<blockquote>
+<p>unicodedata.normalize(form, unistr)</p>
+<p>把一串UNICODE字符串转换为普通格式的字符串，具体格式支持NFC、NFKC、NFD和NFKD格式。</p>
+<p>Unicode标准定义了四种规范化形式： Normalization Form D (NFD)，Normalization Form KD (NFKD)，Normalization Form C (NFC)，和Normalization Form KC (NFKC)。大约来说，NFD和NFKD将可能的字符进行分解，而NFC和NFKC将可能的字符进行组合。</p>
+<p>NFC（Normalization Form C）使用最少的码位构成等价的字符串；<br>NFD把组合字符分解成基字符和单独的组合字符；</p>
+<p>在另外两个规范化形式（NFKC和NFKD）的首字母缩略词中，字母K表示“compatibility”（兼容性）。这两种是<strong>较严格</strong>的规范形式，<strong>对“兼容字符”有影响</strong>。</p>
+<p>=》<a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_38492159/article/details/107135663">https://blog.csdn.net/weixin_38492159/article/details/107135663</a></p>
+</blockquote>
+<p><img src="/images/HCTF-2018-admin/image-20210223210605583.png" alt="image-20210223210605583"></p>
+<p>NFKC和NFKD下，都会转换为ADMIN；NFC和NFD下，仍为ᴬᴰᴹᴵᴺ。</p>
+<p>大概是该方法在遇到ᴬᴰᴹᴵᴺ时，因为某些原因只进行了规范化而没有转化为小写导致了漏洞吧……更深的就不知道了……</p>
+<p>p大：<a target="_blank" rel="noopener" href="https://www.leavesongs.com/PENETRATION/client-session-security.html">https://www.leavesongs.com/PENETRATION/client-session-security.html</a></p>
+<p>关于Unicode安全的好像有一道Unicode shop，回来可以写写。</p>
+<h6 id="三、条件竞争"><a href="#三、条件竞争" class="headerlink" title="三、条件竞争"></a>三、条件竞争</h6><p>……确实不是很懂，先贴dalao题解，学习学习：</p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_44677409/article/details/100733581">https://blog.csdn.net/weixin_44677409/article/details/100733581</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.anquanke.com/post/id/164086">https://www.anquanke.com/post/id/164086</a></p>
+<p>……wohaocai</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/02/18/Hgame2021-week3-Forgetful/" rel="prev" title="Hgame2021-week3-Forgetful">
+      <i class="fa fa-chevron-left"></i> Hgame2021-week3-Forgetful
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2021/02/24/ASIS-2019-Unicorn-shop/" rel="next" title="ASIS-2019-Unicorn-shop">
+      ASIS-2019-Unicorn-shop <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#HCTF-2018-admin"><span class="nav-number">1.</span> <span class="nav-text">[HCTF 2018]admin</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-%E9%A2%98%E7%9B%AE%EF%BC%9A"><span class="nav-number">1.1.</span> <span class="nav-text">1.题目：</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-%E8%BF%87%E7%A8%8B%EF%BC%9A"><span class="nav-number">1.2.</span> <span class="nav-text">2.过程：</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#%E4%B8%80%E3%80%81flask-session-%E4%BC%AA%E9%80%A0"><span class="nav-number">1.2.1.</span> <span class="nav-text">一、flask session 伪造</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#%E4%BA%8C%E3%80%81Unicode%E6%AC%BA%E9%AA%97"><span class="nav-number">1.2.2.</span> <span class="nav-text">二、Unicode欺骗</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#%E4%B8%89%E3%80%81%E6%9D%A1%E4%BB%B6%E7%AB%9E%E4%BA%89"><span class="nav-number">1.2.3.</span> <span class="nav-text">三、条件竞争</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="inanb"
+      src="/images/header.jpg">
+  <p class="site-author-name" itemprop="name">inanb</p>
+  <div class="site-description" itemprop="description">铁马冰河入梦来</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">83</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="/atom.xml" title="RSS → &#x2F;atom.xml"><i class="fas fa-rss fa-fw"></i>RSS</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">inanb</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+<script type="text/javascript" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+
+</body>
+</html>
