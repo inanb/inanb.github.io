@@ -159,123 +159,6 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/04/25/hacker101-1/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/header.jpg">
-      <meta itemprop="name" content="inanb">
-      <meta itemprop="description" content="铁马冰河入梦来">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="inanb">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2021/04/25/hacker101-1/" class="post-title-link" itemprop="url">未命名</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2021-04-25 20:29:51 / 修改时间：20:28:58" itemprop="dateCreated datePublished" datetime="2021-04-25T20:29:51+08:00">2021-04-25</time>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h5 id="hacker101-1"><a href="#hacker101-1" class="headerlink" title="hacker101.1"></a>hacker101.1</h5><p>2.观看视频二，回答下列问题：</p>
-<p>视频二：<a target="_blank" rel="noopener" href="https://www.hacker101.com/sessions/pentest_owasp">https://www.hacker101.com/sessions/pentest_owasp</a> </p>
-<p>1.目前owasp的十大web安全漏洞是哪些？这些漏洞排名是按照漏洞的严重程度排序的还是按照漏洞的常见程度排序的？（2分） </p>
-<blockquote>
-<p><a target="_blank" rel="noopener" href="https://wiki.owasp.org/images/d/dc/OWASP_Top_10_2017_%E4%B8%AD%E6%96%87%E7%89%88v1.3.pdf">中文PDF-2017</a></p>
-<ol>
-<li><p><strong>注入漏洞：</strong><a target="_blank" rel="noopener" href="https://www.immuniweb.com/resources/owasp-top-ten/#Injection">Injection</a></p>
-</li>
-<li><p><strong>身份认证失效：</strong><a target="_blank" rel="noopener" href="https://www.immuniweb.com/resources/owasp-top-ten/#Authentication">Broken Authentication</a></p>
-</li>
-<li><p><strong>敏感数据泄露：</strong><a target="_blank" rel="noopener" href="https://www.immuniweb.com/resources/owasp-top-ten/#Data">Sensitive Data Exposure</a></p>
-</li>
-<li><p><strong>XML外部实体漏洞：</strong><a target="_blank" rel="noopener" href="https://www.immuniweb.com/resources/owasp-top-ten/#XML">XML External Entities (XXE)</a></p>
-</li>
-<li><p><strong>访问控制失效：</strong><a target="_blank" rel="noopener" href="https://www.immuniweb.com/resources/owasp-top-ten/#Access">Broken Access Control</a></p>
-</li>
-<li><p><strong>安全配置错误：</strong><a target="_blank" rel="noopener" href="https://www.immuniweb.com/resources/owasp-top-ten/#Misconfigurations">Security Misconfigurations</a></p>
-</li>
-<li><p><strong>跨站脚本攻击：</strong><a target="_blank" rel="noopener" href="https://www.immuniweb.com/resources/owasp-top-ten/#XSS">Cross-Site Scripting (XSS)</a></p>
-</li>
-<li><p><strong>不安全的反序列化：</strong><a target="_blank" rel="noopener" href="https://www.immuniweb.com/resources/owasp-top-ten/#Deserialization">Insecure Deserialization</a></p>
-</li>
-<li><p><strong>使用含有已知漏洞的组件：</strong><a target="_blank" rel="noopener" href="https://www.immuniweb.com/resources/owasp-top-ten/#Vulnerabilities">Using Components with Known Vulnerabilities</a></p>
-</li>
-<li><p><strong>日志和监控不足：</strong><a target="_blank" rel="noopener" href="https://www.immuniweb.com/resources/owasp-top-ten/#Insufficient">Insufficient Logging and Monitoring</a></p>
-<p><strong><em>OWASP Top 10 is a ranking of the ten most dangerous information security risks for web applications, compiled by a community of industry experts. For each point of the rating, the risk is calculated by experts based on the<a target="_blank" rel="noopener" href="https://owasp.org/www-project-risk-assessment-framework/">OWASP Risk Rating Methodology</a>and includes an assessment of Weakness Prevalence, Weakness Detectability and Exploitability, as well as the criticality of the consequences of their operation or Technical Impacts.</em></strong></p>
-<p><strong>前10大风险项是根据流行数据选择和优先排序，并结合了对可利用性、可检测性和影响程度的一致性评估而形成。</strong></p>
-</li>
-</ol>
-</blockquote>
-<p>2.请翻译一下credential stuffing（1分） </p>
-<blockquote>
-<p>​    <strong><em>one that’s really common from a pentesting perspective is what we call credential stuffing. And say that we go out we grab data from breached data that’s out there so an account that’s been compromised the list shows up on the internet and now, the hackers have access to usernames and passwords and say we are testing in some website.</em></strong></p>
-<p>​    <strong><em>we just send usernames and passwords to an application ,and there’s no threat detection we’re just able to pound a login form or even use something like password spraying where we just take something like spring 2019 or summer 2020 exclamation and just throw common credentials out there and see if it sticks if we’re able to continuously brute force  an application without anything preventing us or any account lockouts.</em></strong></p>
-<p>emm，实际上就是撞库吗……</p>
-<p>利用已泄露的账户信息在多个平台进行尝试，这种尝试很难被检测出来。不同的用户名与密码，甚至于手机号，身份证号等等敏感信息进行组合来尝试登录。可能用户在多个平台的账户与密码是相同的，这样就十分危险。</p>
-<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_44549063/article/details/113518965"><strong>Credential Stuffing Attack</strong></a></p>
-<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/still_night/article/details/104837926">Beyond credential stuffing</a></p>
-</blockquote>
-<p>3.为什么说不充分的日志记录(insufficient logging)也算owasp十大漏洞的一种？他的危害性如何（2分） </p>
-<blockquote>
-<p> 之所以有很多入侵行为发生，其中原因之一是没有行为监管，或监管不充分。入侵者r进入系统然而没有日志记录这一行为，或日志记录不充分。</p>
-<p>所以，在做一些项目时，检查日志与监控是十分重要的。不充分的日志记录与监管可能会导致很多入侵行为的发生。</p>
-</blockquote>
-<p>4.请翻阅一下owasp testing guide，以及owasp testing guide check-list，视频说怎么结合这两个文档来学习渗透测试？ 结合你平时渗透过程中的经验，谈谈你的感想。（3分） </p>
-<blockquote>
-<p><a target="_blank" rel="noopener" href="https://kennel209.gitbooks.io/owasp-testing-guide-v4/content/zh/frontispiece/index.html">中文版testing-guide</a></p>
-<p><a target="_blank" rel="noopener" href="https://github.com/tanprathan/OWASP-Testing-Checklist">https://github.com/tanprathan/OWASP-Testing-Checklist</a></p>
-<p>从testing guide中，我们可以了解到所有的不同的渗透测试一个网站应用的方法。check-list可以提供我们在测试中所有要检查的点，并为这些点提供测试工具。check-list中的测试点可拿到testing guide中检索得到更为详尽的信息与总结，search engine、operator……and step by step。</p>
-<p>emmm，速查与教科书的关系……？渗透测试是开卷的，速查与教科书就显得十分重要……                                                                                                                               我们需要清楚应用工作的方式，熟悉测试的逻辑，而check-list和testing-guide负责帮助我们理顺逻辑并记忆基础测试点。</p>
-<p>从思考与逻辑出发，最终落实到check-list and testing-guide。check-list and testing-guide帮助我们查漏补缺。</p>
-</blockquote>
-<ol start="5">
-<li>you are only as good as you notes   you are only as good as things you can refer to结合这两句话谈谈你的感想。（2分）</li>
-</ol>
-<blockquote>
-<p>挺好……owasp提供了很好的资源，各种test-guiding，hacker101也提供了很好的学习资源（包括英语……</p>
-<p>写博客这么长时间，感觉也确实有用。包括资料查找、记录payload、各种知识点……我们所记录的、可参考的东西是记忆可靠的延伸。</p>
-</blockquote>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://example.com/2021/04/25/RCTF2015-EasySQL/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -362,6 +245,129 @@
 </blockquote>
 <p>flag{4c5c3709-12d5-40af-82f2-c33431a414f8}</p>
 <p>获得flag……</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/04/24/hacker101-1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/header.jpg">
+      <meta itemprop="name" content="inanb">
+      <meta itemprop="description" content="铁马冰河入梦来">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="inanb">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/04/24/hacker101-1/" class="post-title-link" itemprop="url">网鼎杯-2018-Comment</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-04-24 14:56:25" itemprop="dateCreated datePublished" datetime="2021-04-24T14:56:25+08:00">2021-04-24</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-05-06 15:38:11" itemprop="dateModified" datetime="2021-05-06T15:38:11+08:00">2021-05-06</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h5 id="hacker101-1"><a href="#hacker101-1" class="headerlink" title="hacker101.1"></a>hacker101.1</h5><p>2.观看视频二，回答下列问题：</p>
+<p>视频二：<a target="_blank" rel="noopener" href="https://www.hacker101.com/sessions/pentest_owasp">https://www.hacker101.com/sessions/pentest_owasp</a> </p>
+<p>1.目前owasp的十大web安全漏洞是哪些？这些漏洞排名是按照漏洞的严重程度排序的还是按照漏洞的常见程度排序的？（2分） </p>
+<blockquote>
+<p><a target="_blank" rel="noopener" href="https://wiki.owasp.org/images/d/dc/OWASP_Top_10_2017_%E4%B8%AD%E6%96%87%E7%89%88v1.3.pdf">中文PDF-2017</a></p>
+<ol>
+<li><p><strong>注入漏洞：</strong><a target="_blank" rel="noopener" href="https://www.immuniweb.com/resources/owasp-top-ten/#Injection">Injection</a></p>
+</li>
+<li><p><strong>身份认证失效：</strong><a target="_blank" rel="noopener" href="https://www.immuniweb.com/resources/owasp-top-ten/#Authentication">Broken Authentication</a></p>
+</li>
+<li><p><strong>敏感数据泄露：</strong><a target="_blank" rel="noopener" href="https://www.immuniweb.com/resources/owasp-top-ten/#Data">Sensitive Data Exposure</a></p>
+</li>
+<li><p><strong>XML外部实体漏洞：</strong><a target="_blank" rel="noopener" href="https://www.immuniweb.com/resources/owasp-top-ten/#XML">XML External Entities (XXE)</a></p>
+</li>
+<li><p><strong>访问控制失效：</strong><a target="_blank" rel="noopener" href="https://www.immuniweb.com/resources/owasp-top-ten/#Access">Broken Access Control</a></p>
+</li>
+<li><p><strong>安全配置错误：</strong><a target="_blank" rel="noopener" href="https://www.immuniweb.com/resources/owasp-top-ten/#Misconfigurations">Security Misconfigurations</a></p>
+</li>
+<li><p><strong>跨站脚本攻击：</strong><a target="_blank" rel="noopener" href="https://www.immuniweb.com/resources/owasp-top-ten/#XSS">Cross-Site Scripting (XSS)</a></p>
+</li>
+<li><p><strong>不安全的反序列化：</strong><a target="_blank" rel="noopener" href="https://www.immuniweb.com/resources/owasp-top-ten/#Deserialization">Insecure Deserialization</a></p>
+</li>
+<li><p><strong>使用含有已知漏洞的组件：</strong><a target="_blank" rel="noopener" href="https://www.immuniweb.com/resources/owasp-top-ten/#Vulnerabilities">Using Components with Known Vulnerabilities</a></p>
+</li>
+<li><p><strong>日志和监控不足：</strong><a target="_blank" rel="noopener" href="https://www.immuniweb.com/resources/owasp-top-ten/#Insufficient">Insufficient Logging and Monitoring</a></p>
+<p><strong><em>OWASP Top 10 is a ranking of the ten most dangerous information security risks for web applications, compiled by a community of industry experts. For each point of the rating, the risk is calculated by experts based on the<a target="_blank" rel="noopener" href="https://owasp.org/www-project-risk-assessment-framework/">OWASP Risk Rating Methodology</a>and includes an assessment of Weakness Prevalence, Weakness Detectability and Exploitability, as well as the criticality of the consequences of their operation or Technical Impacts.</em></strong></p>
+<p><strong>前10大风险项是根据流行数据选择和优先排序，并结合了对可利用性、可检测性和影响程度的一致性评估而形成。</strong></p>
+</li>
+</ol>
+</blockquote>
+<p>2.请翻译一下credential stuffing（1分） </p>
+<blockquote>
+<p>​    <strong><em>one that’s really common from a pentesting perspective is what we call credential stuffing. And say that we go out we grab data from breached data that’s out there so an account that’s been compromised the list shows up on the internet and now, the hackers have access to usernames and passwords and say we are testing in some website.</em></strong></p>
+<p>​    <strong><em>we just send usernames and passwords to an application ,and there’s no threat detection we’re just able to pound a login form or even use something like password spraying where we just take something like spring 2019 or summer 2020 exclamation and just throw common credentials out there and see if it sticks if we’re able to continuously brute force  an application without anything preventing us or any account lockouts.</em></strong></p>
+<p>emm，实际上就是撞库吗……</p>
+<p>利用已泄露的账户信息在多个平台进行尝试，这种尝试很难被检测出来。不同的用户名与密码，甚至于手机号，身份证号等等敏感信息进行组合来尝试登录。可能用户在多个平台的账户与密码是相同的，这样就十分危险。</p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_44549063/article/details/113518965"><strong>Credential Stuffing Attack</strong></a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/still_night/article/details/104837926">Beyond credential stuffing</a></p>
+</blockquote>
+<p>3.为什么说不充分的日志记录(insufficient logging)也算owasp十大漏洞的一种？他的危害性如何（2分） </p>
+<blockquote>
+<p> 之所以有很多入侵行为发生，其中原因之一是没有行为监管，或监管不充分。入侵者r进入系统然而没有日志记录这一行为，或日志记录不充分。</p>
+<p>所以，在做一些项目时，检查日志与监控是十分重要的。不充分的日志记录与监管可能会导致很多入侵行为的发生。</p>
+</blockquote>
+<p>4.请翻阅一下owasp testing guide，以及owasp testing guide check-list，视频说怎么结合这两个文档来学习渗透测试？ 结合你平时渗透过程中的经验，谈谈你的感想。（3分） </p>
+<blockquote>
+<p><a target="_blank" rel="noopener" href="https://kennel209.gitbooks.io/owasp-testing-guide-v4/content/zh/frontispiece/index.html">中文版testing-guide</a></p>
+<p><a target="_blank" rel="noopener" href="https://github.com/tanprathan/OWASP-Testing-Checklist">https://github.com/tanprathan/OWASP-Testing-Checklist</a></p>
+<p>从testing guide中，我们可以了解到所有的不同的渗透测试一个网站应用的方法。check-list可以提供我们在测试中所有要检查的点，并为这些点提供测试工具。check-list中的测试点可拿到testing guide中检索得到更为详尽的信息与总结，search engine、operator……and step by step。</p>
+<p>emmm，速查与教科书的关系……？渗透测试是开卷的，速查与教科书就显得十分重要……                                                                                                                               我们需要清楚应用工作的方式，熟悉测试的逻辑，而check-list和testing-guide负责帮助我们理顺逻辑并记忆基础测试点。</p>
+<p>从思考与逻辑出发，最终落实到check-list and testing-guide。check-list and testing-guide帮助我们查漏补缺。</p>
+</blockquote>
+<ol start="5">
+<li>you are only as good as you notes   you are only as good as things you can refer to结合这两句话谈谈你的感想。（2分）</li>
+</ol>
+<blockquote>
+<p>挺好……owasp提供了很好的资源，各种test-guiding，hacker101也提供了很好的学习资源（包括英语……</p>
+<p>写博客这么长时间，感觉也确实有用。包括资料查找、记录payload、各种知识点……我们所记录的、可参考的东西是记忆可靠的延伸。</p>
+</blockquote>
 
       
     </div>
