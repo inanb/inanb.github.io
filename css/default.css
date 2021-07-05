@@ -12005,6 +12005,10 @@ body.night {
 .night .footer-logo .logo-img-dark {
   display: inline-block;
 }
+.night article.article .article-meta,
+.night article.article .article-tags {
+  color: #fff;
+}
 .night .navbar {
   background-color: #373d48;
 }
@@ -12140,15 +12144,15 @@ body.night {
 .night .button.is-white,
 .night .button.is-transparent,
 .night .v * {
-  color: #c0c0c0;
+  color: #e6e6e6;
 }
 .night .media-content,
 .night .has-text-grey,
 .night .link-muted {
-  color: #c0c0c0 !important;
+  color: #e6e6e6 !important;
 }
 .night a {
-  color: #5299e0;
+  color: #fff;
 }
 .night a:hover {
   color: #fff;
