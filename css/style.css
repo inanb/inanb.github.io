@@ -11902,6 +11902,7 @@ hr {
 body.night {
   background: url("/img/blue.jpg");
   background-attachment: fixed;
+  background-size: cover;
 }
 .night .hljs {
   display: block;
