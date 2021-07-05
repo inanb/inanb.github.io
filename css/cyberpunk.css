@@ -12030,6 +12030,8 @@ body.night {
 .night .footer {
   backdrop-filter: none;
   -webkit-backdrop-filter: none;
+  background-image: url("/img/2.jpg");
+  background-position: left 25%;
 }
 .night .footer:before {
   background-color: rgba(40,44,52,0.5);
@@ -12150,7 +12152,7 @@ body.night {
 .night .media-content,
 .night .has-text-grey,
 .night .link-muted {
-  color: #e6e6e6 !important;
+  color: #fff !important;
 }
 .night a {
   color: #fff;
@@ -12158,7 +12160,21 @@ body.night {
 .night a:hover {
   color: #fff;
 }
-.night .content blockquote,
+.night .recommend-area {
+  background-color: #808080;
+}
+.night .article-licensing {
+  position: relative;
+  z-index: 1;
+  box-shadow: none;
+  color: #fff;
+  border-radius: 0;
+  overflow: hidden;
+  background-color: #808080;
+}
+.night .content blockquote {
+  background-color: #373d48;
+}
 .night .post-copyright {
   background-color: #373d48;
   border-color: #434a56;
