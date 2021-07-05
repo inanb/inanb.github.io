@@ -12005,12 +12005,6 @@ body.night {
 .night .footer-logo .logo-img-dark {
   display: inline-block;
 }
-.night .navbar-menu {
-  background-color: rgba(40,44,52,0.5);
-}
-.night .navbar-brand {
-  background-color: rgba(40,44,52,0.5);
-}
 .night .navbar {
   background-color: #373d48;
 }
@@ -12256,7 +12250,9 @@ textarea {
   font-family: 'Monda', "PingFang SC", "Microsoft YaHei", sans-serif;
 }
 body {
-  background: url("/img/background.png");
+  background: url("/img/blue.jpg");
+  background-attachment: fixed;
+  background-size: cover;
 }
 .img-x {
   position: relative;
@@ -12495,13 +12491,6 @@ body {
 }
 .social-share {
   text-align: center;
-}
-.level img {
-  border-radius: 100px;
-  transition: all 0.5s ease-in;
-  -webkit-transition: all 0.5s ease-in;
-  -moz-transition: all 0.5s ease-in;
-  -o-transition: all 0.5s ease-in;
 }
 .level figure img:hover {
   transform: rotate(360deg);
