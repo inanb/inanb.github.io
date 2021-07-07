@@ -6,7 +6,7 @@ function isNightFun() {
 
     // 第一次进来判断是白天还是晚上
     if (isNightTemp == null || isNightTemp == undefined) {
-        if (true) {
+        if (false) {
             isNightTemp = 'true';
         } else {
             isNightTemp = 'false';

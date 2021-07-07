@@ -10765,6 +10765,7 @@ body > .section {
   border-color: transparent;
 }
 .card {
+  background-color: rgba(255,255,255,0.722);
   overflow: visible;
   border-radius: 0;
 }
@@ -11001,6 +11002,12 @@ footer.footer .level-end .field {
 }
 .footer-logo img {
   max-height: 1.75rem;
+}
+.footer {
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  background-image: url("/img/mao3.jpg");
+  background-position: left 25%;
 }
 .pagination {
   margin-top: 1.5rem;
@@ -11707,6 +11714,9 @@ article.article .article-meta {
 .navbar.is-fixed-top {
   z-index: 100;
 }
+.navbar {
+  background-color: rgba(255,255,255,0.58);
+}
 @media screen and (min-width: 1280px) {
   .is-1-column .container,
   .is-2-column .container,
@@ -12271,7 +12281,7 @@ textarea {
   font-family: 'Monda', "PingFang SC", "Microsoft YaHei", sans-serif;
 }
 body {
-  background: url("/img/blue.jpg");
+  background: url("/img/mei.jpg");
   background-attachment: fixed;
   background-size: cover;
 }
