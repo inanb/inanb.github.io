@@ -10286,6 +10286,22 @@ body > .section {
 .size-small {
   font-size: 0.85rem !important;
 }
+.toc {
+  color: #3273dc;
+  margin-left: 40px;
+  padding: 10px 20px;
+  background: rgba(241,241,241,0.749);
+  border-radius: 10px;
+  box-shadow: 0 0 3px #bbb;
+  position: fixed;
+  left: -20px;
+  top: 172px;
+  z-index: 9999;
+}
+strong {
+  color: inherit;
+  font-weight: 700;
+}
 .ml-0,
 .mx-0 {
   margin-left: 0 !important;
@@ -10822,22 +10838,97 @@ article.article .content {
   font-size: 1.1rem;
 }
 article.article .content h1 {
-  font-size: 1.75em;
+  font-size: 2em;
+  background: rgba(96,167,224,0.922);
+  background-image: url("https://pic.imgdb.cn/item/612b6d3644eaada7397d8352.jpg");
+  border-radius: 6px 6px 6px 6px;
+  box-shadow: 0 0 0 1px #5f5a4b, 1px 1px 6px 1px rgba(10,10,0,0.5);
+  color: #fff;
+  font-family: "微软雅黑", "宋体", "黑体", Arial;
+  font-weight: bold;
+  height: 25px;
+  line-height: 25px;
+  margin: 18px 0 !important;
+  padding: 8px 0 5px 5px;
+  text-shadow: 2px 2px 3px #222;
 }
 article.article .content h2 {
-  font-size: 1.5em;
+  font-size: 1.75em;
+  background: rgba(96,167,224,0.922);
+  background-image: url("https://pic.imgdb.cn/item/612b6d3644eaada7397d8352.jpg");
+  border-radius: 6px 6px 6px 6px;
+  box-shadow: 0 0 0 1px #5f5a4b, 1px 1px 6px 1px rgba(10,10,0,0.5);
+  color: #fff;
+  font-family: "微软雅黑", "宋体", "黑体", Arial;
+  font-weight: bold;
+  height: 25px;
+  line-height: 25px;
+  margin: 18px 0 !important;
+  padding: 8px 0 5px 5px;
+  text-shadow: 2px 2px 3px #222;
 }
 article.article .content h3 {
-  font-size: 1.25em;
+  font-size: 1.5em;
+  background: rgba(96,167,224,0.922);
+  background-image: url("https://pic.imgdb.cn/item/612b6d3644eaada7397d8352.jpg");
+  border-radius: 6px 6px 6px 6px;
+  box-shadow: 0 0 0 1px #5f5a4b, 1px 1px 6px 1px rgba(10,10,0,0.5);
+  color: #fff;
+  font-family: "微软雅黑", "宋体", "黑体", Arial;
+  font-weight: bold;
+  height: 25px;
+  line-height: 25px;
+  margin: 18px 0 !important;
+  padding: 8px 0 5px 5px;
+  text-shadow: 2px 2px 3px #222;
 }
 article.article .content h4 {
-  font-size: 1.125em;
+  font-size: 1.25em;
+  background: rgba(96,167,224,0.922);
+  background-image: url("https://pic.imgdb.cn/item/612b6d3644eaada7397d8352.jpg");
+  border-radius: 6px 6px 6px 6px;
+  box-shadow: 0 0 0 1px #5f5a4b, 1px 1px 6px 1px rgba(10,10,0,0.5);
+  color: #fff;
+  font-family: "微软雅黑", "宋体", "黑体", Arial;
+  font-weight: bold;
+  height: 25px;
+  line-height: 25px;
+  margin: 18px 0 !important;
+  padding: 8px 0 5px 5px;
+  text-shadow: 2px 2px 3px #222;
 }
 article.article .content h5 {
-  font-size: 1em;
+  font-size: 1.125em;
+  background: rgba(96,167,224,0.922);
+  background-image: url("https://pic.imgdb.cn/item/612b6d3644eaada7397d8352.jpg");
+  border-radius: 6px 6px 6px 6px;
+  box-shadow: 0 0 0 1px #5f5a4b, 1px 1px 6px 1px rgba(10,10,0,0.5);
+  color: #fff;
+  font-family: "微软雅黑", "宋体", "黑体", Arial;
+  font-weight: bold;
+  height: 25px;
+  line-height: 25px;
+  margin: 18px 0 !important;
+  padding: 8px 0 5px 5px;
+  text-shadow: 2px 2px 3px #222;
+}
+article.article .content h6 {
+  font-size: 1.1em;
+  background: rgba(96,167,224,0.922);
+  background-image: url("https://pic.imgdb.cn/item/612b6d3644eaada7397d8352.jpg");
+  border-radius: 6px 6px 6px 6px;
+  box-shadow: 0 0 0 1px #5f5a4b, 1px 1px 6px 1px rgba(10,10,0,0.5);
+  color: #fff;
+  font-family: "微软雅黑", "宋体", "黑体", Arial;
+  font-weight: bold;
+  height: 25px;
+  line-height: 25px;
+  margin: 18px 0 !important;
+  padding: 8px 0 5px 5px;
+  text-shadow: 2px 2px 3px #222;
 }
 article.article .content pre {
-  font-size: 0.85em;
+  font-size: 1em;
 }
 article.article .content code {
   padding: 0;
@@ -11910,7 +12001,7 @@ hr {
   display: none;
 }
 body.night {
-  background: url("/img/blue.jpg");
+  background: url("https://pic.imgdb.cn/item/612a310844eaada7390eca07.jpg");
   background-attachment: fixed;
   background-size: cover;
 }
@@ -12220,6 +12311,9 @@ body.night {
 .night .menu-list li ul {
   border-color: #373d48;
 }
+.night .menu-list a.is-active {
+  background-color: #798eb5;
+}
 .night .timeline .media:last-child:after {
   background-color: #252936;
 }
@@ -12258,6 +12352,17 @@ body.night {
   -webkit-text-fill-color: #c0c0c0 !important;
   box-shadow: 0 0 0px 1000px #373d48 inset;
 }
+.night .toc {
+  margin-left: 40px;
+  padding: 10px 20px;
+  background: rgba(79,79,75,0.812);
+  border-radius: 10px;
+  box-shadow: 0 0 3px #bbb;
+  position: fixed;
+  left: -20px;
+  top: 172px;
+  z-index: 9999;
+}
 .aplayer-narrow {
   -webkit-transform: translateX(-100%);
   transform: translateX(-100%);
@@ -12280,7 +12385,7 @@ textarea {
   font-family: 'Monda', "PingFang SC", "Microsoft YaHei", sans-serif;
 }
 body {
-  background: url("/img/mei.jpg");
+  background: url("https://p26.toutiaoimg.com/origin/pgc-image/0e25164bc6d4402b922aac6d922af8f3");
   background-attachment: fixed;
   background-size: cover;
 }
