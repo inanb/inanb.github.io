@@ -178,7 +178,7 @@
 <p>要绕过nickname的长度限制，这里可以使用数组绕过</p>
 <p>正常的反序列化：</p>
 <blockquote>
-<p>a:4:{s:5:”phone”;s:11:”11111111111”;s:5:”email”;s:7:”<a href="mailto:&#x31;&#x40;&#49;&#x2e;&#99;&#x6f;&#109;">&#x31;&#x40;&#49;&#x2e;&#99;&#x6f;&#109;</a>“;s:8:”nickname”;a:1:{i:0;s:32:”1s:5:”photo”;s:10:”config.php”;}”;}s:5:”photo”;s:39:”upload/c4ca4238a0b923820dcc509a6f75849b”;}</p>
+<p>a:4:{s:5:”phone”;s:11:”11111111111”;s:5:”email”;s:7:”<a href="mailto:&#49;&#64;&#x31;&#46;&#99;&#111;&#x6d;">&#49;&#64;&#x31;&#46;&#99;&#111;&#x6d;</a>“;s:8:”nickname”;a:1:{i:0;s:32:”1s:5:”photo”;s:10:”config.php”;}”;}s:5:”photo”;s:39:”upload/c4ca4238a0b923820dcc509a6f75849b”;}</p>
 </blockquote>
 <p>数组的反序列化会在数据两边加上<code>&#123;&#125;</code>，所以我们要拼接<code>&quot;;&#125;s:5:&quot;photo&quot;;s:10:&quot;config.php&quot;;&#125;</code>来覆写photo为我们想要的config文件。</p>
 <p>注意到过滤中有一个<code>where</code>是5字符的，而<code>hacker</code>是6字符，这样的增加可以影响到<strong>前面对数组的描述</strong>，而我们的插入因为符合语法规则而<strong>从描述中逃逸</strong>。<code>&quot;;&#125;s:5:&quot;photo&quot;;s:10:&quot;config.php&quot;;&#125;</code>有34个字符，如果我们在nickname中传入34个where，将会被替换成64个hacker。</p>
